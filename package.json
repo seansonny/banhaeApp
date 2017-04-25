@@ -1,14 +1,21 @@
 {
-  "name": "banhae",
+  "name": "banhaeapp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sswpro/banhaeApp.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.15.2"
-  }
+  "bugs": {
+    "url": "https://github.com/sswpro/banhaeApp/issues"
+  },
+  "homepage": "https://github.com/sswpro/banhaeApp#readme"
 }
