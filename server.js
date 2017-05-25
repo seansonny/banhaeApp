@@ -19,7 +19,6 @@ app.use(function(req, res, next) {
 });
 
 app.use(function (err, req, res, next) {
-    console.log(err);
     res.status(500).send({mag: err.message});
 });
 
