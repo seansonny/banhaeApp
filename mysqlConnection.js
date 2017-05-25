@@ -1,6 +1,3 @@
-/**
- * Created by sswpro on 2017-05-25.
- */
 var mysql = require('mysql');
 var dbConfig = {
     host : 'banhaerdb.cpu3j20dvqwu.ap-northeast-2.rds.amazonaws.com',
