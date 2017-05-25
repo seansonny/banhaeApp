@@ -26,4 +26,26 @@ Ingredient.getIngredientDetail = function(ingredientId, sendCb) {
     })
 }
 
+Ingredient.deleteIngredient = function(ingredientId, sendCb){
+    pool.getConnection(function(err, conn) {
+        if( err ) {
+            return sendCb(err);
+        }
+
+        var sql = 'DELETE FROM ingredient WHERE ingredient_id = ?';
+        conn.query(sql, ingredientId, function(err, result){
+            if ( err ) {
+                conn.rollback();
+                conn.release();
+                err.code = 500;
+                return sendCb(err);
+            }
+
+            conn.commit();
+            conn.release();
+            return sendCb(null, { msg: 'Ingredient_id: '+ ingredientId+ ' is sucessfully deleted'});
+        })
+    })
+}
+
 module.exports = Ingredient;
