@@ -61,4 +61,5 @@ typings/
 
 ignore_folder/
 
-./database/mysqlConfig.json
+database/
+node_modules/
