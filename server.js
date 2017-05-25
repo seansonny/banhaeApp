@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mysql = require('./database/mysqlConfig');
 
 //라우터 include
 /*var ingredientRouter = require('./ingredientRouter');*/

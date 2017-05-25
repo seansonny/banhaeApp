@@ -1,11 +1,17 @@
 const express = require('express');
-const router = express.Router();
 
-const brandsModel = require('./brand.model.js');
+const brandModel = require('./brand.model.js');
+const mysql = require('../../database/mysqlConfig');
+
 
 exports.showBrands = function(req, res, next) {
+    /*res.send(brandModel);*/
 
-    res.send("mgs");
+    brandModel.findAll().then((brands) => {
+        res.json(brands);
+    }).catch(function (err) {
+        res.send(err);
+    });
 }
 
 exports.showBrand = function(req, res, next) {
