@@ -61,4 +61,4 @@ typings/
 
 ignore_folder/
 
-database/
+./database/mysqlConfig.json
