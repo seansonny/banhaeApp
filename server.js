@@ -1,11 +1,12 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('./database/mysqlConfig');
 
 //라우터 include
 /*var ingredientRouter = require('./ingredientRouter');*/
-var brandRouter = require('./route/brand/brand.router');
+const brandRouter = require('./route/brand/brand.router');
 
-var app = express();
+let app = express();
 app.use(bodyParser.urlencoded({ extended: false}))
 
 //라우터 동작
