@@ -4,7 +4,7 @@
 const express = require('express');
 const fs = require('fs');
 const Ingredient = require('../ingredientModel');
-//const bodyParser = require('body-parser'); 배열로 받을 거라 필요 없음
+const bodyParser = require('body-parser');
 
 var router = express.Router();
 
@@ -13,6 +13,7 @@ var router = express.Router();
 router.route('/ingredients/:ingredient_id')
     .get(showIngredientDetail)
     .delete(deleteIngredient)
+    .post(addIngredeint)
     .put(editIngredient);
 
 //router.get('ingredients', showIngredientLists);
@@ -36,7 +37,22 @@ function showIngredientDetail(req, res, next) {
 }
 
 function deleteIngredient(req, res) {
-    res.sendStatus(501); // Not implemented
+    const ingredientId = req.params.ingredient_id;
+    console.log('ingredient_id: ', ingredientId);
+
+    Ingredient.deleteIngredient(ingredientId, function(err, result){
+        if ( err ){
+            console.log(err);
+            return next(err);
+        }
+
+        res.send(result);
+    })
+}
+
+function addIngredeint(req, res) {
+    var ingredientsArray = req.body;
+
 }
 
 function editIngredient(req, res) {
