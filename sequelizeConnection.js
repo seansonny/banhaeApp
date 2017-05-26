@@ -5,7 +5,7 @@ let seq = new Sequelize(
     'qksgoqksgo123',
     {
         'host' : 'banhaerdb.cpu3j20dvqwu.ap-northeast-2.rds.amazonaws.com',
-        'dialect': 'mysql' 
+        'dialect': 'mysql'
     }
 );
 
