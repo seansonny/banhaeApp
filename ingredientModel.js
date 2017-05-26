@@ -33,7 +33,7 @@ Ingredient.deleteIngredient = function(ingredientId, sendCb){
         }
 
         var sql = 'DELETE FROM ingredient WHERE ingredient_id = ?';
-        conn.query(sql, ingredientId, function(err, result){
+        conn.query(sql, ingredientId, function(err, results){
             if ( err ) {
                 conn.rollback();
                 conn.release();
@@ -43,7 +43,47 @@ Ingredient.deleteIngredient = function(ingredientId, sendCb){
 
             conn.commit();
             conn.release();
-            return sendCb(null, { msg: 'Ingredient_id: '+ ingredientId+ ' is sucessfully deleted'});
+            return sendCb(null, { msg: 'Ingredient_id: '+ ingredientId + ' is sucessfully deleted'});
+        })
+    })
+}
+
+Ingredient.addIngredient = function(info, sendCb){
+    pool.getConnection(function(err, conn) {
+        if( err ) {
+            return sendCb(err);
+        }
+
+        var sql = 'INSERT INTO ingredient SET ?';
+        conn.query(sql, info, function(err, results) {
+            if (err) {
+                err.code = 500;
+                conn.release();
+                return sendCb(err);
+            }
+            const ingredient_id = info["ingredient_Id"];
+            //console.log(info);
+            conn.release();
+            return sendCb(null, { msg: "Ingredient_id: " + ingredient_id  +" is added successfully"});
+        })
+    })
+}
+
+Ingredient.editIngredient = function(info, sendCb){
+    pool.getConnection(function(err, conn){
+        if( err ){
+            return sendCb(err);
+        }
+        const ingredient_id = info.ingredient_Id;
+        var sql = 'UPDATE ingredient SET ?  WHERE ingredient_id = ?';
+        conn.query(sql, [info,ingredient_id], function(err, results) {
+            if(err) {
+                err.code = 500;
+                conn.release();
+                return sendCb(err);
+            }
+            conn.release();
+            return sendCb(null, { msg : "Ingredient_id: " + ingredient_id  +' is edited successfully'})
         })
     })
 }
