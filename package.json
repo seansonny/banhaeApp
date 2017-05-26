@@ -10,6 +10,7 @@
     "mongo-xlsx": "^1.0.12",
     "mysql": "^2.13.0",
     "node-excel-to-json": "0.0.3",
+    "querystring": "^0.2.0",
     "sequelize": "^3.30.4"
   },
   "devDependencies": {},
