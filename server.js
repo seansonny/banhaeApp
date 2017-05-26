@@ -8,13 +8,8 @@ const brandRouter = require('./route/brand/brand.controller.js');
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false}))
 
-
-//var morgan = require('morgan');
-//app.use(morgan('dev'));
-
-
 //라우터 동작
-// app.use(ingredientRouter);
+app.use(ingredientRouter);
 app.use('/brands', brandRouter);
 
 app.use(function(err, req, res, next) {
