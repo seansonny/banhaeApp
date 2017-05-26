@@ -1,16 +1,12 @@
+var express = require('express');
+var bodyParser = require('body-parser');
+var ingredientRouter = require('./router/ingredientRouter');
+var morgan = require('morgan');
+var app = express();
+app.use(bodyParser.urlencoded({ extended: true}))
+app.use(morgan('dev'));
 
-const express = require('express');
-const bodyParser = require('body-parser');
-
-var ingredientRouter = require('./ingredientRouter');
-const brandRouter = require('./route/brand/brand.controller.js');
-
-let app = express();
-app.use(bodyParser.urlencoded({ extended: false}))
-
-//라우터 동작
 app.use(ingredientRouter);
-app.use('/brands', brandRouter);
 
 app.use(function(err, req, res, next) {
     console.log(err);
@@ -22,6 +18,6 @@ app.use(function (err, req, res, next) {
     res.status(500).send({mag: err.message});
 });
 
-app.listen(3333, function(){
-    console.log('Server is listening 3333');
+app.listen(3330, function(){
+    console.log('Server is listening 3330');
 });
