@@ -39,7 +39,6 @@ UserModel.addUser = function(user_info){
         const gender = user_info.gender;
         const birth = user_info.birth;
         const token = user_info.token; //토큰 로직 필요
-
         try{
             Users.create({
                 user_id: user_info.user_id,

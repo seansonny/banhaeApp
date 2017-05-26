@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 
 var router = express.Router();
 
-
 router.route('/users')
     .post(addUser)
     .get(showUser)
@@ -18,11 +17,9 @@ router.route('/users/myReviews')
 //router.rout('/users/lists')
 //  .get(showUserLists);
 
-
 async function addUser(req, res) {
     try{
         const user_email = req.body.email;
-
         const nickname = req.body.nickname;
         const pw = req.body.pw; //비번 로직 필요
         const gender = req.body.gender;
@@ -43,6 +40,7 @@ async function addUser(req, res) {
         if(token){
             user_info.token = token;
         }
+        console.log(user_info);
         const result = await UserModel.addUser(user_info);
         res.send({msg:"Success"});
     }catch ( error ){
