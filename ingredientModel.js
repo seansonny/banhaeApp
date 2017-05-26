@@ -13,10 +13,11 @@ Ingredient.getIngredientDetail = function(ingredientId, sendCb) {
             'description, allergy, allergy_num, ' +
             'warning, is_warning FROM ingredient ' +
             'WHERE ingredient_id = '
-        + ingredientId;
+        + ingredientId; //sql injection 취약
 
         conn.query(sql, function(err, results){
             if ( err ) {
+                conn.release();
                 return sendCb(err);
             }
 
@@ -35,13 +36,13 @@ Ingredient.deleteIngredient = function(ingredientId, sendCb){
         var sql = 'DELETE FROM ingredient WHERE ingredient_id = ?';
         conn.query(sql, ingredientId, function(err, results){
             if ( err ) {
-                conn.rollback();
+                //conn.rollback();
                 conn.release();
                 err.code = 500;
                 return sendCb(err);
             }
 
-            conn.commit();
+            //conn.commit();
             conn.release();
             return sendCb(null, { msg: 'Ingredient_id: '+ ingredientId + ' is sucessfully deleted'});
         })
