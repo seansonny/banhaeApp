@@ -1,6 +1,3 @@
-/**
- * Created by sswpro on 2017-05-25.
- */
 const express = require('express');
 const fs = require('fs');
 const Ingredient = require('../ingredientModel');

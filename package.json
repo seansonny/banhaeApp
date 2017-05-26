@@ -10,7 +10,8 @@
     "mongo-xlsx": "^1.0.12",
     "morgan": "^1.8.2",
     "mysql": "^2.13.0",
-    "node-excel-to-json": "0.0.3"
+    "node-excel-to-json": "0.0.3",
+    "sequelize": "^3.30.4"
   },
   "devDependencies": {},
   "scripts": {
