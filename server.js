@@ -1,15 +1,16 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
-var ingredientRouter = require('./ingredientRouter');
+var morgan = require('morgan');
+var ingredientRouter = require('./router/ingredientRouter');
 const brandRouter = require('./route/brand/brand.controller.js');
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false}))
-
+app.use(morgan('dev'));
 //라우터 동작
 app.use(ingredientRouter);
+app.use(usersRouter);
 app.use('/brands', brandRouter);
 
 app.use(function(err, req, res, next) {
