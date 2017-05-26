@@ -61,3 +61,9 @@ typings/
 
 ignore_folder/
 
+database/
+.idea/banhaeApp.iml
+.idea/inspectionProfiles/
+.idea/jsLibraryMappings.xml
+.idea/modules.xml
+.idea/workspace.xml
