@@ -11,6 +11,8 @@ let brand = sequelize.define('brand', {
     , recipe: {type: Sequelize.STRING, allowNull: true}
     , foundation: {type: Sequelize.STRING, allowNull: true}
     , recall: {type: Sequelize.TEXT, allowNull: true}
+}, {
+        timestamps: false
 });
 
 module.exports = brand;
