@@ -9,13 +9,17 @@ Ingredient.getIngredientDetail = function(ingredientId, sendCb) {
             return sendCb(err);
         }
 
+        // var sql = 'SELECT l1, l2, role, role_num, ' +
+        //     'description, allergy, allergy_num, ' +
+        //     'warning, is_warning FROM ingredient ' +
+        //     'WHERE ingredient_id = '
+        // + ingredientId; //sql injection 취약
         var sql = 'SELECT l1, l2, role, role_num, ' +
             'description, allergy, allergy_num, ' +
             'warning, is_warning FROM ingredient ' +
-            'WHERE ingredient_id = '
-        + ingredientId; //sql injection 취약
+            'WHERE ingredient_id = ?'
 
-        conn.query(sql, function(err, results){
+        conn.query(sql, ingredientId, function(err, results){
             if ( err ) {
                 conn.release();
                 return sendCb(err);
