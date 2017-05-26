@@ -1,22 +1,29 @@
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
-//라우터 include
-/*var ingredientRouter = require('./ingredientRouter');*/
+var ingredientRouter = require('./ingredientRouter');
 const brandRouter = require('./route/brand/brand.controller.js');
 
 let app = express();
 app.use(bodyParser.urlencoded({ extended: false}))
 
+
+//var morgan = require('morgan');
+//app.use(morgan('dev'));
+
+
 //라우터 동작
 // app.use(ingredientRouter);
 app.use('/brands', brandRouter);
 
-app.use(function(req, res, next) {
+app.use(function(err, req, res, next) {
+    console.log(err);
     res.sendStatus(404);
 });
 
 app.use(function (err, req, res, next) {
+    console.log(err);
     res.status(500).send({mag: err.message});
 });
 
