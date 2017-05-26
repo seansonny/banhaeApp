@@ -1,75 +1,83 @@
 const express = require('express');
-const brandModel = require('./brand.model.js');
+const BrandModel = require('./brand.model');
+const router = express.Router();
 
-//검색할 때 사용할 예정(추후에 like 처리)
-exports.showBrands = function(req, res, next) {
-    let brand_name = req.query;
+router.get('/', getBrandByName);
+router.get('/:brand_id', getBrandByID);  //브랜드 상세보기
+router.post('/', addBrand); //브랜드 추가하기
+router.put('/:brand_id', updateBrand); //브랜드 수정하기
+router.delete('/:brand_id', deleteBrand); //브랜드 삭제하기
 
-    brandModel.findOne({
-        where: {name:brand_name.keyword}
-    }).then((brands) => {
-        res.json(brands);
-    }).catch(function (err) {
+async function getBrandByName(req, res) {
+    try {
+        // 요청값 체크
+        let brand_name = req.query;
+        if(!brand_name) {
+            res.send({"msg":"No Brand Name!!"})
+        }
+        //Model접근
+        const brand = await BrandModel.getBrandByName(brand_name);
+        //기타 처리 후 클라이언트 응답
+        let result = { data:brand, msg:"getBrandByName 성공" };
+        res.send(result);
+    } catch (err) {
         res.send(err);
-    });
+    }
 }
 
-//브랜드 상세 정보보기
-exports.showBrand = function(req, res, next) {
-    let brand_id = req.params.brand_id;
-
-    brandModel.findOne({
-        where: {brand_id:brand_id}
-    }).then((results) => {
-        res.json(results);
-    }).catch(function (err) {
+async function getBrandByID(req, res) {
+    try {
+        let brand_id = req.params.brand_id;
+        if(!brand_id) {
+            res.send({"msg":"No Brand ID!!"})
+        }
+        const brand = await BrandModel.getBrandByID(brand_id);
+        let result = { data:brand, msg:"getBrandByID 성공" };
+        res.send(result);
+    } catch (err) {
         res.send(err);
-    });
+    }
 }
 
-//브랜드 정보추가
-exports.addBrand = function(req, res, next) {
-    brandModel.create({
-        brand_id:95,
-        name:"오리젠",
-        company:"Champion Petfoods는 2017년 기준으로 26년이 된 기업이며 오리젠과, 아카나 두개의 브랜드를 소유하고 있습니다.",
-        facility:"자체 생산 시설(champion petfoods)을 가지고 있습니다.(9503 90 Ave, Morinville, AB T8R 1K7 캐나다, Champion Petfoods NorthStar® Kitchens)",
-        research:"자체 연구시설을 보유하고 있습니다.(BAFRINO Research and Innovation Centre)",
-        is_recall:1,
-        recipe:"회사 자체 레서피를 보유하고 있습니다.",
-        foundation:"2006년",
-        recall:"2008년 11월 필수 감사 조사에 문제가 발생해서 호주의 오리젠 고양이 사료만 리콜 진행"
-    }).then((results) => {
-        res.json(results);
-    }).catch(function (err) {
+async function addBrand(req, res) {
+    try {
+        //입력 처리
+        const brand = await BrandModel.addBrand();
+        let result = { data:brand, msg:"addBrand 성공" };
+        res.send(result);
+    } catch (err) {
         res.send(err);
-    });
+    }
 }
 
-//브랜드 정보수정
-exports.updateBrand = function(req, res, next) {
-    let brand_id = req.params.brand_id;
+async function updateBrand(req, res) {
+    try {
+        let brand_id = req.params.brand_id;
+        if(!brand_id) {
+            res.send({"msg":"No Brand ID!!"})
+        }
 
-    brandModel.update({
-        recall:"NO"
-    }, {
-        where: {brand_id:brand_id}
-}).then((results) => {
-        res.json(results);
-    }).catch(function (err) {
+        const brand = await BrandModel.updateBrand(brand_id);
+        let result = { data:brand, msg:"updateBrand 성공" };
+        res.send(result);
+    } catch (err) {
         res.send(err);
-    });
+    }
 }
 
-//브랜드 정보삭제
-exports.deleteBrand = function(req, res, next) {
-    let brand_id = req.params.brand_id;
+async function deleteBrand(req, res) {
+    try {
+        let brand_id = req.params.brand_id;
+        if(!brand_id) {
+            res.send({"msg":"No Brand ID!!"})
+        }
 
-    brandModel.destroy({
-        where: {brand_id:brand_id}
-    }).then((results) => {
-        res.json(results);
-    }).catch(function (err) {
+        const brand = await BrandModel.deleteBrand(brand_id);
+        let result = { data:brand, msg:"deleteBrand 성공" };
+        res.send(result);
+    } catch (err) {
         res.send(err);
-    });
+    }
 }
+
+module.exports = router;
