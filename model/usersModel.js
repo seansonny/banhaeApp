@@ -1,4 +1,4 @@
-var sequel = require('./sequelizeConnection');
+var sequel = require('../connection/sequelizeConnection');
 var Sequelize = require('sequelize');
 
 
@@ -18,7 +18,7 @@ let Users = sequel.define('users', {
         allowNull: true
     },
     pw : {
-        type: Sequelize.STRING(32)
+        type: Sequelize.STRING(128)
     },
     gender : {
         type: Sequelize.INTEGER,
@@ -31,6 +31,9 @@ let Users = sequel.define('users', {
     token : {
         type: Sequelize.STRING(45),
         allowNull: true,
+    },
+    salt : {
+        type: Sequelize.INTEGER,
     }},
     {
         timestamps: false
@@ -44,6 +47,7 @@ UserModel.addUser = function(user_info){
         const gender = user_info.gender;
         const birth = user_info.birth;
         const token = user_info.token; //토큰 로직 필요
+        const salt = user_info.salt;
         try{
             Users.create({
                 email: user_info.email,
@@ -51,13 +55,14 @@ UserModel.addUser = function(user_info){
                 pw: user_info.pw,
                 gender: gender,
                 birthday: birth,
-                token: token
+                token: token,
+                salt: salt
             });
 
-            resolve("Success");
+            resolve("User is Successfully inserted");
         }catch( error ){
             console.log(error);
-            reject("Rejected");
+            reject("User Insertion is Rejected");
         }
 
     });
