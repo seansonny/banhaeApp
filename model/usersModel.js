@@ -69,4 +69,17 @@ Model.showUser = function(user_token){
     });
 }
 
+Model.deleteUser = function(user_token){
+
+    return new Promise((resolve, reject) =>{
+        try{
+            Users.destroy({where: {token:user_token}});
+            resolve({msg:"success"});
+        }catch(error){
+            console.log(error);
+            reject("destroy rejected");
+        }
+    });
+}
+
 module.exports = Model;
