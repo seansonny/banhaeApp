@@ -6,38 +6,15 @@ class Model {
 }
 // 모델 만들기 (자바스크립트 객체와 DB 테이블을 매핑)
 let Users = seq.define('users', {
-    user_id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-    },
-    email : {
-        type: Sequelize.STRING(32)
-    },
-    nickname : {
-        type: Sequelize.STRING(16),
-        allowNull: true
-    },
-    pw : {
-        type: Sequelize.STRING(128)
-    },
-    gender : {
-        type: Sequelize.INTEGER,
-    },
-
-    birthday : {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-    },
-    token : {
-        type: Sequelize.STRING(45),
-        allowNull: true,
-    },
-    salt : {
-        type: Sequelize.INTEGER,
-    }},
-    {
-        timestamps: false
-    }
+    user_id: {type: Sequelize.INTEGER, primaryKey: true,},
+    email : {type: Sequelize.STRING(32)},
+    nickname : {type: Sequelize.STRING(16), allowNull: true},
+    pw : {type: Sequelize.STRING(128)},
+    gender : {type: Sequelize.INTEGER,},
+    birthday : {type: Sequelize.INTEGER, allowNull: true,},
+    token : {type: Sequelize.STRING(45), allowNull: true,},
+    salt : {type: Sequelize.INTEGER,}},
+    {timestamps: false}
 );
 
 //// 모든 오퍼레이션은 bluebird를 기반으로 한 Promise를 리턴한다.
@@ -67,6 +44,29 @@ Model.addUser = function(user_info){
 
     });
 
+}
+
+Model.showUser = function(user_token){
+
+    return new Promise((resolve, reject) => {
+        try{
+            Users.findOne({where: {token: user_token}}).then(user => {
+                const user1 = user.dataValues;
+                const userData = {
+                    email: user1.email,
+                    nickname: user1.nickname,
+                    gender: user1.gender,
+                    birth:user1.birthday
+                };
+                //console.log(userData);
+                resolve({msg:"success", data:userData});
+            });
+
+        }catch ( error ){
+            console.log(error);
+            reject("findOne rejected");
+        }
+    });
 }
 
 module.exports = Model;

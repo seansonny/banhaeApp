@@ -22,14 +22,20 @@ async function addUser(req, res) {
         let result = await UserModel.addUser(user_info);
         res.send({msg: result});
     }catch ( error ){
-        console.log('Can not find, 404');
         console.log(error);
         res.status(error.code).send({msg:error.msg});
     }
 }
 
-function showUser(req, res) {
-
+async function showUser(req, res) {
+    try{
+        let user_token = await UserValidation.userToken(req);
+        let result = await UserModel.showUser(user_token);
+        res.send(result);
+    }catch ( error ){
+        console.log(error);
+        res.status(error.code).send({msg:error.msg});
+    }
 }
 
 function deleteUser(req, res){

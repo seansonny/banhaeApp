@@ -15,7 +15,7 @@ Validation.userInfo = function(req){
 
             var gender = req.body.gender;
             var birth = req.body.birth;
-            const token = "token010203040"; //토큰 로직 필요
+            const token = "token9876"; //토큰 로직 필요
 
             if (!user_email||!pw||!gender||!birth){
                 reject("필수 정보 누락 (이메일, 비번, 생년월일, 성별)");
@@ -40,6 +40,19 @@ Validation.userInfo = function(req){
         }catch ( error ){
             reject("validation failure");
         }
+    });
+}
+
+Validation.userToken = function(req){
+
+    return new Promise((resolve, reject)=> {
+        //로그인이 구현 되면 로그인 세션/토큰 에서 가져올 정보
+        const tempToken = "token9876";
+       try{
+            resolve(tempToken);
+       } catch( error ){
+           reject("No valid token");
+       }
     });
 }
 
