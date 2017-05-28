@@ -1,6 +1,6 @@
 var seq = require('../connection/sequelizeConnection');
 var Sequelize = require('sequelize');
-
+const UserValidation = require('../validation/usersValidation');
 
 class Model {
 }
@@ -36,7 +36,7 @@ Model.addUser = function(user_info){
                 salt: salt
             });
 
-            resolve("User is Successfully inserted");
+            resolve(true);
         }catch( error ){
             console.log(error);
             reject("User Insertion is Rejected");
@@ -44,6 +44,30 @@ Model.addUser = function(user_info){
 
     });
 
+}
+
+Model.isUniqueEmail = function(email){
+    return new Promise((resolve, reject)=>{
+        try{
+            Users.count({where: {email: email}}).then(count=>{
+                resolve(count);
+            })
+        }catch ( error ){
+            reject(error);
+        }
+    })
+}
+
+Model.isUniqueNickname = function(nickName){
+    return new Promise((resolve, reject)=>{
+        try{
+            Users.count({where: {nickname: nickName}}).then(count=>{
+                resolve(count);
+            })
+        }catch ( error ){
+            reject(error);
+        }
+    })
 }
 
 Model.showUser = function(user_token){
@@ -78,6 +102,19 @@ Model.deleteUser = function(user_token){
         }catch(error){
             console.log(error);
             reject("destroy rejected");
+        }
+    });
+}
+
+Model.editUser = function (pw_info, req) {
+
+    return new Promise((resolve, reject) =>{
+        try{
+            Users.update({nickname: req.body.nickname, pw: pw_info.hash, salt: pw_info.salt},
+            {where: {token: UserValidation.userToken}});
+            resolve({msg:"success"});
+        }catch ( error ){
+            reject("editUser rejected");
         }
     });
 }
