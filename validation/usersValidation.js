@@ -3,47 +3,47 @@ const crypto = require('crypto');
 class Validation{
 }
 
-Validation.userInfo = function(req){
+Validation.userInputValidation = function(req) {
 
-    return new Promise((resolve, reject)=> {
+    return new Promise((resolve, reject) =>{
+        const user_email = req.body.email;
+        const pw = req.body.pw;
+        const gender = req.body.gender;
+        const birth = req.body.birth;
 
-        try{
-            const user_email = req.body.email;
-            const nickname = req.body.nickname;
-            const randomInt = Math.round(Math.random()*100000000);
-            var pw = req.body.pw;
-
-            var gender = req.body.gender;
-            var birth = req.body.birth;
-            const token = "token9876"; //토큰 로직 필요
-
-            if (!user_email||!pw||!gender||!birth){
-                reject("필수 정보 누락 (이메일, 비번, 생년월일, 성별)");
-            }
-            pw += randomInt;
-            const hash = crypto.createHash('sha256').update(pw).digest('base64');
-
-            var user_info = {
-                email : user_email,
-                pw : hash,
-                birth : birth,
-                gender : gender,
-                salt : randomInt
-            };
-            if(nickname){
-                user_info.nickname = nickname;
-            }
-            if(token){
-                user_info.token = token;
-            }
-            resolve(user_info);
-        }catch ( error ){
-            reject("validation failure");
+        if (!user_email||!pw||!gender||!birth){
+            reject("필수 정보 누락 (이메일, 비번, 생년월일, 성별)");
         }
+        const user_info = {
+            email : user_email,
+            birth : birth,
+            gender : gender,
+            pw : pw
+        };
+        resolve(user_info);
+    })
+}
+
+Validation.generatePassword = function(user_pw){
+
+    return new Promise((resolve, reject) =>{
+        try{
+            const randomInt = Math.round(Math.random()*100000000);
+            user_pw += randomInt;
+            const hash = crypto.createHash('sha256').update(user_pw).digest('base64');
+            const pw_info = {
+                hash : hash,
+                salt: randomInt
+            };
+            resolve(pw_info);
+        }catch( error ){
+            reject("generate Password Error");
+        }
+
     });
 }
 
-Validation.userToken = function(req){
+Validation.userToken = function(){
 
     return new Promise((resolve, reject)=> {
         //로그인이 구현 되면 로그인 세션/토큰 에서 가져올 정보
@@ -55,5 +55,34 @@ Validation.userToken = function(req){
        }
     });
 }
+
+
+Validation.isNull = function(check){
+
+    return new Promise((resolve, reject) => {
+        if(check == null || check =="" || check == undefined)
+            resolve(true);
+        reject(false);
+    })
+}
+
+Validation.sendInfo = function(user_info, pw_info, token){
+    return new Promise((resolve, reject) => {
+        try{
+            const sendInfo = {
+                email : user_info.email,
+                pw : pw_info.hash,
+                birth : user_info.birth,
+                gender : user_info.gender,
+                salt : pw_info.salt,
+                token : token
+            }
+            resolve(sendInfo);
+        }catch( error ) {
+            reject("sendInfo Error");
+        }
+    })
+}
+
 
 module.exports = Validation;

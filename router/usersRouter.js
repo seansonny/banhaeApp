@@ -10,6 +10,9 @@ router.route('/users')
     .delete(deleteUser)
     .put(editUser);
 
+router.route('/users/:nickname')
+    .get(checkNickname);
+
 router.route('/users/myReviews')
     .get(showReviews);
 
@@ -18,8 +21,11 @@ router.route('/users/myReviews')
 
 async function addUser(req, res) {
     try{
-        let user_info = await UserValidation.userInfo(req);
-        let result = await UserModel.addUser(user_info);
+        let user_info = await UserValidation.userInputValidation(req);
+        let pw_info = await UserValidation.generatePassword(user_info.pw);
+        let user_token = await UserValidation.userToken();
+        let send_info = await UserValidation.sendInfo(user_info, pw_info, user_token);
+        let result = await UserModel.addUser(send_info);
         res.send({msg: result});
     }catch ( error ){
         res.status(error.code).send({msg:error.msg});
@@ -46,6 +52,10 @@ async function deleteUser(req, res){
     }
 }
 
+function checkNickname(req, res){
+
+}
+
 function editUser(req, res){
 
 }
@@ -53,5 +63,7 @@ function editUser(req, res){
 function showReviews(req, res){
 
 }
+
+
 
 module.exports = router;
