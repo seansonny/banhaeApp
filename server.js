@@ -1,9 +1,9 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var ingredientRouter = require('./router/ingredientRouter');
-var usersRouter = require('./router/usersRouter');
-var morgan = require('morgan');
-var app = express();
+const express = require('express');
+const bodyParser = require('body-parser');
+const ingredientRouter = require('./router/ingredientRouter');
+const usersRouter = require('./router/usersRouter');
+const morgan = require('morgan');
+const app = express();
 
 app.use(bodyParser.urlencoded({ extended: true}))
 app.use(morgan('dev'));
