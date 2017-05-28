@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 
 //라우터 include
 var ingredientRouter = require('./router/ingredientRouter');
-var brandRouter = require('./route/brand/brand.router');
+var brandRouter = require('./router/brand/brand.controller');
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true}))
