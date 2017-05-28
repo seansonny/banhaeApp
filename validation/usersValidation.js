@@ -1,9 +1,9 @@
 const crypto = require('crypto');
 
-class UserValidation{
+class Validation{
 }
 
-UserValidation.userInfo = function(req){
+Validation.userInfo = function(req){
 
     return new Promise((resolve, reject)=> {
         try{
@@ -36,4 +36,4 @@ UserValidation.userInfo = function(req){
     });
 }
 
-module.exports = UserValidation;
+module.exports = Validation;

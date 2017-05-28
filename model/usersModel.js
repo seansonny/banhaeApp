@@ -2,7 +2,7 @@ var sequel = require('../connection/sequelizeConnection');
 var Sequelize = require('sequelize');
 
 
-class UserModel {
+class Model {
 }
 // 모델 만들기 (자바스크립트 객체와 DB 테이블을 매핑)
 let Users = sequel.define('users', {
@@ -41,7 +41,7 @@ let Users = sequel.define('users', {
 );
 
 //// 모든 오퍼레이션은 bluebird를 기반으로 한 Promise를 리턴한다.
-UserModel.addUser = function(user_info){
+Model.addUser = function(user_info){
 
     return new Promise((resolve, reject) =>{
         const gender = user_info.gender;
@@ -69,4 +69,4 @@ UserModel.addUser = function(user_info){
 
 }
 
-module.exports = UserModel;
+module.exports = Model;
