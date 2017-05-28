@@ -1,11 +1,11 @@
-var sequel = require('../connection/sequelizeConnection');
+var seq = require('../connection/sequelizeConnection');
 var Sequelize = require('sequelize');
 
 
 class Model {
 }
 // 모델 만들기 (자바스크립트 객체와 DB 테이블을 매핑)
-let Users = sequel.define('users', {
+let Users = seq.define('users', {
     user_id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
