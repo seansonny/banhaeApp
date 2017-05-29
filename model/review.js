@@ -1,10 +1,23 @@
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+mongoose.Promise = require('bluebird');
 
-var reviewSchema = new Schema({
+var url = '13.124.126.43:27017/banhae';
+mongoose.connect(url);
+
+var db = mongoose.connection;
+
+db.on('error', function(err) {
+    console.log('Error : ', err);
+});
+db.on('open', function() {
+    console.log('Open Event');
+});
+
+
+var reviewSchema = new mongoose.Schema({
     good : String,
     bad : String,
-    time_stampe : {type: date, default: Date.now},
+    time_stamp : {type: Date, default: Date.now},
     resized_img : String,
     thumbnail_img : String,
     feed_id : Number,
@@ -13,17 +26,18 @@ var reviewSchema = new Schema({
     rating : Number
 });
 
-module.exports = mongoose.model('review', reviewSchema);
+module.exports = mongoose.model('REVIEW', reviewSchema);
+
+// var dbConnection = mongoose.connection;
+// dbConnection.on('error', console.error);
+// dbConnection.once('open', function(){
+//     console.log("Connected to mongod server");
+// });
 //
-// _id	Object	리뷰id
-// good	VARCHAR	좋은점
-// bad	VARCHAR	나쁜점
-// resized_img	VARCHAR	축소된 사진
-// thumbnail_img	VARCHAR	썸네일 이미지
-// feed_id	INT	사료정보
-// user_id	INT	사용자 정보
-// dogs	Array	보유견 중 하나
+// // var options = {
+// //     user: 'mongoAdmin',
+// //     pass: 'myPassword'
+// // }; //connection 두번째 parameter로 설정
+// //http://mongoosejs.com/docs/connections.html
 //
-//
-// rating	double	평점
-// time_stamp	date	작성시간
+// mongoose.connect('13.124.126.43:27017');
