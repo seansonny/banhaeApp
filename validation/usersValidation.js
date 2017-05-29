@@ -10,6 +10,7 @@ Validation.userInputValidation = function(req) {
         const pw = req.body.pw;
         const gender = req.body.gender;
         const birth = req.body.birth;
+        const nickname = req.body.nickname;
 
         if (!user_email||!pw||!gender||!birth){
             reject("필수 정보 누락 (이메일, 비번, 생년월일, 성별)");
@@ -20,9 +21,13 @@ Validation.userInputValidation = function(req) {
             gender : gender,
             pw : pw
         };
+
+        if(nickname){
+            user_info.nickname = nickname;
+        }
         resolve(user_info);
     })
-}
+};
 
 Validation.generatePassword = function(user_pw){
 
@@ -41,7 +46,7 @@ Validation.generatePassword = function(user_pw){
         }
 
     });
-}
+};
 
 Validation.userToken = function(){
 
@@ -53,36 +58,47 @@ Validation.userToken = function(){
        } catch( error ){
            reject("No valid token");
        }
-    });
-}
+    })
+};
 
 
-Validation.isNull = function(check){
+Validation.isValue = function(check){
 
     return new Promise((resolve, reject) => {
-        if(check == null || check =="" || check == undefined)
-            resolve(true);
-        reject(false);
+        let msg;
+        try {
+            if (check == null || check == "" || check == undefined) {
+                msg = false;
+            }
+            else{
+                msg = true;
+            }
+
+            resolve(msg);
+        }catch (error){
+            reject("isValue error");
+        }
     })
-}
+};
 
 Validation.sendInfo = function(user_info, pw_info, token){
     return new Promise((resolve, reject) => {
         try{
             const sendInfo = {
                 email : user_info.email,
+                nickname : user_info.nickname,
                 pw : pw_info.hash,
                 birth : user_info.birth,
                 gender : user_info.gender,
                 salt : pw_info.salt,
                 token : token
-            }
+            };
             resolve(sendInfo);
         }catch( error ) {
             reject("sendInfo Error");
         }
     })
-}
+};
 
 
 module.exports = Validation;

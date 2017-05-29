@@ -44,7 +44,7 @@ Model.addUser = function(user_info){
 
     });
 
-}
+};
 
 Model.isUniqueEmail = function(email){
     return new Promise((resolve, reject)=>{
@@ -56,7 +56,7 @@ Model.isUniqueEmail = function(email){
             reject(error);
         }
     })
-}
+};
 
 Model.isUniqueNickname = function(nickName){
     return new Promise((resolve, reject)=>{
@@ -68,7 +68,7 @@ Model.isUniqueNickname = function(nickName){
             reject(error);
         }
     })
-}
+};
 
 Model.showUser = function(user_token){
 
@@ -91,7 +91,7 @@ Model.showUser = function(user_token){
             reject("findOne rejected");
         }
     });
-}
+};
 
 Model.deleteUser = function(user_token){
 
@@ -106,17 +106,24 @@ Model.deleteUser = function(user_token){
     });
 }
 
-Model.editUser = function (pw_info, req) {
+Model.editUser = function (pw_info, req, token) {
 
     return new Promise((resolve, reject) =>{
+        let nickname = req.body.nickname;
+        let pw = pw_info.hash;
+        let salt = pw_info.salt;
+
+        // let token2 = UserValidation.userToken;
+        // console.log("t " + token2);
         try{
-            Users.update({nickname: req.body.nickname, pw: pw_info.hash, salt: pw_info.salt},
-            {where: {token: UserValidation.userToken}});
+            Users.update({nickname: nickname, pw: pw, salt: salt},
+            {where: {token: token}});
+               // {token: token});
             resolve({msg:"success"});
         }catch ( error ){
             reject("editUser rejected");
         }
     });
-}
+};
 
 module.exports = Model;

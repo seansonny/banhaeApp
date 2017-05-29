@@ -94,12 +94,14 @@ async function checkNickname(req, res){
 
 async function editUser(req, res){
     try{
-        let isPasswordNull = await UserValidation.isNull(req.body.pw);
+        let isPassword = await UserValidation.isValue(req.body.pw);
+
         let pw_info;
-        if(!isPasswordNull){
+        if(isPassword){
             pw_info = await UserValidation.generatePassword(req.body.pw);
         }
-        let editUser = await UserModel.editUser(pw_info, req);
+        let token = await UserValidation.userToken();
+        let editUser = await UserModel.editUser(pw_info, req, token);
         res.send(editUser);
     }catch ( error ){
         res.status(error.code).send({msg:error.msg});
