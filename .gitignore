@@ -63,8 +63,8 @@ ignore_folder/
 
 <<<<<<< HEAD
 database/mysqlConfig.json
+database/mongoDbConfig.json
 =======
-database/
 .idea/banhaeApp.iml
 .idea/inspectionProfiles/
 .idea/jsLibraryMappings.xml

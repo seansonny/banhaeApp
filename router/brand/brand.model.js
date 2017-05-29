@@ -1,4 +1,3 @@
-const express = require('express');
 const Sequelize = require('sequelize');
 const sequelize = require('../../database/mysqlConfig');
 
@@ -43,7 +42,7 @@ BrandModel.getBrandByID = function(brand_id) {
 }
 
 //브랜드 정보추가
-BrandModel.addBrand = function(req, res, next) {
+BrandModel.addBrand = function() {
     return new Promise((resolve,reject)=> {
         BrandModel.create({
             brand_id: 95,
