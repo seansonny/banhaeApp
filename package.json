@@ -4,6 +4,7 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "crypto": "0.0.3",
     "excel-as-json": "^2.0.1",
     "express": "^4.15.2",
     "json-parser": "^1.1.5",
@@ -18,7 +19,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
