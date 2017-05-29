@@ -1,6 +1,6 @@
 var seq = require('../connection/sequelizeConnection');
 var Sequelize = require('sequelize');
-const UserValidation = require('../validation/usersValidation');
+//const UserValidation = require('../validation/usersValidation');
 
 class Model {
 }
@@ -104,7 +104,7 @@ Model.deleteUser = function(user_token){
             reject("destroy rejected");
         }
     });
-}
+};
 
 Model.editUser = function (pw_info, req, token) {
 
