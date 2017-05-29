@@ -14,10 +14,11 @@ router.route('/users/check/:nickname')
     .get(checkNickname);
 
 router.route('/users/myReviews')
-    .get(showReviews);
+    .get(showMyReviews);
 
 router.route('/users/:email')
     .get(checkUniqueEmail);
+
 
 //router.rout('/users/lists')
 //  .get(showUserLists);
@@ -108,9 +109,8 @@ async function editUser(req, res){
     }
 }
 
-function showReviews(req, res){
+function showMyReviews(req, res){
 
 }
-
 
 module.exports = router;
