@@ -13,7 +13,6 @@ db.on('open', function() {
     console.log('Open Event');
 });
 
-
 var reviewSchema = new mongoose.Schema({
     good : String,
     bad : String,
