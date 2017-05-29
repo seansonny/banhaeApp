@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const config = require('./mongoDbConfig.json');
 mongoose.Promise = require('bluebird');
 
 class Connection{
@@ -7,7 +8,7 @@ class Connection{
 Connection.connect = function () {
     return new Promise((resolve, reject) =>{
         try{
-            let url = '13.124.126.43:27017/banhae';
+            let url = config.db_url;
             mongoose.connect(url);
             let db = mongoose.connection;
             db.on('open' ? resolve() : reject());
