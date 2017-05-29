@@ -1,5 +1,6 @@
 const express = require('express');
 const reviewModel = require('../model/reviewModel');
+const conn = require('../connection/mongooseConnection');
 
 var router = express.Router();
 
@@ -19,8 +20,9 @@ router.route('/reviews/:review_id')
 async function writeReview(req, res) {
     try{
         let reviewData = await reviewModel.sendReview(req);
-        console.log(reviewData);
+        conn.connect();
         let writeReview = await reviewModel.writeReview(reviewData);
+        conn.disconnect();
         res.send(writeReview);
     } catch( error ){
         res.status(error.code).send({msg:error.msg});
@@ -34,6 +36,7 @@ function likeReview() {
 function showReviews() {
 
 }
+
 function deleteReview() {
 
 }
