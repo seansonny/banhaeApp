@@ -61,9 +61,13 @@ typings/
 
 ignore_folder/
 
-database/
+<<<<<<< HEAD
+database/mysqlConfig.json
+database/mongoDbConfig.json
+=======
 .idea/banhaeApp.iml
 .idea/inspectionProfiles/
 .idea/jsLibraryMappings.xml
 .idea/modules.xml
 .idea/workspace.xml
+>>>>>>> database

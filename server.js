@@ -1,17 +1,21 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
-var morgan = require('morgan');
-var ingredientRouter = require('./router/ingredientRouter');
-const brandRouter = require('./route/brand/brand.controller.js');
+const ingredientRouter = require('./router/ingredientRouter');
+const usersRouter = require('./router/usersRouter');
+const reviewRouter = require('./router/reviewRouter');
+const morgan = require('morgan');
+const app = express();
 
-let app = express();
-app.use(bodyParser.urlencoded({ extended: false}))
+let brandRouter = require('./router/brand/brand.controller');
+let feedRouter = require('./router/feed/feed.controller');
+
+app.use(bodyParser.urlencoded({ extended: true}))
 app.use(morgan('dev'));
-//라우터 동작
 app.use(ingredientRouter);
 app.use(usersRouter);
+app.use(reviewRouter);
 app.use('/brands', brandRouter);
+app.use('/feeds', feedRouter);
 
 app.use(function(err, req, res, next) {
     console.log(err);
