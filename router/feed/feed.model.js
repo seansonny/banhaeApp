@@ -48,7 +48,20 @@ FeedModel.getFeedByName = function(feed_name) {
 FeedModel.getFeedByID = function(feed_id) {
     return new Promise((resolve,reject)=> {
         FeedModel.findOne({_id:feed_id}, (err, feed)=>{
-            console.log("good");
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve(feed);
+            }
+        })
+    });
+}
+
+//사료 이름 목록 가져오기
+FeedModel.getFeedList = function() {
+    return new Promise((resolve,reject)=> {
+        FeedModel.find({},{NAME:1}, (err, feed)=>{
             if(err) {
                 reject(err);
             }

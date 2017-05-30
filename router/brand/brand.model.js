@@ -41,6 +41,17 @@ BrandModel.getBrandByID = function(brand_id) {
     });
 }
 
+//브랜드 목록 가져오기
+BrandModel.getBrandList = function() {
+    return new Promise((resolve,reject)=> {
+        BrandModel.findAndCount({attributes:['name']}).then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
 //브랜드 정보추가
 BrandModel.addBrand = function() {
     return new Promise((resolve,reject)=> {
