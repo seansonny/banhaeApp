@@ -1,6 +1,7 @@
 const ReviewSchema = require('./reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+const UserSchema = require('./mongoUserSchema');
 
 class Model{
 }
@@ -37,6 +38,24 @@ Model.writeReview = function(review){
             console.log(error);
             reject(error);
         }
+    })
+};
+
+Model.addMyReview = function(review){
+    return new Promise((resolve, reject)=>{
+        //로그인 정보를 통해 user collection을 조회 하고
+        //그 중에서 my_reviews document(배열)에 review _id를 추가
+        UserSchema.findOneAndUpdate({email: "asdf@gmail.com"},
+            {$push: {"my_reviews" : review._id}},
+            {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+            .exec(function(err, docs){
+                if(err){
+                    console.log(err);
+                    reject(err);
+                }else{
+                    resolve(docs);
+                }
+            })
     })
 };
 

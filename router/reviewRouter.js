@@ -22,6 +22,8 @@ async function writeReview(req, res) {
         let reviewData = await reviewModel.sendReview(req);
         conn.connect();
         let writeReview = await reviewModel.writeReview(reviewData);
+        let addMyReview = await reviewModel.addMyReview(reviewData);
+        console.log(addMyReview);
         conn.disconnect(); // 코드 합친 후 빼줄 것
         res.send(writeReview);
         // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
