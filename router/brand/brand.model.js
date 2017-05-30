@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('../../database/mysqlConfig');
 
 let BrandModel = sequelize.define('brand', {
-    brand_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true}
+    brand_id: {type: Sequelize.INTEGER, primaryKey: true}
     , name: {type: Sequelize.STRING}
     , company: {type: Sequelize.TEXT, allowNull: true}
     , facility: {type: Sequelize.TEXT, allowNull: true}
