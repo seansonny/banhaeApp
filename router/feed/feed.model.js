@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const mongoDB = require('../../database/mongoDbConfig');
 
-mongoDB.connect();
+//mongoDB.connect();
 
 const Schema = mongoose.Schema;
 
