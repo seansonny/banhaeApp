@@ -1,4 +1,4 @@
-const ReviewSchema = require('../model/review');
+const ReviewSchema = require('./reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
@@ -9,7 +9,7 @@ Model.sendReview = function(req){
     return new Promise((resolve, reject)=>{
 
         try{
-            var review = new ReviewSchema();
+            let review = new ReviewSchema();
             review.good = req.body.good;
             review.bad = req.body.bad;
             //이미지 로직 추가
@@ -21,6 +21,7 @@ Model.sendReview = function(req){
             review.rating = req.body.rating;
             resolve(review);
         }catch( error ){
+            console.log(error);
             reject(error);
         }
     })
@@ -33,8 +34,26 @@ Model.writeReview = function(review){
             let result  = review.save();
             resolve(result);
         }catch( error ){
+            console.log(error);
             reject(error);
         }
+    })
+};
+
+Model.showLatestReviews = function(){
+    return new Promise((resolve, reject)=>{
+        const reviewCounts = 3;
+        ReviewSchema.find()
+            .sort({'time_stamp': -1})
+            .limit(reviewCounts).exec(function(err, docs){
+            if(err) {
+                console.log(err);
+                reject(err);
+                return;
+            }
+            console.log(docs);
+            resolve(docs);
+        })
     })
 };
 

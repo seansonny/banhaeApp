@@ -11,9 +11,22 @@ Connection.connect = function () {
             let url = config.db_url;
             mongoose.connect(url);
             let db = mongoose.connection;
-            db.on('open' ? resolve() : reject());
 
-        } catch( error ){}
+            db.on('open', ()=>{
+                console.log("connection open");
+                resolve();
+                return;
+            });
+            db.on('error', ()=>{
+                console.log("connection error");
+                reject();
+                return;
+            });
+
+        } catch( error ){
+            console.log(error);
+            reject();
+        }
     })
 };
 
