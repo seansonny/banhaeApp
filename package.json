@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
+    "aws-sdk": "^2.59.0",
     "body-parser": "^1.17.2",
     "crypto": "0.0.3",
     "excel-as-json": "^2.0.1",
