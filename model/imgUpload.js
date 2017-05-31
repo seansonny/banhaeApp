@@ -1,10 +1,5 @@
-var fs = require('fs');
-
 var express = require('express');
 var fs = require('fs');
-
-var async = require('async');
-var randomstring = require('randomstring');
 
 var AWS = require('aws-sdk');
 var config = require('../connection/s3Config.json');
