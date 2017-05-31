@@ -54,7 +54,6 @@ ImgUpload.s3Upload = function(title, file){
                     resolve();
                 }
             });
-
     })
 };
 
