@@ -32,7 +32,7 @@ ImgUpload.s3Upload = function(title, file){
             let readStream = fs.createReadStream(file.path);
             // 버킷 내 객체 키 생성
             let itemKey = 'dd/' + file.originalname;
-            let bucketName = 'banhaebucket';
+            let bucketName = config.bucketName;
             let params = {
                 Bucket: bucketName,     // 필수
                 Key: itemKey,            // 필수
