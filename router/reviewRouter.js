@@ -23,16 +23,16 @@ router.route('/reviews/:review_id')
     .delete(deleteReview);
 
 router.post('/reviews/uploads', upload.any(), imgUpload);
-//router.post('/reviews/upload', upup.any(), imgUpload);
-
 
 async function imgUpload(req, res){
     try{
         let localUpload = await imgUp.localUpload(req, res);
         let file = localUpload.files[0];
         let s3Upload = await imgUp.s3Upload(file.filename, file);
-        res.send(s3Upload);
+        let del = await imgUp.deleteLocalFile(file);
+        res.send(del);
     } catch(error){
+        console.log(error);
         res.status(789).send({msg:"imgUpload Error"});
     }
 }
