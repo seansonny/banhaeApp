@@ -2,9 +2,38 @@ const ReviewSchema = require('./reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 const UserSchema = require('./mongoUserSchema');
+const multer = require('multer');
 
 class Model{
 }
+
+Model.imgUpload = function(req){
+
+    return new Promise((resolve, reject)=>{
+
+        //var deferred = Q.defer();
+        var storage = multer.diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, '/tmp')
+            },
+            filename: function (req, file, cb) {
+                cb(null, file.fieldname + '-' + Date.now())
+            }
+        });
+
+        var upload = multer({ storage: storage }).single('file');
+        upload(req, res, function(error){
+            if(error){
+                console.log(error);
+                reject();
+                //deferred.reject();
+            }else{
+                resolve(req.file.uploadFile);
+                //deferred.resolve(req.file.uploadFile);
+            }
+        });
+    })
+};
 
 Model.sendReview = function(req){
     return new Promise((resolve, reject)=>{
@@ -45,7 +74,8 @@ Model.addMyReview = function(review){
     return new Promise((resolve, reject)=>{
         //로그인 정보를 통해 user collection을 조회 하고
         //그 중에서 my_reviews document(배열)에 review _id를 추가
-        UserSchema.findOneAndUpdate({email: "asdf@gmail.com"},
+        const user_info = "asdf@gmail.com";
+        UserSchema.findOneAndUpdate({email: user_info},
             {$push: {"my_reviews" : review._id}},
             {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
             .exec(function(err, docs){

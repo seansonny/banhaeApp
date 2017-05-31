@@ -9,7 +9,7 @@ const app = express();
 let brandRouter = require('./router/brand/brand.controller');
 let feedRouter = require('./router/feed/feed.controller');
 
-app.use(bodyParser.urlencoded({ extended: true}))
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(morgan('dev'));
 app.use(ingredientRouter);
 app.use(usersRouter);

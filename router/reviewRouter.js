@@ -1,6 +1,12 @@
 const express = require('express');
 const reviewModel = require('../model/reviewModel');
+const imgUp = require('../model/imgUpload');
 const conn = require('../connection/mongooseConnection');
+
+const multer = require('multer');
+const upload = multer({
+    dest : 'tmp'
+});
 
 var router = express.Router();
 
@@ -16,6 +22,20 @@ router.route('/reviews')
 router.route('/reviews/:review_id')
     .delete(deleteReview);
 
+router.post('/reviews/uploads', upload.any(), imgUpload);
+//router.post('/reviews/upload', upup.any(), imgUpload);
+
+
+async function imgUpload(req, res){
+    try{
+        let localUpload = await imgUp.localUpload(req, res);
+        let file = localUpload.files[0];
+        let s3Upload = await imgUp.s3Upload(file.filename, file);
+        res.send(s3Upload);
+    } catch(error){
+        res.status(789).send({msg:"imgUpload Error"});
+    }
+}
 
 async function writeReview(req, res) {
     try{
@@ -33,7 +53,8 @@ async function writeReview(req, res) {
 }
 
 function likeReview(req, res) {
-    //그냥 숫자만 올라감
+    // 내 이메일 정보(로그인 정보) => 내 몽고 my_tastes에 현재 review _id <==post 정보
+    // review_id my_tastes array 에 추가
 }
 
 async function showReviews(req, res) {
@@ -50,7 +71,7 @@ async function showReviews(req, res) {
 }
 
 function deleteReview() {
-    //내 리뷰인지 session/token 확인후
+    //내 이메일 정보(로그인 정보) => 내 몽고 my_tastes 에 현재 review _id <==post 정보
     //review_id params로 삭제
 }
 
