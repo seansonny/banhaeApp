@@ -42,6 +42,49 @@ PetModel.getPetList = function() {
     });
 }
 
+//펫 사진 추가
+PetModel.uploadPetImg = function(pet_id, img_url) {
+    return new Promise((resolve,reject)=> {
+        PetModel.update({
+            image:img_url
+        }, {
+            where: {pet_id: pet_id}
+        }).then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
+//펫 사진 url 가져오기
+PetModel.getPetImg = function(pet_id) {
+    return new Promise((resolve,reject)=> {
+        PetModel.findOne({
+            where: {pet_id:pet_id}
+        }).then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
+//펫 사진 삭제
+PetModel.deletePetImg = function(pet_id) {
+    return new Promise((resolve,reject)=> {
+        PetModel.update({
+            image: null
+        }, {
+            where: {pet_id: pet_id}
+        }).then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
 //펫 정보 추가
 PetModel.addPet = function() {
     return new Promise((resolve,reject)=> {
@@ -56,7 +99,7 @@ PetModel.addPet = function() {
             , special: "없음"
             , main_pet: 1
             , user_id: "ddkkd1"
-            , image: "http://www.naver.com"
+            , image: null
         }).then((results) => {
             resolve(results);
         }).catch((err) => {

@@ -10,7 +10,7 @@ let brandRouter = require('./router/brand/brand.controller');
 let feedRouter = require('./router/feed/feed.controller');
 let petRouter = require('./router/pet/pet.controller');
 
-app.use(bodyParser.urlencoded({ extended: true}))
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(morgan('dev'));
 app.use(ingredientRouter);
 /*app.use(usersRouter);
