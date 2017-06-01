@@ -12,7 +12,7 @@ let PetModel = sequelize.define('pet', {
     , remark: {type: Sequelize.STRING}
     , special: {type: Sequelize.TEXT}
     , main_pet: {type: Sequelize.INTEGER}
-    , user_id: {type: Sequelize.STRING}
+    , user_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}  // 외래키 이렇게 맞나??
     , image: {type: Sequelize.TEXT}
 }, {
     timestamps: false
@@ -99,7 +99,7 @@ PetModel.addPet = function() {
             , special: "없음"
             , main_pet: 1
             , user_id: "ddkkd1"
-            , image: null
+            , image: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/petImg/KakaoTalk_20170531_135857256.png-1496279892073"
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
