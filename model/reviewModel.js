@@ -14,9 +14,10 @@ Model.sendReview = function(req){
             let review = new ReviewSchema();
             review.good = req.body.good;
             review.bad = req.body.bad;
-            //이미지 로직 추가
-            review.resized_img = req.body.img;
-            review.thumbnail_img = req.body.img;
+
+            //review.resized_img = req.body.img;
+            //review.thumbnail_img = req.body.img;
+
             review.feed_id = req.body.feed_id;
             //유저 정보로 user_id 가져오는 로직 추가
             review.user_id = req.body.user_id;
@@ -28,6 +29,16 @@ Model.sendReview = function(req){
         }
     })
 };
+
+Model.reviewImgMongo = function(s3UpKey){
+    return new Promise((resolve, reject) =>{
+        try{
+            //유저 정보로 user_id 가져오는 로직 추가
+        }catch(error){
+
+        }
+    })
+}
 
 Model.writeReview = function(review){
     return new Promise((resolve, reject)=>{

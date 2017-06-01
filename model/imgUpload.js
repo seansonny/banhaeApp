@@ -11,7 +11,7 @@ AWS.config.secretAccessKey = config.secretAccessKey;
 class ImgUpload{
 }
 
-ImgUpload.localUpload = function(req, res){
+ImgUpload.serverUpload = function(req, res){
     return new Promise((resolve, reject) =>{
         try{
             const files = req.files;
@@ -19,7 +19,8 @@ ImgUpload.localUpload = function(req, res){
             const fields = req.body;
             resolve({msg:'ok', files:files, fields:fields});
         }catch(error){
-            reject(erro);
+            console.log(error);
+            reject(error);
         }
     })
 };
@@ -31,7 +32,9 @@ ImgUpload.s3Upload = function(title, file){
             let contentType = file.mimetype;
             let readStream = fs.createReadStream(file.path);
             // 버킷 내 객체 키 생성
-            let itemKey = 'dd/' + file.originalname;
+            let date = new Date().toString().split('GMT')[0];
+            let folderName = 'dd'
+            let itemKey = folderName + '/' + file.originalname +' -t* '+ date;
             let bucketName = config.bucketName;
             let params = {
                 Bucket: bucketName,     // 필수
@@ -50,8 +53,8 @@ ImgUpload.s3Upload = function(title, file){
                     // 접근 경로 - 2가지 방법
                     var imageUrl = s3.endpoint.href + bucketName + '/' + itemKey;
                     // var imageSignedUrl = s3.getSignedUrl('getObject', { Bucket: bucketName, Key: itemKey });
-                    // callback(null, title, imageUrl);
-                    resolve();
+
+                    resolve(itemKey);
                 }
             });
     })

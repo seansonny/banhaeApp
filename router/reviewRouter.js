@@ -26,14 +26,20 @@ router.post('/reviews/uploads', upload.any(), imgUpload);
 
 async function imgUpload(req, res){
     try{
-        let localUpload = await imgUp.localUpload(req, res);
-        let file = localUpload.files[0];
-        let s3Upload = await imgUp.s3Upload(file.filename, file);
+
+        let serverUpload = await imgUp.serverUpload(req, res);
+        let file = serverUpload.files[0];
+        let s3UpKey = await imgUp.s3Upload(file.filename, file);
         let del = await imgUp.deleteLocalFile(file);
-        res.send(del);
+        let folderDirectory = s3UpKey.split('/')[0];
+        if(folderDirectory === 'dd'){
+            console.log("dbdb");
+            //let reviewMongo = await reviewModel.reviewImgMongo(s3UpKey);
+        }
+        res.send(s3UpKey);
     } catch(error){
         console.log(error);
-        res.status(789).send({msg:"imgUpload Error"});
+        res.status(error.code).send({msg:"imgUpload Error"});
     }
 }
 
