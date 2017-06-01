@@ -7,7 +7,7 @@ const multer = require('multer');
 class Model{
 }
 
-Model.sendReview = function(req){
+Model.sendReview = function(req, imgUrl){
     return new Promise((resolve, reject)=>{
 
         try{
@@ -15,8 +15,10 @@ Model.sendReview = function(req){
             review.good = req.body.good;
             review.bad = req.body.bad;
 
-            //review.resized_img = req.body.img;
-            //review.thumbnail_img = req.body.img;
+            if(imgUrl){
+                review.resized_img = imgUrl;
+            }
+
 
             review.feed_id = req.body.feed_id;
             //유저 정보로 user_id 가져오는 로직 추가

@@ -10,9 +10,6 @@ const upload = multer({
 
 var router = express.Router();
 
-router.route('/reviews')
-    .post(writeReview);
-
 router.route('/reviews/likes')//이거 수정 필요 post 방식으로 처리
     .post(likeReview);
 
@@ -22,35 +19,24 @@ router.route('/reviews')
 router.route('/reviews/:review_id')
     .delete(deleteReview);
 
-router.post('/reviews/uploads', upload.any(), imgUpload);
+router.post('/reviews', upload.any(), writeReview);
 
-async function imgUpload(req, res){
+async function writeReview(req, res) {
     try{
         let serverUpload = await imgUp.serverUpload(req, res);
         let file = serverUpload.files[0];
         let directory = 'reviews';
-        let s3Path = await imgUp.s3Upload(file.filename, file, directory);
+        let s3Path = await imgUp.s3Upload(file.filename, file, directory); //s3Path.url ,s3Path.folder
         let del = await imgUp.deleteLocalFile(file);
-        let folderDirectory = s3Path.folder;
-        if(folderDirectory === 'reviews'){
-            console.log("reviews");
-            //let reviewMongo = await reviewModel.reviewImgMongo(s3Path); //로그인 정보로 가장 최신
-        }
-        res.send(s3Path);
-    } catch(error){
-        console.log(error);
-        res.status(error.code).send({msg:"imgUpload Error"});
-    }
-}
-
-async function writeReview(req, res) {
-    try{
-        let reviewData = await reviewModel.sendReview(req);
+        // 이미지 resized 로직 추가
+        console.log(s3Path.url);
+        let reviewData = await reviewModel.sendReview(req, s3Path.url);
         conn.connect(); // 코드 합친 후 빼줄 것
         let writeReview = await reviewModel.writeReview(reviewData);
         let addMyReview = await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
         console.log(addMyReview);
         conn.disconnect(); // 코드 합친 후 빼줄 것
+
         res.send(writeReview);
     } catch( error ){
         res.status(error.code).send({msg:error.msg});
