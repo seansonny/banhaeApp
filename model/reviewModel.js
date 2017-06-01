@@ -30,7 +30,7 @@ Model.sendReview = function(req){
     })
 };
 
-Model.reviewImgMongo = function(s3UpKey){
+Model.reviewImgMongo = function(s3Path){
     return new Promise((resolve, reject) =>{
         try{
             //유저 정보로 user_id 가져오는 로직 추가

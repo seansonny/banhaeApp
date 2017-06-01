@@ -25,7 +25,7 @@ ImgUpload.serverUpload = function(req, res){
     })
 };
 
-ImgUpload.s3Upload = function(title, file){
+ImgUpload.s3Upload = function(title, file, directory){
     return new Promise((resolve, reject) =>{
             //console.log(file);
             let s3 = new AWS.S3();
@@ -33,12 +33,12 @@ ImgUpload.s3Upload = function(title, file){
             let readStream = fs.createReadStream(file.path);
             // 버킷 내 객체 키 생성
             let date = new Date().toString().split('GMT')[0];
-            let folderName = 'dd'
+            let folderName = directory;
             let itemKey = folderName + '/' + file.originalname +' -t* '+ date;
             let bucketName = config.bucketName;
             let params = {
                 Bucket: bucketName,     // 필수
-                Key: itemKey,            // 필수
+                Key: itemKey,            // 필수 reviews/%EB%8F%99%EA%B8%B0%EC%8B%9D.png+-t*+Thu+Jun+01+2017+12%3A46%3A47+
                 ACL: 'public-read',
                 Body: readStream,
                 ContentType: contentType
@@ -51,10 +51,10 @@ ImgUpload.s3Upload = function(title, file){
                 }
                 else {
                     // 접근 경로 - 2가지 방법
-                    var imageUrl = s3.endpoint.href + bucketName + '/' + itemKey;
+                    var imageUrl = s3.endpoint.href + bucketName + '/' + itemKey; //itemKey ==> https://s3.ap-northeast-2.amazonaws.com/banhaebucket/reviews/%EB%8F%99%EA%B8%B0%EC%8B%9D.png+-t*+Thu+Jun+01+2017+12%3A46%3A47+
                     // var imageSignedUrl = s3.getSignedUrl('getObject', { Bucket: bucketName, Key: itemKey });
 
-                    resolve(itemKey);
+                    resolve({url: imageUrl, folder: folderName});
                 }
             });
     })

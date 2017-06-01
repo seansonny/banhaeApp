@@ -26,17 +26,17 @@ router.post('/reviews/uploads', upload.any(), imgUpload);
 
 async function imgUpload(req, res){
     try{
-
         let serverUpload = await imgUp.serverUpload(req, res);
         let file = serverUpload.files[0];
-        let s3UpKey = await imgUp.s3Upload(file.filename, file);
+        let directory = 'reviews';
+        let s3Path = await imgUp.s3Upload(file.filename, file, directory);
         let del = await imgUp.deleteLocalFile(file);
-        let folderDirectory = s3UpKey.split('/')[0];
-        if(folderDirectory === 'dd'){
-            console.log("dbdb");
-            //let reviewMongo = await reviewModel.reviewImgMongo(s3UpKey);
+        let folderDirectory = s3Path.folder;
+        if(folderDirectory === 'reviews'){
+            console.log("reviews");
+            //let reviewMongo = await reviewModel.reviewImgMongo(s3Path); //로그인 정보로 가장 최신
         }
-        res.send(s3UpKey);
+        res.send(s3Path);
     } catch(error){
         console.log(error);
         res.status(error.code).send({msg:"imgUpload Error"});
@@ -46,13 +46,12 @@ async function imgUpload(req, res){
 async function writeReview(req, res) {
     try{
         let reviewData = await reviewModel.sendReview(req);
-        conn.connect();
+        conn.connect(); // 코드 합친 후 빼줄 것
         let writeReview = await reviewModel.writeReview(reviewData);
-        let addMyReview = await reviewModel.addMyReview(reviewData);
+        let addMyReview = await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
         console.log(addMyReview);
         conn.disconnect(); // 코드 합친 후 빼줄 것
         res.send(writeReview);
-        // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
     } catch( error ){
         res.status(error.code).send({msg:error.msg});
     }
