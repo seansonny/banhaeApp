@@ -74,7 +74,7 @@ PetModel.getPetImg = function(pet_id) {
 PetModel.deletePetImg = function(pet_id) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            image: null
+            image: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/petImg/KakaoTalk_20170531_135857256.png-1496279892073"
         }, {
             where: {pet_id: pet_id}
         }).then((results) => {

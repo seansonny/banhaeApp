@@ -18,8 +18,8 @@ let BrandModel = sequelize.define('brand', {
 //검색할 때 사용할 예정(추후에 like 처리)
 BrandModel.getBrandByName = function(brand_name) {
     return new Promise((resolve,reject)=> {
-        BrandModel.findOne({
-            where: {name: brand_name.keyword}
+        BrandModel.findAll({
+            where: {name: {like: "%"+brand_name.keyword+"%"}}
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
