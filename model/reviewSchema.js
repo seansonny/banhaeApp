@@ -10,7 +10,8 @@ var reviewSchema = new mongoose.Schema({
     feed_id : Number,
     user_id : Number,
     dogs : Array,
-    rating : Number
+    rating : Number,
+    likes_num : Number
 });
 
 module.exports = mongoose.model('REVIEW', reviewSchema);

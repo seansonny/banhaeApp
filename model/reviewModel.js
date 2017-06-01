@@ -1,6 +1,7 @@
 const ReviewSchema = require('./reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
+ObjectId = mongoose.Types.ObjectId;
 const UserSchema = require('./mongoUserSchema');
 const multer = require('multer');
 
@@ -19,11 +20,11 @@ Model.sendReview = function(req, imgUrl){
                 review.resized_img = imgUrl;
             }
 
-
             review.feed_id = req.body.feed_id;
             //유저 정보로 user_id 가져오는 로직 추가
             review.user_id = req.body.user_id;
             review.rating = req.body.rating;
+            review.likes_num = 0;
             resolve(review);
         }catch( error ){
             console.log(error);
@@ -32,15 +33,42 @@ Model.sendReview = function(req, imgUrl){
     })
 };
 
-Model.reviewImgMongo = function(s3Path){
-    return new Promise((resolve, reject) =>{
-        try{
-            //유저 정보로 user_id 가져오는 로직 추가
-        }catch(error){
+Model.addMyTastes = function(req){
 
-        }
+    return new Promise((resolve, reject) =>{
+        const user_info = "asdf@gmail.com";
+        const reviewId = req.body.review_objId;
+
+        UserSchema.findOneAndUpdate({email: user_info},
+            {$push: {"my_tastes" :  reviewId}},
+            {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+            .exec(function(err, docs){
+                if(err){
+                    console.log(err);
+                    reject(err);
+                }else{
+                    resolve(reviewId);
+                }
+            })
     })
-}
+};
+
+Model.incrementLikes = function(review){
+    return new Promise((resolve, reject) =>{
+
+        ReviewSchema.findOneAndUpdate({_id: review},
+            {$inc: {"likes_num" : 1}})
+            .exec(function(err, docs){
+                if(err){
+                    console.log(err);
+                    reject(err);
+                }else{
+                    resolve({msg:"sucess", data:docs});
+                }
+            })
+    })
+};
+
 
 Model.writeReview = function(review){
     return new Promise((resolve, reject)=>{

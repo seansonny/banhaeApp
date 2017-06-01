@@ -43,9 +43,22 @@ async function writeReview(req, res) {
     }
 }
 
-function likeReview(req, res) {
-    // 내 이메일 정보(로그인 정보) => 내 몽고 my_tastes에 현재 review _id <==post 정보
+async function likeReview(req, res) {
+    //req.body.review_objId
+    // 현재 내가 좋아한 리뷰? 리뷰에서 카운트 감소 증가
+    // 내 이메일 정보(로그인 정보) => 몽고유저에서 my_tastes 에서 삭제,
+    //                           => 아무것도 하지 않은 리뷰이면 추가 + 리뷰에서 likes count 증가
+    // 내 몽고 my_tastes에 현재 review _id <==post 정보
     // review_id my_tastes array 에 추가
+    try{
+        conn.connect(); // 코드 합친 후 빼줄 것
+        let review = await reviewModel.addMyTastes(req);
+        let like = await reviewModel.incrementLikes(review);
+        conn.disconnect(); // 코드 합친 후 빼줄 것
+        res.send(like);
+    }catch(error){
+        res.status(error.code).send({msg:error.msg});
+    }
 }
 
 async function showReviews(req, res) {
@@ -54,6 +67,7 @@ async function showReviews(req, res) {
         conn.connect();
         let showLatestReviews = await reviewModel.showLatestReviews();
         conn.disconnect(); // 코드 합친 후 빼줄 것
+        //review_objId도 보내줘야함
         res.send(showLatestReviews);
     } catch( error ){
         console.log(error);
