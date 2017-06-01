@@ -29,6 +29,7 @@ const bucketName = 'banhaebucket';
 //routing
 router.get('/list', getPetList);  //펫 목록 가져오기
 router.get('/:pet_id', getPetByID);  //펫 상세보기
+router.post('/', addPet);  //펫 상세보기
 router.put('/:pet_id', updatePet); //펫 정보 수정하기
 router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
 
@@ -152,7 +153,7 @@ async function getPetByID(req, res) {
         res.send(err);
     }
 }
-
+//펫정보추가
 async function addPet(req, res) {
     try {
         //입력 처리
