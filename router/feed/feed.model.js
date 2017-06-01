@@ -33,7 +33,7 @@ let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
 //검색할 때 사용할 예정(추후에 like 처리)
 FeedModel.getFeedByName = function(feed_name) {
     return new Promise((resolve,reject)=> {
-        FeedModel.findOne({NAME: feed_name.keyword}, (err, feed)=>{
+        FeedModel.find({NAME: {$regex:feed_name.keyword}}, (err, feed)=>{
             if(err) {
                 reject(err);
             }

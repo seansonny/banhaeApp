@@ -1,6 +1,9 @@
 const express = require('express');
 const PetModel = require('./pet.model');
 const fs = require('fs');
+/*const gm = require('gm');*/
+const Thumbnail = require('thumbnail');
+const thumbnail = new Thumbnail('../../uploads', '../../thumbnails');
 const router = express.Router();
 
 //multer
@@ -35,22 +38,23 @@ router.delete('/upload/:pet_id', deletePetImg); //펫 이미지 삭제
 //펫 이미지 업로드
 async function uploadPetImg(req, res) {
     try {
+        // 이부분 추후 수정
         let pet_id = req.params.pet_id;
-        let file = req.file;
+        let file = req.file;  //
         let pet_info = await PetModel.getPetImg(pet_id);//이전 사진 url 가져오기
 
-        if(pet_info.image != null) {
+        if(pet_info.image != "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/petImg/KakaoTalk_20170531_135857256.png-1496279892073") {
             await deleteS3(pet_id);
         }
 
         let img_url = await uploadS3(file);     //s3에 업로드
-        await deleteTemp(file.path);     //임시 파일 삭제
-        const pet = await PetModel.uploadPetImg(pet_id, img_url);   //db에 s3 url 저장하기
-
+        let pet = await PetModel.uploadPetImg(pet_id, img_url);   //db에 s3 url 저장하기
         let result = { data:pet, msg:"addPetImg 성공" };
         res.send(result);
     } catch (err) {
         res.send(err);
+    } finally{
+        await deleteTemp(req.file.path);     //임시 파일 삭제
     }
 }
 
@@ -71,6 +75,7 @@ async function deletePetImg(req, res) {
 }
 
 async function deleteS3(pet_id) {
+    //이 부분 추후 수정
     let pet_info = await PetModel.getPetImg(pet_id);//이전 사진 url 가져오기
     let string = pet_info.image;
     let spilt_str = string.split('/');
@@ -79,11 +84,11 @@ async function deleteS3(pet_id) {
         Bucket: bucketName, // 'mybucket'
         Key: itemKey // 'images/myimage.jpg'
     };
+    await PetModel.deletePetImg(pet_id);   //db에 null
 
     await s3.deleteObject(params, function (error, data) {
         if (error) {console.log(error); } else {console.log(data);}
     });
-    await PetModel.deletePetImg(pet_id);   //db에 null
 }
 
 function deleteTemp(path) {
