@@ -30,9 +30,9 @@ Validation.userInputValidation = function(req) {
 };
 
 Validation.generatePassword = function(user_pw){
-
     return new Promise((resolve, reject) =>{
         try{
+
             const randomInt = Math.round(Math.random()*100000000);
             user_pw += randomInt;
             const hash = crypto.createHash('sha256').update(user_pw).digest('base64');

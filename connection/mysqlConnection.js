@@ -1,10 +1,11 @@
 var mysql = require('mysql');
+var config = require('./mysqlConfig.json');
 var dbConfig = {
-    host : 'banhaerdb.cpu3j20dvqwu.ap-northeast-2.rds.amazonaws.com',
-    user : 'rdbadmin',
-    password : 'qksgoqksgo123', //비번 없나?? 확인
-    port : 3306,
-    database : 'BAANHAE'
+    host : config.host,
+    user : config.username,
+    password : config.password,
+    port : config.port,
+    database : config.database
 };
 
 var dbPool = mysql.createPool(dbConfig);

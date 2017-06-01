@@ -1,11 +1,13 @@
 const Sequelize = require('sequelize');
+var config = require('./mysqlConfig.json');
+
 let seq = new Sequelize(
-    'BAANHAE',
-    'rdbadmin',
-    'qksgoqksgo123',
+    config.database,
+    config.username,
+    config.password,
     {
-        'host' : 'banhaerdb.cpu3j20dvqwu.ap-northeast-2.rds.amazonaws.com',
-        'dialect': 'mysql'
+        'host' : config.host,
+        'dialect': config.dialect
     }
 );
 

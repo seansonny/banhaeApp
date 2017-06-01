@@ -1,6 +1,6 @@
 var seq = require('../connection/sequelizeConnection');
 var Sequelize = require('sequelize');
-//const UserValidation = require('../validation/usersValidation');
+var UserSchema = require('./mongoUserSchema');
 
 class Model {
 }
@@ -44,6 +44,21 @@ Model.addUser = function(user_info){
 
     });
 
+};
+
+Model.addMongoUser = function(user_info){
+    return new Promise((resolve, reject) =>{
+        try{
+            let mongoUser = new UserSchema();
+            mongoUser.email = user_info.email;
+
+            let result = mongoUser.save();
+            resolve(result);
+        }catch( error ){
+            console.log(error);
+            reject();
+        }
+    })
 };
 
 Model.isUniqueEmail = function(email){
