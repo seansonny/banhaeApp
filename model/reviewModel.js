@@ -119,4 +119,39 @@ Model.showLatestReviews = function(){
     })
 };
 
+Model.deleteReview = function(req){
+
+    return new Promise((resolve, reject) =>{
+        const user_info = "asdf@gmail.com";
+        const reviewId = req.body.review_objId;
+        //없을 때 테스트
+        ReviewSchema.deleteOne({_id: reviewId})
+            .exec(function(err, docs){
+                if(err){
+                    console.log(err);
+                    reject(err);
+                }else{
+                    resolve(reviewId);
+                }
+            })
+    })
+};
+
+Model.deleteMyReview = function(review_id){
+    return new Promise((resolve, reject) =>{
+        const user_info = "asdf@gmail.com";
+        //없을 때 테스트
+        UserSchema.findOneAndUpdate({email: user_info},
+            {$pull: {"my_reviews" : review_id}},
+            {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+            .exec(function(err, docs){
+                if(err){
+                    console.log(err);
+                    reject(err);
+                }else{
+                    resolve("success");
+                }
+            })
+    })
+}
 module.exports = Model;
