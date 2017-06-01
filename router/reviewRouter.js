@@ -81,13 +81,11 @@ async function deleteReview(req, res) {
         let review_id = await reviewModel.deleteReview(req);
         let deleteResult = await reviewModel.deleteMyReview(review_id);
         conn.disconnect(); // 코드 합친 후 빼줄 것
-        //review_objId도 보내줘야함
         res.send(deleteResult);
     } catch( error ){
         console.log(error);
         res.status(error.code).send({msg:error.msg});
     }
-
 }
 
 module.exports = router;
