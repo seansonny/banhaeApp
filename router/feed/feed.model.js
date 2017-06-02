@@ -33,7 +33,7 @@ let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
 //검색할 때 사용할 예정(추후에 like 처리)
 FeedModel.getFeedByName = function(feed_name) {
     return new Promise((resolve,reject)=> {
-        FeedModel.findOne({NAME: feed_name.keyword}, (err, feed)=>{
+        FeedModel.find({NAME: {$regex:feed_name.keyword}}, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -48,7 +48,20 @@ FeedModel.getFeedByName = function(feed_name) {
 FeedModel.getFeedByID = function(feed_id) {
     return new Promise((resolve,reject)=> {
         FeedModel.findOne({_id:feed_id}, (err, feed)=>{
-            console.log("good");
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve(feed);
+            }
+        })
+    });
+}
+
+//사료 이름 목록 가져오기
+FeedModel.getFeedList = function() {
+    return new Promise((resolve,reject)=> {
+        FeedModel.find({},{NAME:1}, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -125,7 +138,5 @@ FeedModel.deleteFeed = function(feed_id) {
         })
     });
 }
-
-
 
 module.exports = FeedModel;

@@ -3,11 +3,21 @@ const BrandModel = require('./brand.model');
 const router = express.Router();
 
 router.get('/search', getBrandByName);  //브랜드 검색용
+router.get('/list', getBrandList);  //브랜드 목록 가져오기
 router.get('/:brand_id', getBrandByID);  //브랜드 상세보기
 router.post('/', addBrand); //브랜드 추가하기
 router.put('/:brand_id', updateBrand); //브랜드 수정하기
 router.delete('/:brand_id', deleteBrand); //브랜드 삭제하기
-/*router.get('/', getBrandList);  //브랜드 목록 가져오기*/
+
+async function getBrandList(req, res) {
+    try {
+        const brand = await BrandModel.getBrandList();
+        let result = { data:brand, msg:"getBrandList 성공" };
+        res.send(result);
+    } catch (err) {
+        res.send(err);
+    }
+}
 
 async function getBrandByName(req, res) {
     try {

@@ -3,11 +3,22 @@ const FeedModel = require('./feed.model');
 const router = express.Router();
 
 router.get('/search', getFeedByName); // 사료 검색용
+router.get('/list', getFeedList);  //사료 목록 가져오기
 router.get('/:feed_id', getFeedByID);  //사료 상세보기
 router.post('/', addFeed); //사료 추가하기
 router.put('/:feed_id', updateFeed); //사료 수정하기
 router.delete('/:feed_id', deleteFeed); //사료 삭제하기
-/*router.get('/', getFeedList);  //사료 목록 가져오기*/
+
+//사료 이름 목록 가져오기
+async function getFeedList(req, res) {
+    try {
+        const feed = await FeedModel.getFeedList();
+        let result = {count:feed.length, data:feed, msg:"getFeedList 성공" };
+        res.send(result);
+    } catch (err) {
+        res.send(err);
+    }
+}
 
 async function getFeedByName(req, res) {
     try {
