@@ -74,7 +74,7 @@ PetModel.getPetImg = function(pet_id) {
 PetModel.deletePetImg = function(pet_id) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            image: "defalutPetImage.png"
+            image: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
         }, {
             where: {pet_id: pet_id}
         }).then((results) => {
@@ -99,7 +99,7 @@ PetModel.addPet = function() {
             , special: "없음"
             , main_pet: 1
             , user_id: "ddkkd1"
-            , image: "defalutPetImage.png"
+            , image: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
