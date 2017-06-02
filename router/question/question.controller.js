@@ -29,8 +29,8 @@ async function addQuestion(req, res) {
 
 async function deleteQuestion(req, res) {
     try {
-        let question_id = req.params.brand_id;
-        if(!question_id) {
+        let question_id = req.params.question_id;
+        if(question_id == undefined) {
             res.send({"msg":"No Question ID!!"})
         }
 

@@ -30,12 +30,12 @@ router.get('/:pet_id', getPetByID);  //펫 상세보기
 router.post('/', addPet);  //펫 상세보기
 router.put('/:pet_id', updatePet); //펫 정보 수정하기
 router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
-
 router.post('/upload/:pet_id', upload.single('myPet'), uploadPetImg); //펫 이미지 업로드
 router.post('/upload', function (req,res) {
     res.send("No pet_id");
 });
 router.delete('/upload/:pet_id', deletePetImg); //펫 이미지 삭제
+
 
 //펫 이미지 업로드
 async function uploadPetImg(req, res) {
@@ -50,25 +50,17 @@ async function uploadPetImg(req, res) {
         else {
             let pet_info = await PetModel.getPetImg(pet_id);       //이전 사진 파일이름 가져오기
 
-            if(pet_info.image != "defalutPetImage.png") {
+            if(pet_info.image != "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png") {
                 await deleteS3(pet_id);
             }
 
             let contentType = file.mimetype;
-            let resizedPath = ['mypage_img/', 'search_img/', 'msg_img/', 'profile_img/'];
-            let size = [330,168,144,120];
+            let itemKey = 'pets/' + file.filename;
+            let resized_img = await imgUp.resizingImg(file, 200, 200);
+            let readStream = fs.createReadStream(resized_img);
 
-            for(let i=0;i<4;i++) {
-                let itemKey = resizedPath[i] + file.filename;
-
-                //이미지 리사이징 -> 파일 4가지로 추출 후 파일 path 삽입(어디에다가 올릴까? 임시파일 삭제 이슈도 존재
-                let resized = await imgUp.resizingImg(file, size[i], size[i]);
-                let readStream = fs.createReadStream(resized);  //파일 경로만 설정해주면 내가 수정한 파일이 올라가는구나!!
-
-                await uploadS3(contentType, readStream, itemKey);     //s3에 업로드
-            }
-
-            await PetModel.uploadPetImg(pet_id, file.filename);   //db에 파일이름 저장하기
+            let img_url = await uploadS3(contentType, readStream, itemKey);     //s3에 업로드
+            await PetModel.uploadPetImg(pet_id, img_url);   //db에 파일이름 저장하기
             let result = {msg:"addPetImg 성공" };
             res.send(result);
         }
@@ -98,7 +90,8 @@ function uploadS3(contentType, readStream, itemKey) {
                 reject(err);
             }
             else {
-                resolve();
+                let img_url = "https://s3.ap-northeast-2.amazonaws.com/" + itemKey;
+                resolve(img_url);
             }
         });
     });
@@ -112,16 +105,13 @@ async function deletePetImg(req, res) {
             res.send({"msg":"No Pet ID!!"})
         }
 
-        let pet_info = await PetModel.getPetImg(pet_id);    //이전 사진 파일이름 가져오기
-        let pet_fileName = pet_info.image;
-        let resizedPath = ['mypage_img/', 'msg_img/', 'search_img/', 'profile_img/'];
+        let pet_info = await PetModel.getPetImg(pet_id);    //이전 사진 파일_url 가져오기
+        let beforeStr = pet_info.image;
+        let afterStr = beforeStr.split('/');
+        let itemKey = afterStr[3] + '/' +  afterStr[4];
 
-        for(let i=0;i<4;i++) {
-            let itemKey = resizedPath[i] + pet_fileName;
-            await deleteS3(itemKey);
-        }
-
-        await PetModel.deletePetImg(pet_id);   //db에 디폴트 사진 넣어두기
+        await deleteS3(itemKey);
+        await PetModel.deletePetImg(pet_id);   //db에 디폴트값 넣어두기
         let result = {msg:"deletePetImg 성공" };
         res.send(result);
     } catch (err) {
@@ -135,7 +125,7 @@ async function deleteS3(itemKey) {
         Key: itemKey
     };
     await s3.deleteObject(params, function (error, data) {
-        if (error) {console.log(error); } else {console.log(data);}
+        if (error) {console.log(error); }
     });
 }
 /* ---------------------------------------여기 아래로 완료---------------------------------------------------------------*/
