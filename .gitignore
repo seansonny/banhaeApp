@@ -60,7 +60,7 @@ typings/
 .env
 
 ignore_folder/
-
+tmp/
 <<<<<<< HEAD
 =======
 .idea/banhaeApp.iml
