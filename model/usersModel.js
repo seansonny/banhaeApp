@@ -6,13 +6,13 @@ class Model {
 }
 // 모델 만들기 (자바스크립트 객체와 DB 테이블을 매핑)
 let Users = seq.define('users', {
-    user_id: {type: Sequelize.INTEGER, primaryKey: true,},
+    user_id: {type: Sequelize.INTEGER, primaryKey: true},
     email : {type: Sequelize.STRING(32)},
     nickname : {type: Sequelize.STRING(16), allowNull: true},
     pw : {type: Sequelize.STRING(128)},
     gender : {type: Sequelize.INTEGER,},
-    birthday : {type: Sequelize.INTEGER, allowNull: true,},
-    token : {type: Sequelize.STRING(45), allowNull: true,},
+    birthday : {type: Sequelize.INTEGER, allowNull: true},
+    token : {type: Sequelize.STRING(45), allowNull: true},
     salt : {type: Sequelize.INTEGER,}},
     {timestamps: false}
 );
