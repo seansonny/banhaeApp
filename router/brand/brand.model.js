@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const sequelize = require('../../database/mysqlConfig');
 
 let BrandModel = sequelize.define('brand', {
-    brand_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true}
+    brand_id: {type: Sequelize.INTEGER, primaryKey: true}
     , name: {type: Sequelize.STRING}
     , company: {type: Sequelize.TEXT, allowNull: true}
     , facility: {type: Sequelize.TEXT, allowNull: true}
@@ -18,8 +18,8 @@ let BrandModel = sequelize.define('brand', {
 //검색할 때 사용할 예정(추후에 like 처리)
 BrandModel.getBrandByName = function(brand_name) {
     return new Promise((resolve,reject)=> {
-        BrandModel.findOne({
-            where: {name: brand_name.keyword}
+        BrandModel.findAll({
+            where: {name: {like: "%"+brand_name.keyword+"%"}}
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
@@ -34,6 +34,17 @@ BrandModel.getBrandByID = function(brand_id) {
         BrandModel.findOne({
             where: {brand_id:brand_id}
         }).then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
+//브랜드 목록 가져오기
+BrandModel.getBrandList = function() {
+    return new Promise((resolve,reject)=> {
+        BrandModel.findAndCount({attributes:['name']}).then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
