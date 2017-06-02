@@ -7,7 +7,7 @@
     "body-parser": "^1.17.2",
     "crypto": "0.0.3",
     "excel-as-json": "^2.0.1",
-    "express": "^4.15.2",
+    "express": "^4.15.3",
     "gm": "^1.23.0",
     "graphicsmagick": "0.0.1",
     "json-parser": "^1.1.5",
