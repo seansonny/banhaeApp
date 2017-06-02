@@ -55,9 +55,8 @@ async function uploadPetImg(req, res) {
             }
 
             let contentType = file.mimetype;
-            let resizedPath = ['mypage_img/', 'msg_img/', 'search_img/', 'profile_img/'];
+            let resizedPath = ['mypage_img/', 'search_img/', 'msg_img/', 'profile_img/'];
             let size = [330,168,144,120];
-            /*let ratio = [2,4,8,16];  // 여기 조사한 후 넣기*/
 
             for(let i=0;i<4;i++) {
                 let itemKey = resizedPath[i] + file.filename;
