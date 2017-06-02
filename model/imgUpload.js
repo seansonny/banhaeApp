@@ -1,6 +1,6 @@
 var express = require('express');
 var fs = require('fs');
-
+var gm = require('gm');
 var AWS = require('aws-sdk');
 var config = require('../connection/s3Config.json');
 
@@ -17,13 +17,57 @@ ImgUpload.serverUpload = function(req, res){
             const files = req.files;
             // 파일이 아닌 Text 데이터
             const fields = req.body;
-            resolve({msg:'ok', files:files, fields:fields});
+            resolve({msg:'check', files:files, fields:fields});
         }catch(error){
             console.log(error);
             reject(error);
         }
     })
 };
+
+ImgUpload.sizeTest = function(img){
+    return new Promise((resolve, reject) =>{
+        gm(img.path)
+            .size(function (err, size) {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                let width = size.width;
+                let height = size.height;
+                resolve({msg:"success", data:{width:width, height:height}});
+            });
+    })
+};
+
+ImgUpload.resizingImg = function(img, width, height){
+    return new Promise((resolve, reject) =>{
+        let path = img.path;
+        gm(path)
+            .resize(width, height)
+            .write(path, function (err) {
+                if (err){
+                  console.log(err);
+                  reject()
+                }
+                else resolve(path)
+            });
+    })
+}
+
+// var resize = function (path, width, height) {
+//     var deferred = q.defer();
+//     var ext = path.substr(path.lastIndexOf('.'), path.length);
+//     var writePath = path.substr(0, path.lastIndexOf('.')) + '_' + width + '_' + height + ext;
+//
+//     gm(path)
+//         .resize(width, height)
+//         .write(writePath, function (err) {
+//             if (err) deferred.reject();
+//             else deferred.resolve();
+//         });
+//     return deferred.promise;
+// };
 
 ImgUpload.s3Upload = function(title, file, directory){
     return new Promise((resolve, reject) =>{

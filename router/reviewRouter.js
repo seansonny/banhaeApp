@@ -23,8 +23,18 @@ router.post('/reviews', upload.any(), writeReview);
 
 async function writeReview(req, res) {
     try{
-        let serverUpload = await imgUp.serverUpload(req, res);
-        let file = serverUpload.files[0];
+        let file = req.files[0];
+        //console.log(file);
+        let sizeTest = await imgUp.sizeTest(file);
+        let ratio = 5;
+        let width = sizeTest.data.width/ratio;
+        //console.log(width);
+        let height = sizeTest.data.height/ratio;
+        //console.log(height);
+        let resized = await imgUp.resizingImg(file, width, height);
+        //let serverUpload = await imgUp.serverUpload(req, res); //확인용
+
+        //res.send(sizeTest);
         let directory = 'reviews';
         let s3Path = await imgUp.s3Upload(file.filename, file, directory); //s3Path.url ,s3Path.folder
         let del = await imgUp.deleteLocalFile(file);
@@ -34,11 +44,12 @@ async function writeReview(req, res) {
         conn.connect(); // 코드 합친 후 빼줄 것
         let writeReview = await reviewModel.writeReview(reviewData);
         let addMyReview = await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
-        console.log(addMyReview);
+
         conn.disconnect(); // 코드 합친 후 빼줄 것
 
         res.send(writeReview);
     } catch( error ){
+        console.log(error);
         res.status(error.code).send({msg:error.msg});
     }
 }

@@ -7,6 +7,8 @@
     "crypto": "0.0.3",
     "excel-as-json": "^2.0.1",
     "express": "^4.15.2",
+    "gm": "^1.23.0",
+    "graphicsmagick": "0.0.1",
     "json-parser": "^1.1.5",
     "mongo-xlsx": "^1.0.12",
     "mongoose": "^4.10.3",
