@@ -1,12 +1,10 @@
 const express = require('express');
 const PetModel = require('./pet.model');
 const fs = require('fs');
-/*const gm = require('gm');*/
-const Thumbnail = require('thumbnail');
-const thumbnail = new Thumbnail('../../uploads', '../../thumbnails');
 const router = express.Router();
+const imgUp = require('../../model/imgUpload');
 
-//multer
+//multer 기본 설정
 const multer = require('multer');
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -15,10 +13,10 @@ let storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, file.originalname + '-' + Date.now()) // cb 콜백함수를 통해 전송된 파일 이름 설정
     }
-})
+});
 let upload = multer({ storage: storage });
 
-//AWS
+//AWS 기본 설정
 const AWS = require('aws-sdk');
 AWS.config.region = 'ap-northeast-2';
 AWS.config.accessKeyId = 'AKIAIFGQSWP3J5F5XDGA';
@@ -34,80 +32,59 @@ router.put('/:pet_id', updatePet); //펫 정보 수정하기
 router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
 
 router.post('/upload/:pet_id', upload.single('myPet'), uploadPetImg); //펫 이미지 업로드
+router.post('/upload', function (req,res) {
+    res.send("No pet_id");
+});
 router.delete('/upload/:pet_id', deletePetImg); //펫 이미지 삭제
 
 //펫 이미지 업로드
 async function uploadPetImg(req, res) {
     try {
-        // 이부분 추후 수정
         let pet_id = req.params.pet_id;
-        let file = req.file;  //
-        let pet_info = await PetModel.getPetImg(pet_id);//이전 사진 url 가져오기
+        let file = req.file;
 
-        if(pet_info.image != "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/petImg/KakaoTalk_20170531_135857256.png-1496279892073") {
-            await deleteS3(pet_id);
+        // 유효성 검사(pet_id, file)
+        if((pet_id == undefined)||(file == null)) {
+            res.send("No pet_id or file");
         }
+        else {
+            let pet_info = await PetModel.getPetImg(pet_id);       //이전 사진 파일이름 가져오기
 
-        let img_url = await uploadS3(file);     //s3에 업로드
-        let pet = await PetModel.uploadPetImg(pet_id, img_url);   //db에 s3 url 저장하기
-        let result = { data:pet, msg:"addPetImg 성공" };
-        res.send(result);
+            if(pet_info.image != "defalutPetImage.png") {
+                await deleteS3(pet_id);
+            }
+
+            let contentType = file.mimetype;
+            let resizedPath = ['mypage_img/', 'msg_img/', 'search_img/', 'profile_img/'];
+            let size = [330,168,144,120];
+            /*let ratio = [2,4,8,16];  // 여기 조사한 후 넣기*/
+
+            for(let i=0;i<4;i++) {
+                let itemKey = resizedPath[i] + file.filename;
+
+                //이미지 리사이징 -> 파일 4가지로 추출 후 파일 path 삽입(어디에다가 올릴까? 임시파일 삭제 이슈도 존재
+                let resized = await imgUp.resizingImg(file, size[i], size[i]);
+                let readStream = fs.createReadStream(resized);  //파일 경로만 설정해주면 내가 수정한 파일이 올라가는구나!!
+
+                await uploadS3(contentType, readStream, itemKey);     //s3에 업로드
+            }
+
+            await PetModel.uploadPetImg(pet_id, file.filename);   //db에 파일이름 저장하기
+            let result = {msg:"addPetImg 성공" };
+            res.send(result);
+        }
     } catch (err) {
         res.send(err);
     } finally{
-        await deleteTemp(req.file.path);     //임시 파일 삭제
+        fs.unlink(req.file.path, function (err) {
+            if (err) throw err;
+            console.log('파일을 정상적으로 삭제하였습니다.');
+        });
     }
 }
 
-//펫 이미지 삭제
-async function deletePetImg(req, res) {
-    try {
-        let pet_id = req.params.pet_id;
-        if(!pet_id) {
-            res.send({"msg":"No Pet ID!!"})
-        }
-
-        await deleteS3(pet_id);
-        let result = {msg:"deletePetImg 성공" };
-        res.send(result);
-    } catch (err) {
-        res.send(err);
-    }
-}
-
-async function deleteS3(pet_id) {
-    //이 부분 추후 수정
-    let pet_info = await PetModel.getPetImg(pet_id);//이전 사진 url 가져오기
-    let string = pet_info.image;
-    let spilt_str = string.split('/');
-    let itemKey = 'petImg/' + spilt_str[5];
-    let params = {
-        Bucket: bucketName, // 'mybucket'
-        Key: itemKey // 'images/myimage.jpg'
-    };
-    await PetModel.deletePetImg(pet_id);   //db에 null
-
-    await s3.deleteObject(params, function (error, data) {
-        if (error) {console.log(error); } else {console.log(data);}
-    });
-}
-
-function deleteTemp(path) {
-    fs.unlink(path, function (err) {
-        if (err) throw err;
-        console.log('파일을 정상적으로 삭제하였습니다.');
-    });
-}
-
-function uploadS3(file) {
+function uploadS3(contentType, readStream, itemKey) {
     return new Promise((resolve,reject)=> {
-        // 새로운 이미지 파일 이름 생성
-        let fileName = file.filename;
-        let contentType = file.mimetype;
-
-        let readStream = fs.createReadStream(file.path);
-        // 버킷 내 객체 키 생성
-        let itemKey = 'petImg/' + fileName;
         let params = {
             Bucket: bucketName,     // 필수
             Key: itemKey,            // 필수
@@ -122,13 +99,46 @@ function uploadS3(file) {
                 reject(err);
             }
             else {
-                let imageUrl = s3.endpoint.href + bucketName + '/' + itemKey;
-                resolve(imageUrl);
+                resolve();
             }
         });
     });
 }
 
+//펫 이미지 삭제
+async function deletePetImg(req, res) {
+    try {
+        let pet_id = req.params.pet_id;
+        if(pet_id == undefined) {
+            res.send({"msg":"No Pet ID!!"})
+        }
+
+        let pet_info = await PetModel.getPetImg(pet_id);    //이전 사진 파일이름 가져오기
+        let pet_fileName = pet_info.image;
+        let resizedPath = ['mypage_img/', 'msg_img/', 'search_img/', 'profile_img/'];
+
+        for(let i=0;i<4;i++) {
+            let itemKey = resizedPath[i] + pet_fileName;
+            await deleteS3(itemKey);
+        }
+
+        await PetModel.deletePetImg(pet_id);   //db에 디폴트 사진 넣어두기
+        let result = {msg:"deletePetImg 성공" };
+        res.send(result);
+    } catch (err) {
+        res.send(err);
+    }
+}
+
+async function deleteS3(itemKey) {
+    let params = {
+        Bucket: bucketName,
+        Key: itemKey
+    };
+    await s3.deleteObject(params, function (error, data) {
+        if (error) {console.log(error); } else {console.log(data);}
+    });
+}
 /* ---------------------------------------여기 아래로 완료---------------------------------------------------------------*/
 async function getPetList(req, res) {
     try {
