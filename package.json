@@ -17,6 +17,7 @@
     "mysql": "^2.13.0",
     "node-excel-to-json": "0.0.3",
     "pm2": "^2.4.6",
+    "promise-mysql": "^3.0.1",
     "querystring": "^0.2.0",
     "s3": "^4.4.0",
     "sequelize": "^3.30.4"
