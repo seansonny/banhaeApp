@@ -13,7 +13,7 @@ const upload = multer({
 //routing
 router.get('/list', getPetList);  //펫 목록 가져오기
 router.get('/:pet_id', getPetByID);  //펫 상세보기
-router.post('/', addPet);  //펫 상세보기
+router.post('/', addPet);  //펫 정보 추가
 router.put('/:pet_id', updatePet); //펫 정보 수정하기
 router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
 router.post('/upload/:pet_id', upload.single('myPet'), uploadPetImg); //펫 이미지 업로드
@@ -58,7 +58,7 @@ async function uploadPetImg(req, res) {
 async function deletePetImg(req, res) {
     try {
         let pet_id = req.params.pet_id;
-        if(pet_id == undefined) {
+        if(!pet_id) {
             res.send({"msg":"No Pet ID!!"})
         }
 
