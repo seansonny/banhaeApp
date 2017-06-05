@@ -6,26 +6,30 @@ class Validation{
 Validation.userInputValidation = function(req) {
 
     return new Promise((resolve, reject) =>{
-        const user_email = req.body.email;
+
+        const email = req.body.email;
         const pw = req.body.pw;
         const gender = req.body.gender;
-        const birth = req.body.birth;
+        const birthday = req.body.birthday;
         const nickname = req.body.nickname;
+        let message = {};
 
-        if (!user_email||!pw||!gender||!birth){
-            reject("필수 정보 누락 (이메일, 비번, 생년월일, 성별)");
-        }
-        const user_info = {
-            email : user_email,
-            birth : birth,
-            gender : gender,
-            pw : pw
-        };
+        if (email && pw && gender && birthday){
+            message.msg = "success";
+            message.data = {
+                email : email,
+                birthday : birthday,
+                gender : gender,
+                pw : pw
+            };
 
-        if(nickname){
-            user_info.nickname = nickname;
+            if(nickname) message.data.nickname = nickname;
+
+        }else{
+            message.msg = "필수 정보 누락 (이메일, 비번, 생년월일, 성별)";
+            message.data = false;
         }
-        resolve(user_info);
+        resolve(message);
     })
 };
 
@@ -51,47 +55,26 @@ Validation.generatePassword = function(user_pw){
 Validation.userToken = function(){
 
     return new Promise((resolve, reject)=> {
-        //로그인이 구현 되면 로그인 세션/토큰 에서 가져올 정보
-        const tempToken = "token9876";
+        //로그인이 구현 되고 보내온 토큰 정보로  디코딩 ==>이메일
+        const tempEmail = "asdf@gmail.com";
        try{
-            resolve(tempToken);
+            resolve(tempEmail);
        } catch( error ){
            reject("No valid token");
        }
     })
 };
 
-
-Validation.isValue = function(check){
-
-    return new Promise((resolve, reject) => {
-        let msg;
-        try {
-            if (check == null || check == "" || check == undefined) {
-                msg = false;
-            }
-            else{
-                msg = true;
-            }
-
-            resolve(msg);
-        }catch (error){
-            reject("isValue error");
-        }
-    })
-};
-
-Validation.sendInfo = function(user_info, pw_info, token){
+Validation.sendInfo = function(user_info, pw_info){
     return new Promise((resolve, reject) => {
         try{
             const sendInfo = {
                 email : user_info.email,
                 nickname : user_info.nickname,
                 pw : pw_info.hash,
-                birth : user_info.birth,
+                birthday : user_info.birthday,
                 gender : user_info.gender,
                 salt : pw_info.salt,
-                token : token
             };
             resolve(sendInfo);
         }catch( error ) {

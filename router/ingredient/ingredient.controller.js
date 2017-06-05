@@ -1,18 +1,16 @@
 const express = require('express');
 const fs = require('fs');
-const Ingredient = require('../model/ingredientModel');
+const Ingredient = require('./ingredient.model');
 const bodyParser = require('body-parser');
 
 var router = express.Router();
 
-//router.use(bodyParser.json({}));
-
-router.route('/ingredients/:ingredient_id')
+router.route('/:ingredient_id')
     .get(showIngredientDetail)
     .delete(deleteIngredient)
 
 
-router.route('/ingredients')
+router.route('/')
     .post(addIngredient)
     .put(editIngredient);
 //  .get(showIngredientLists);

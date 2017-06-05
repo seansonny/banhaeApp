@@ -1,7 +1,7 @@
 const express = require('express');
-const reviewModel = require('../model/reviewModel');
-const imgUp = require('../model/imgUpload');
-const conn = require('../connection/mongooseConnection');
+const reviewModel = require('./review.model');
+const imgUp = require('../../model/imgUpload');
+const conn = require('../../connection/mongooseConnection');
 
 const multer = require('multer');
 const upload = multer({
@@ -10,16 +10,16 @@ const upload = multer({
 
 var router = express.Router();
 
-router.route('/reviews/likes')//이거 수정 필요 post 방식으로 처리
+router.route('/likes')//이거 수정 필요 post 방식으로 처리
     .post(likeReview);
 
-router.route('/reviews')
+router.route('/')
     .get(showReviews);
 
-router.route('/reviews/:review_id')
+router.route('/:review_id')
     .delete(deleteReview);
 
-router.post('/reviews', upload.any(), writeReview);
+router.post('/', upload.any(), writeReview);
 
 async function writeReview(req, res) {
     try{
@@ -41,11 +41,9 @@ async function writeReview(req, res) {
         // 이미지 resized 로직 추가
         console.log(s3Path.url);
         let reviewData = await reviewModel.sendReview(req, s3Path.url);
-        conn.connect(); // 코드 합친 후 빼줄 것
         let writeReview = await reviewModel.writeReview(reviewData);
         let addMyReview = await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
-        conn.disconnect(); // 코드 합친 후 빼줄 것
 
         res.send(writeReview);
     } catch( error ){
@@ -61,10 +59,8 @@ async function likeReview(req, res) {
     // 내 몽고 my_tastes에 현재 review _id <==post 정보
     // review_id my_tastes array 에 추가
     try{
-        conn.connect(); // 코드 합친 후 빼줄 것
         let review = await reviewModel.addMyTastes(req);
         let like = await reviewModel.incrementLikes(review);
-        conn.disconnect(); // 코드 합친 후 빼줄 것
         res.send(like);
     }catch(error){
         res.status(error.code).send({msg:error.msg});
@@ -74,9 +70,7 @@ async function likeReview(req, res) {
 async function showReviews(req, res) {
 
     try{
-        conn.connect();
         let showLatestReviews = await reviewModel.showLatestReviews();
-        conn.disconnect(); // 코드 합친 후 빼줄 것
         //review_objId도 보내줘야함
         res.send(showLatestReviews);
     } catch( error ){
@@ -88,10 +82,9 @@ async function showReviews(req, res) {
 async function deleteReview(req, res) {
 
     try{
-        conn.connect();
         let review_id = await reviewModel.deleteReview(req);
+        //사진 지워주기
         let deleteResult = await reviewModel.deleteMyReview(review_id);
-        conn.disconnect(); // 코드 합친 후 빼줄 것
         res.send(deleteResult);
     } catch( error ){
         console.log(error);

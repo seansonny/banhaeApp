@@ -68,3 +68,6 @@ tmp/
 .idea/jsLibraryMappings.xml
 .idea/modules.xml
 .idea/workspace.xml
+
+connection/
+jwtTest.js
