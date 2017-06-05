@@ -1,6 +1,6 @@
 const express = require('express');
-const reviewModel = require('../model/reviewModel');
-const imgUp = require('../model/imgUpload');
+const reviewModel = require('../model/review.model');
+const imgUp = require('../model/image.upload');
 const conn = require('../connection/mongooseConnection');
 
 const multer = require('multer');
@@ -10,16 +10,16 @@ const upload = multer({
 
 var router = express.Router();
 
-router.route('/reviews/likes')//이거 수정 필요 post 방식으로 처리
+router.route('/likes')//이거 수정 필요 post 방식으로 처리
     .post(likeReview);
 
-router.route('/reviews')
+router.route('/')
     .get(showReviews);
 
-router.route('/reviews/:review_id')
+router.route('/:review_id')
     .delete(deleteReview);
 
-router.post('/reviews', upload.any(), writeReview);
+router.post('/', upload.any(), writeReview);
 
 async function writeReview(req, res) {
     try{
