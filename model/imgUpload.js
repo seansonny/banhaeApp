@@ -94,15 +94,26 @@ ImgUpload.s3Upload = function(title, file, directory){
                     reject(err);
                 }
                 else {
-                    // 접근 경로 - 2가지 방법
                     var imageUrl = s3.endpoint.href + bucketName + '/' + itemKey; //itemKey ==> https://s3.ap-northeast-2.amazonaws.com/banhaebucket/reviews/%EB%8F%99%EA%B8%B0%EC%8B%9D.png+-t*+Thu+Jun+01+2017+12%3A46%3A47+
-                    // var imageSignedUrl = s3.getSignedUrl('getObject', { Bucket: bucketName, Key: itemKey });
 
                     resolve({url: imageUrl, folder: folderName});
                 }
             });
     })
 };
+
+ImgUpload.deleteS3 = function(itemKey) {
+    let s3 = new AWS.S3();
+    let bucketName = config.bucketName;
+    let params = {
+        Bucket: bucketName,
+        Key: itemKey
+    };
+
+    s3.deleteObject(params, function (err) {
+        if (err) {console.log(err); }
+    });
+}
 
 ImgUpload.deleteLocalFile = function(file) {
     return new Promise((resolve, reject) => {
