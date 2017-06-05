@@ -8,16 +8,16 @@ const multer = require('multer');
 class Model{
 }
 
-Model.sendReview = function(req, imgUrl){
+Model.sendReview = function(req, imgInfo){
     return new Promise((resolve, reject)=>{
-
         try{
             let review = new ReviewSchema();
             review.good = req.body.good;
             review.bad = req.body.bad;
 
-            if(imgUrl){
-                review.resized_img = imgUrl;
+            if(imgInfo){
+                review.resized_img = imgInfo.url;
+                review.img_key = imgInfo.itemKey;
             }
 
             review.feed_id = req.body.feed_id;
@@ -72,7 +72,6 @@ Model.incrementLikes = function(review){
 
 Model.writeReview = function(review){
     return new Promise((resolve, reject)=>{
-
         try{
             let result  = review.save();
             resolve(result);

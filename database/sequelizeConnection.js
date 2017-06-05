@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-var config = require('../database/mysqlConfig.json');
+var config = require('./mysqlConfig.json');
 
 let seq = new Sequelize(
     config.database,

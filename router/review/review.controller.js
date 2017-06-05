@@ -30,19 +30,17 @@ async function writeReview(req, res) {
         //console.log(width);
         let height = sizeTest.data.height/ratio;
         //console.log(height);
-        let resized = await imgUp.resizingImg(file, width, height);
+        /*let resized = await imgUp.resizingImg(file, width, height);*/      ////////////////////////
         //let serverUpload = await imgUp.serverUpload(req, res); //확인용
 
         //res.send(sizeTest);
         let directory = 'reviews';
         let s3Path = await imgUp.s3Upload(file.filename, file, directory); //s3Path.url ,s3Path.folder
         let del = await imgUp.deleteLocalFile(file);
-        // 이미지 resized 로직 추가
-        console.log(s3Path.url);
-        let reviewData = await reviewModel.sendReview(req, s3Path.url);
+
+        let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
         let addMyReview = await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
-
 
         res.send(writeReview);
     } catch( error ){
@@ -67,7 +65,6 @@ async function likeReview(req, res) {
 }
 
 async function showReviews(req, res) {
-
     try{
         let showLatestReviews = await reviewModel.showLatestReviews();
         //review_objId도 보내줘야함
