@@ -1,19 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
+const app = express();
+
 const ingredientRouter = require('./router/ingredient/ingredient.controller');
 const usersRouter = require('./router/user/user.controller');
 const reviewRouter = require('./router/review/review.controller');
-const morgan = require('morgan');
-const app = express();
-let requestRouter = require('./router/request/request.controller');
-
-let brandRouter = require('./router/brand/brand.controller');
-let feedRouter = require('./router/feed/feed.controller');
-let petRouter = require('./router/pet/pet.controller');
-let questionRouter = require('./router/question/question.controller');
+const requestRouter = require('./router/request/request.controller');
+const brandRouter = require('./router/brand/brand.controller');
+const feedRouter = require('./router/feed/feed.controller');
+const petRouter = require('./router/pet/pet.controller');
+const questionRouter = require('./router/question/question.controller');
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(morgan('dev'));
+
 app.use('ingredients', ingredientRouter);
 app.use('/users', usersRouter);
 app.use('/reviews', reviewRouter);
