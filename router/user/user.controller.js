@@ -1,7 +1,7 @@
 const express = require('express');
-const UserModel = require('../model/user.model');
-const UserValidation = require('../validation/usersValidation');
-const conn = require('../connection/mongooseConnection');
+const UserModel = require('./user.model');
+const UserValidation = require('../../validation/usersValidation');
+const conn = require('../../connection/mongooseConnection');
 
 var router = express.Router();
 
@@ -47,9 +47,7 @@ async function addUser(req, res) {
         let pw_info = await UserValidation.generatePassword(user_info.data.pw);
         let send_info = await UserValidation.sendInfo(user_info.data, pw_info);
 
-        conn.connect();
         let result = await UserModel.addUser(send_info);
-        conn.disconnect();
         // mysql 성공시 mongdoDb에도 추가
         let mongoDbUser = await UserModel.addMongoUser(send_info);
 

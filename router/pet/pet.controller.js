@@ -1,7 +1,7 @@
 const express = require('express');
 const PetModel = require('./pet.model');
 const fs = require('fs');
-/*const gm = require('gm');*/
+const gm = require('gm');
 const Thumbnail = require('thumbnail');
 const thumbnail = new Thumbnail('../../uploads', '../../thumbnails');
 const router = express.Router();

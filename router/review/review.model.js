@@ -1,8 +1,8 @@
-const ReviewSchema = require('./reviewSchema');
+const ReviewSchema = require('../../model/reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 ObjectId = mongoose.Types.ObjectId;
-const UserSchema = require('./mongoUserSchema');
+const UserSchema = require('../../model/mongoUserSchema');
 const multer = require('multer');
 
 class Model{

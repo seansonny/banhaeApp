@@ -1,6 +1,6 @@
 const express = require('express');
 const fs = require('fs');
-const Ingredient = require('../model/ingredient.model');
+const Ingredient = require('./ingredient.model');
 const bodyParser = require('body-parser');
 
 var router = express.Router();

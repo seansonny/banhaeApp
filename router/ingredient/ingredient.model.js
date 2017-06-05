@@ -1,4 +1,4 @@
-var pool = require('../connection/mysqlConnection');
+var pool = require('../../database/mysqlConnection');
 
 class Ingredient {
 }
