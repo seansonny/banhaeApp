@@ -55,21 +55,7 @@ ImgUpload.resizingImg = function(img, width, height){
     })
 }
 
-// var resize = function (path, width, height) {
-//     var deferred = q.defer();
-//     var ext = path.substr(path.lastIndexOf('.'), path.length);
-//     var writePath = path.substr(0, path.lastIndexOf('.')) + '_' + width + '_' + height + ext;
-//
-//     gm(path)
-//         .resize(width, height)
-//         .write(writePath, function (err) {
-//             if (err) deferred.reject();
-//             else deferred.resolve();
-//         });
-//     return deferred.promise;
-// };
-
-ImgUpload.s3Upload = function(title, file, directory){
+ImgUpload.s3Upload = function(file, directory){
     return new Promise((resolve, reject) =>{
         //console.log(file);
         let s3 = new AWS.S3();
