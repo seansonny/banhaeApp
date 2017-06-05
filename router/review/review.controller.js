@@ -24,13 +24,13 @@ async function writeReview(req, res) {
     try{
         let file = req.files[0];
         //console.log(file);
-        let sizeTest = await imgUp.sizeTest(file);
+       /* let sizeTest = await imgUp.sizeTest(file);
         let ratio = 5;
         let width = sizeTest.data.width/ratio;
         //console.log(width);
         let height = sizeTest.data.height/ratio;
         //console.log(height);
-        /*let resized = await imgUp.resizingImg(file, width, height);*/      ////////////////////////
+        let resized = await imgUp.resizingImg(file, width, height);*/
         //let serverUpload = await imgUp.serverUpload(req, res); //확인용
 
         //res.send(sizeTest);
@@ -78,7 +78,10 @@ async function showReviews(req, res) {
 async function deleteReview(req, res) {
 
     try{
-        let review_id = await reviewModel.deleteReview(req);
+        let review_id = req.params.review_id;
+        let itemKey = await reviewModel.deleteReview(review_id);
+
+        imgUp.deleteS3(itemKey[0].img_key);
         //사진 지워주기
         let deleteResult = await reviewModel.deleteMyReview(review_id);
         res.send(deleteResult);
