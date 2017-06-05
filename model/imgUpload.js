@@ -68,7 +68,7 @@ ImgUpload.s3Upload = function(file, directory){
         let bucketName = config.bucketName;
         let params = {
             Bucket: bucketName,     // 필수
-            Key: itemKey,            // 필수 reviews/%EB%8F%99%EA%B8%B0%EC%8B%9D.png+-t*+Thu+Jun+01+2017+12%3A46%3A47+
+            Key: itemKey,            // 필수
             ACL: 'public-read',
             Body: readStream,
             ContentType: contentType
@@ -80,7 +80,7 @@ ImgUpload.s3Upload = function(file, directory){
                 reject(err);
             }
             else {
-                var imageUrl = s3.endpoint.href + bucketName + '/' + itemKey; //itemKey ==> https://s3.ap-northeast-2.amazonaws.com/banhaebucket/reviews/%EB%8F%99%EA%B8%B0%EC%8B%9D.png+-t*+Thu+Jun+01+2017+12%3A46%3A47+
+                var imageUrl = s3.endpoint.href + bucketName + '/' + itemKey;
 
                 resolve({url: imageUrl, itemKey:itemKey, folder: folderName});
             }
