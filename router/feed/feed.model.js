@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const mongoDB = require('../../database/mongoDbConfig');
 
-mongoDB.connect();
+if (mongoose.connection.readyState < 1)
+    mongoDB.connect();
 
 const Schema = mongoose.Schema;
 
