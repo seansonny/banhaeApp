@@ -3,7 +3,7 @@ const sequelize = require('../../database/mysqlConfig');
 
 let QuestionModel = sequelize.define('question', {
     question_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement:true}
-    , uesr_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}
+    , user_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}
     , question: {type: Sequelize.TEXT, allowNull: true}
     , category: {type: Sequelize.INTEGER, allowNull: true}
 }, {
@@ -25,8 +25,10 @@ QuestionModel.getQuestionList = function() {
 QuestionModel.addQuestion = function() {
     return new Promise((resolve,reject)=> {
         QuestionModel.create({
-
-        }).then((results) => {
+            user_id: "ddkkd1",
+            question: "언제 버전업해요?",
+            category: 1
+                }).then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
