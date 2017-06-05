@@ -1,7 +1,9 @@
 const express = require('express');
 const UserModel = require('./user.model');
+
 const UserValidation = require('./usersValidation');
 const conn = require('../../connection/mongooseConnection');
+
 
 var router = express.Router();
 
