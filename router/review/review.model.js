@@ -118,19 +118,29 @@ Model.showLatestReviews = function(){
     })
 };
 
-Model.deleteReview = function(req){
+Model.deleteReview = function(review_id){
 
     return new Promise((resolve, reject) =>{
         const user_info = "asdf@gmail.com";
-        const reviewId = req.body.review_objId;
+        let itemKey;
         //없을 때 테스트
-        ReviewSchema.deleteOne({_id: reviewId})
-            .exec(function(err, docs){
+        ReviewSchema.find({_id: review_id})
+            .exec(function(err, results){
                 if(err){
                     console.log(err);
                     reject(err);
                 }else{
-                    resolve(reviewId);
+                    itemKey = results;
+                    console.log(itemKey);
+                    ReviewSchema.remove({_id: review_id})
+                        .exec(function(err){
+                            if(err){
+                                console.log(err);
+                                reject(err);
+                            }else{
+                                resolve(itemKey);
+                            }
+                        })
                 }
             })
     })

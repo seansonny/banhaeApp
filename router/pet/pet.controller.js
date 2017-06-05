@@ -32,18 +32,16 @@ async function uploadPetImg(req, res) {
             res.send("No pet_id or file");
         }
         else {
-            let pet_info = await PetModel.getPetImg(pet_id);       //이전 사진 파일이름 가져오기
+            let pet_info = await PetModel.getPetImg(pet_id);       //이전 파일이름, url 가져오기
 
-            if(pet_info.image != "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png") {
-                let beforeStr = pet_info.image;
-                let afterStr = beforeStr.split('/');
-                let itemKey = afterStr[4] + '/' +  afterStr[5];
+            if(pet_info.image_url != "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png") {
+                let itemKey = pet_info.image_key;
                 imgUp.deleteS3(itemKey);
             }
 
             /*await imgUp.resizingImg(file, 200, 200);     // 사이즈 조정*/
             let img_url = await imgUp.s3Upload(file.name, file, 'pets');     //s3에 업로드
-            await PetModel.uploadPetImg(pet_id, img_url.url);      //db에 파일이름 저장하기
+            await PetModel.uploadPetImg(pet_id, img_url.itemKey, img_url.url);      //db에 파일이름 저장하기
             let result = {msg:"addPetImg 성공" };
             res.send(result);
         }
@@ -63,9 +61,7 @@ async function deletePetImg(req, res) {
         }
 
         let pet_info = await PetModel.getPetImg(pet_id);    //이전 사진 파일_url 가져오기
-        let beforeStr = pet_info.image;
-        let afterStr = beforeStr.split('/');
-        let itemKey = afterStr[4] + '/' +  afterStr[5];
+        let itemKey = pet_info.image_key;
 
         await imgUp.deleteS3(itemKey);
         await PetModel.deletePetImg(pet_id);   //db에 디폴트값 넣어두기

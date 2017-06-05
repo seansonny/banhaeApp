@@ -13,7 +13,8 @@ let PetModel = sequelize.define('pet', {
     , special: {type: Sequelize.TEXT}
     , main_pet: {type: Sequelize.INTEGER}
     , user_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}  // 외래키 이렇게 맞나??
-    , image: {type: Sequelize.TEXT}
+    , image_key: {type: Sequelize.TEXT}
+    , image_url: {type: Sequelize.TEXT}
 }, {
     timestamps: false
 });
@@ -34,7 +35,7 @@ PetModel.getPetByID = function(pet_id) {
 //펫 목록 가져오기
 PetModel.getPetList = function() {
     return new Promise((resolve,reject)=> {
-        PetModel.findAndCount({attributes:['name','image']}).then((results) => {
+        PetModel.findAndCount({attributes:['name','image_url']}).then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
@@ -43,10 +44,11 @@ PetModel.getPetList = function() {
 }
 
 //펫 사진 추가
-PetModel.uploadPetImg = function(pet_id, img_url) {
+PetModel.uploadPetImg = function(pet_id, itemKey, img_url) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            image:img_url
+            image_url:img_url,
+            image_key: itemKey
         }, {
             where: {pet_id: pet_id}
         }).then((results) => {
@@ -57,7 +59,7 @@ PetModel.uploadPetImg = function(pet_id, img_url) {
     });
 }
 
-//펫 사진 url 가져오기
+//펫 정보 가져오기
 PetModel.getPetImg = function(pet_id) {
     return new Promise((resolve,reject)=> {
         PetModel.findOne({
@@ -74,7 +76,8 @@ PetModel.getPetImg = function(pet_id) {
 PetModel.deletePetImg = function(pet_id) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            image: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
+            image_url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png",
+            image_key: null
         }, {
             where: {pet_id: pet_id}
         }).then((results) => {
@@ -99,7 +102,8 @@ PetModel.addPet = function() {
             , special: "없음"
             , main_pet: 1
             , user_id: "ddkkd1"
-            , image: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
+            , image_url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
+            , image_key: null
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
