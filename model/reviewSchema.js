@@ -19,5 +19,4 @@ var reviewSchema = new mongoose.Schema({
     likes_num : Number
 });
 
-//conn.disconnect();
 module.exports = mongoose.model('REVIEW', reviewSchema);

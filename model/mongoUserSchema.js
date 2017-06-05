@@ -12,5 +12,4 @@ var userSchema = new mongoose.Schema({
     my_tastes : Array //id + 좋아요한 review obj _id저장, count로 좋아요 갯수
 });
 
-//conn.disconnect();
 module.exports = mongoose.model('USER', userSchema);
