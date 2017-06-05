@@ -1,6 +1,6 @@
 const express = require('express');
 const reviewModel = require('./review.model');
-const imgUp = require('../../model/image.upload');
+const imgUp = require('../../model/imgUpload');
 const conn = require('../../connection/mongooseConnection');
 
 const multer = require('multer');
