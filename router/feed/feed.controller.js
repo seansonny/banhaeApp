@@ -33,15 +33,23 @@ async function getFeedByName(req, res) {
         //기타 처리 후 클라이언트 응답
         //sort 방법에 따라 sorting han, point, review
         if(sort == 'point') {
-            //feed을 data로
+            feed.sort(function (a,b) {
+                return a.RATING < b.RATING ? 1 : a.RATING > b.RATING ? -1 : 0;
+            });
             //별점순
         } else if(sort == 'review') {
-            //리뷰 많은순 이것을 하기 위해선 리뷰 추가 삭제시 카운팅 해줘야함
+            //리뷰 많은순
+            feed.sort(function (a,b) {
+                return a.REVIEW_NUM < b.REVIEW_NUM ? 1 : a.REVIEW_NUM > b.REVIEW_NUM ? -1 : 0;
+            });
         } else {
             //가나다순
+            feed.sort(function (a,b) {
+                return a.NAME < b.NAME ? -1 : a.NAME > b.NAME ? 1 : 0;
+            });
         }
 
-        let result = { data:data, msg:"getFeedByName 성공" };
+        let result = { data:feed, msg:"getFeedByName 성공" };
         res.send(result);
     } catch (err) {
         res.send(err);

@@ -35,7 +35,7 @@ let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
 //검색할 때 사용할 예정(추후에 like 처리)
 FeedModel.getFeedByName = function(feed_name) {
     return new Promise((resolve,reject)=> {
-        FeedModel.find({NAME: {$regex:feed_name.keyword}}, (err, feed)=>{
+        FeedModel.find({NAME: {$regex:feed_name}}/*{},{NAME:1,REVIEW_NUM:1,RATING:1}*/, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -126,7 +126,6 @@ FeedModel.updateFeed = function(feed_id) {
         });
     });
 }
-
 
 //사료 정보삭제
 FeedModel.deleteFeed = function(feed_id) {
