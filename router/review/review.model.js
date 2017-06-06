@@ -33,6 +33,14 @@ Model.sendReview = function(req, imgInfo){
     })
 };
 
+Model.showMyReviews = function(req){
+    return new Promise((resolve, reject) =>{
+        const user_info = "asdf@gmail.com";
+        let reviewObjArray = UserSchema.findOne({email: user_info});
+
+    })
+};
+
 Model.addMyTastes = function(req){
 
     return new Promise((resolve, reject) =>{

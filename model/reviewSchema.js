@@ -12,8 +12,8 @@ var reviewSchema = new mongoose.Schema({
     time_stamp : {type: Date, default: Date.now},
     resized_img : String,
     img_key : String,
-    feed_id : Number,
-    user_id : Number,
+    feed_id : String,
+    user_id : String,
     dogs : Array,
     rating : Number,
     likes_num : Number
