@@ -12,11 +12,12 @@ var reviewSchema = new mongoose.Schema({
     time_stamp : {type: Date, default: Date.now},
     resized_img : String,
     img_key : String,
-    feed_id : String,
-    user_id : String,
-    dogs : Array,
+    feed_id : Number,
+    user_id : Number,
+    pet_id : Number,
     rating : Number,
     like_users : String // 좋아요 누른 사람의 email 로 바뀜
 });
 
+//conn.disconnect();
 module.exports = mongoose.model('REVIEW', reviewSchema);

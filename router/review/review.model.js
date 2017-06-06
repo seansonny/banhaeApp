@@ -154,7 +154,7 @@ Model.deleteReview = function(review_id){
 
     return new Promise((resolve, reject) =>{
         const user_info = "asdf@gmail.com";
-        let itemKey;
+        let reviewData;
         //없을 때 테스트
         ReviewSchema.find({_id: review_id})
             .exec(function(err, results){
@@ -162,15 +162,14 @@ Model.deleteReview = function(review_id){
                     console.log(err);
                     reject(err);
                 }else{
-                    itemKey = results;
-                    console.log(itemKey);
+                    reviewData = results;
                     ReviewSchema.remove({_id: review_id})
                         .exec(function(err){
                             if(err){
                                 console.log(err);
                                 reject(err);
                             }else{
-                                resolve(itemKey);
+                                resolve(reviewData);
                             }
                         })
                 }

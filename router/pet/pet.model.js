@@ -12,7 +12,7 @@ let PetModel = sequelize.define('pet', {
     , remark: {type: Sequelize.STRING}
     , special: {type: Sequelize.TEXT}
     , main_pet: {type: Sequelize.INTEGER}
-    , user_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}  // 외래키 이렇게 맞나??
+    , user_id: {type: Sequelize.STRING, references:{model:'../user/user.model', key:'user_id'}}  // 외래키 이렇게 맞나??
     , image_key: {type: Sequelize.TEXT}
     , image_url: {type: Sequelize.TEXT}
 }, {
