@@ -19,5 +19,4 @@ var reviewSchema = new mongoose.Schema({
     like_users : String // 좋아요 누른 사람의 email 로 바뀜
 });
 
-//conn.disconnect();
 module.exports = mongoose.model('REVIEW', reviewSchema);
