@@ -36,8 +36,14 @@ Model.sendReview = function(req, imgInfo){
 Model.showMyReviews = function(req){
     return new Promise((resolve, reject) =>{
         const user_info = "asdf@gmail.com";
-        let reviewObjArray = UserSchema.findOne({email: user_info});
-
+        let mongoUser = UserSchema.findOne({email: user_info});
+        mongoUser.exec(function (err, user){
+            if (err){
+                reject(err);
+            } else{
+                resolve(ReviewSchema.find({'_id': { $in: user.my_reviews}}));
+            }
+        })
     })
 };
 
