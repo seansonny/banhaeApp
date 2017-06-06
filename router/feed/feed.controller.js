@@ -23,13 +23,32 @@ async function getFeedList(req, res) {
 async function getFeedByName(req, res) {
     try {
         // 요청값 체크
-        let feed_name = req.query;
-        if(feed_name.keyword.length == 0) {
+        let feed_name = req.query.keyword;
+        let sort = req.query.sort;
+        if(!feed_name) {
             res.send({"msg":"No Feed Name!!"})
         }
         //Model접근
         const feed = await FeedModel.getFeedByName(feed_name);
         //기타 처리 후 클라이언트 응답
+        //sort 방법에 따라 sorting han, point, review
+        if(sort == 'point') {
+            feed.sort(function (a,b) {
+                return a.RATING < b.RATING ? 1 : a.RATING > b.RATING ? -1 : 0;
+            });
+            //별점순
+        } else if(sort == 'review') {
+            //리뷰 많은순
+            feed.sort(function (a,b) {
+                return a.REVIEW_NUM < b.REVIEW_NUM ? 1 : a.REVIEW_NUM > b.REVIEW_NUM ? -1 : 0;
+            });
+        } else {
+            //가나다순
+            feed.sort(function (a,b) {
+                return a.NAME < b.NAME ? -1 : a.NAME > b.NAME ? 1 : 0;
+            });
+        }
+
         let result = { data:feed, msg:"getFeedByName 성공" };
         res.send(result);
     } catch (err) {
@@ -87,6 +106,15 @@ async function deleteFeed(req, res) {
 
         const feed = await FeedModel.deleteFeed(feed_id);
         let result = {msg:"deleteFeed 성공" };
+        res.send(result);
+    } catch (err) {
+        res.send(err);
+    }
+}
+
+async function sorting(req, res) {
+    try {
+
         res.send(result);
     } catch (err) {
         res.send(err);

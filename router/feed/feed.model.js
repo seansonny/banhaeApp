@@ -26,7 +26,8 @@ let FeedSchema  = new Schema({
     NUTRITION_INDEX: {type: Array},
     NUTRITION_UNIT: {type: Array},
     PACKAGE_UNIT: {type: Array},
-    RATING: {type: Number}
+    RATING: {type: Number},
+    REVIEW_NUM: {type: Number}
 });
 
 let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
@@ -34,7 +35,7 @@ let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
 //검색할 때 사용할 예정(추후에 like 처리)
 FeedModel.getFeedByName = function(feed_name) {
     return new Promise((resolve,reject)=> {
-        FeedModel.find({NAME: {$regex:feed_name.keyword}}, (err, feed)=>{
+        FeedModel.find({NAME: {$regex:feed_name}}/*{},{NAME:1,REVIEW_NUM:1,RATING:1}*/, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -97,7 +98,8 @@ FeedModel.addFeed = function() {
             NUTRITION_INDEX: [25,15,3],
             NUTRITION_UNIT: ["이상","이상","이하"],
             PACKAGE_UNIT: [1.2, 2.27, 4.5, 9.98, 13.62],
-            RATING: 3.7
+            RATING: 5,
+            REVIEW_NUM: 0
         });
 
         feed.save((err) => {
@@ -125,7 +127,6 @@ FeedModel.updateFeed = function(feed_id) {
     });
 }
 
-
 //사료 정보삭제
 FeedModel.deleteFeed = function(feed_id) {
     return new Promise((resolve,reject)=> {
@@ -136,7 +137,26 @@ FeedModel.deleteFeed = function(feed_id) {
             else {
                 resolve();
             }
-        })
+        });
+    });
+}
+
+//사료에 달린 리뷰 갯수 증가 혹은 감소
+FeedModel.updateReviewNum = function(feed_id,change) {
+    return new Promise((resolve,reject)=> {
+        let value = 1;
+        if(change) {
+           value = -1;
+        }
+
+        FeedModel.update({_id:feed_id},{$inc:{REVIEW_NUM:value}}, (err)=>{
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
     });
 }
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const reviewModel = require('./review.model');
 const imgUp = require('../../model/imgUpload');
-
+const FeedModel = require('../feed/feed.model');
 const multer = require('multer');
 const upload = multer({
     dest : 'tmp'
@@ -41,7 +41,10 @@ async function writeReview(req, res) {
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
-        let addMyReview = await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
+        await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
+        //사료 콜렉션에 있는 Review_Num 컬럼 변경
+        await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
+        await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
         res.send({msg:"success", data: writeReview});
     } catch( error ){
@@ -60,6 +63,11 @@ async function showMyReviews(req, res){
 }
 
 async function likeReview(req, res) {
+    // 현재 내가 좋아한 리뷰? 리뷰에서 카운트 감소 증가
+    // 내 이메일 정보(로그인 정보) => 몽고유저에서 my_tastes 에서 삭제, << 추가 할것
+    //                           => 아무것도 하지 않은 리뷰이면 추가 + 리뷰에서 likes count 증가
+    // 내 몽고 my_tastes에 현재 review _id <==post 정보
+    // review_id my_tastes array 에 추가
     try{
         let review = await reviewModel.addLikedUsers(req);
         res.send(review);
@@ -83,9 +91,14 @@ async function deleteReview(req, res) {
 
     try{
         let review_id = req.params.review_id;
-        let itemKey = await reviewModel.deleteReview(review_id);
-        imgUp.deleteS3(itemKey[0].img_key);
+        let reviewData = await reviewModel.deleteReview(review_id);
+
+        //사진 지워주기
+        imgUp.deleteS3(reviewData[0].img_key);
+        //디비 내용 삭제
         let deleteResult = await reviewModel.deleteMyReview(review_id);
+        //사료 콜렉션에 있는 Review_Num 컬럼 변경
+        await FeedModel.updateReviewNum(reviewData[0].feed_id, 1);  //0이면 증가, 1이면 감소
         res.send(deleteResult);
     } catch( error ){
         console.log(error);
