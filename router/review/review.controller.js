@@ -9,7 +9,7 @@ const upload = multer({
 
 var router = express.Router();
 
-router.route('/likes')//이거 수정 필요 post 방식으로 처리
+router.route('/likes')
     .post(likeReview);
 
 router.route('/')
@@ -60,15 +60,9 @@ async function showMyReviews(req, res){
 }
 
 async function likeReview(req, res) {
-    // 현재 내가 좋아한 리뷰? 리뷰에서 카운트 감소 증가
-    // 내 이메일 정보(로그인 정보) => 몽고유저에서 my_tastes 에서 삭제, << 추가 할것
-    //                           => 아무것도 하지 않은 리뷰이면 추가 + 리뷰에서 likes count 증가
-    // 내 몽고 my_tastes에 현재 review _id <==post 정보
-    // review_id my_tastes array 에 추가
     try{
-        let review = await reviewModel.addMyTastes(req);
-        let like = await reviewModel.incrementLikes(review);
-        res.send(like);
+        let review = await reviewModel.addLikedUsers(req);
+        res.send(review);
     }catch(error){
         res.status(error.code).send({msg:error.msg});
     }

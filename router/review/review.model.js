@@ -47,42 +47,60 @@ Model.showMyReviews = function(req){
     })
 };
 
-Model.addMyTastes = function(req){
+Model.addLikedUsers = function(req){
 
     return new Promise((resolve, reject) =>{
-        const user_info = "asdf@gmail.com";
-        const reviewId = req.body.review_objId;
+        const user_info = "sswpro@gmail.com";
+        const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
+        const likedUsers = req.body.is_liked; //누른 사람의 이메일 (배열)
 
-        UserSchema.findOneAndUpdate({email: user_info},
-            {$push: {"my_tastes" :  reviewId}},
-            {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-            .exec(function(err, docs){
-                if(err){
-                    console.log(err);
-                    reject(err);
-                }else{
-                    resolve(reviewId);
-                }
-            })
+        let isLiked = false;
+        console.log(likedUsers);
+
+        // let arr = likedUsers.split(",");
+        // for ( var i in arr){
+        //     console.log(arr[i]);
+        // }
+
+        // for (var i = 0; i < likedUsers.length; i++){
+        //     console.log("likedUsers: ",likedUsers[i]);
+        //     console.log("likedUsers.length: ",likedUsers.length);
+        //     if(likedUsers[i] === user_info){
+        //         console.log(likedUsers[i]);
+        //         isLiked = true;
+        //         console.log("같다!!!!!!!!1",isLiked);
+        //     }
+        //
+        // }// for loop 제대로 동작 안함...
+        // console.log("**********",isLiked);
+        if(!isLiked){
+            ReviewSchema.findOneAndUpdate({_id: reviewId},
+                {$push: {"like_users" :  user_info}},
+                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+                .exec(function(err, docs){
+                    if(err){
+                        console.log(err);
+                        reject(err);
+                    }else{
+                        resolve(likedUsers);
+                    }
+                })
+        }else{
+            ReviewSchema.findOneAndUpdate({_id: reviewId},
+                {$pull: {"like_users" :  user_info}},
+                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+                .exec(function(err, docs){
+                    if(err){
+                        console.log(err);
+                        reject(err);
+                    }else{
+                        resolve(likedUsers);
+                    }
+                })
+        }
+
     })
 };
-
-Model.incrementLikes = function(review){
-    return new Promise((resolve, reject) =>{
-
-        ReviewSchema.findOneAndUpdate({_id: review},
-            {$inc: {"likes_num" : 1}})
-            .exec(function(err, docs){
-                if(err){
-                    console.log(err);
-                    reject(err);
-                }else{
-                    resolve({msg:"sucess", data:docs});
-                }
-            })
-    })
-};
-
 
 Model.writeReview = function(review){
     return new Promise((resolve, reject)=>{
