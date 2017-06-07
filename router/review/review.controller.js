@@ -29,14 +29,14 @@ async function writeReview(req, res) {
         let s3Path;
         if (req.files !== undefined){
             file = req.files[0];
-            let sizeTest = await imgUp.sizeTest(file);
+            /*let sizeTest = await imgUp.sizeTest(file);
             let ratio = 5;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);
+            let resized = await imgUp.resizingImg(file, width, height);*/
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
-            let del = await imgUp.deleteLocalFile(file);
+            await imgUp.deleteLocalFile(file);
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
