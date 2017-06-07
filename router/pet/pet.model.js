@@ -92,16 +92,16 @@ PetModel.deletePetImg = function(pet_id) {
 PetModel.addPet = function(req) {
     return new Promise((resolve,reject)=> {
         PetModel.create({
-            name: req.body.postBody.name
-            , type: req.body.postBody.type
-            , gender: req.body.postBody.gender
-            , birthday: req.body.postBody.birthday
-            , weight: req.body.postBody.weight
-            , allergy: req.body.postBody.allergy
-            , remark: req.body.postBody.remark
-            , special: req.body.postBody.special
-            , main_pet: req.body.postBody.main_pet
-            , user_id: req.body.postBody.user_id
+            name: req.body.name
+            , type: req.body.type
+            , gender: req.body.gender
+            , birthday: req.body.birthday
+            , weight: req.body.weight
+            , allergy: req.body.allergy
+            , remark: req.body.remark
+            , special: req.body.special
+            , main_pet: req.body.main_pet
+            , user_id: req.body.user_id
             , image_url: null
             , image_key: null
         }).then((results) => {
