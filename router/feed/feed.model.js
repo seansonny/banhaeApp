@@ -95,8 +95,8 @@ FeedModel.addFeed = function() {
             ORIGIN: "미국",
             MANUFACTURE: "미국",
             NUTRITION_NAME: ["조단백","조지방","조섬유"],
-            NUTRITION_INDEX: [25,15,3],
-            NUTRITION_UNIT: ["이상","이상","이하"],
+            NUTRITIONS_INDEX: [25,15,3],
+            NUTRITIONS_UNIT: ["이상","이상","이하"],
             PACKAGE_UNIT: [1.2, 2.27, 4.5, 9.98, 13.62],
             RATING: 5,
             REVIEW_NUM: 0
