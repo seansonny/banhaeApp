@@ -40,7 +40,6 @@ async function writeReview(req, res) {
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
-        console.log(reviewData);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
         //사료 콜렉션에 있는 Review_Num 컬럼 변경
