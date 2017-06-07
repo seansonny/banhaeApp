@@ -89,21 +89,21 @@ PetModel.deletePetImg = function(pet_id) {
 }
 
 //펫 정보 추가
-PetModel.addPet = function(req) {
+PetModel.addPet = function(body) {
     return new Promise((resolve,reject)=> {
         PetModel.create({
-            name: req.body.name
-            , type: req.body.type
-            , gender: req.body.gender
-            , birthday: req.body.birthday
-            , weight: req.body.weight
-            , allergy: req.body.allergy
-            , remark: req.body.remark
-            , special: req.body.special
-            , main_pet: req.body.main_pet
-            , user_id: req.body.user_id
-            , image_url: null
-            , image_key: null
+            name: body.name  //필수
+            , type: body.type  //필수
+            , gender: body.gender  //필수
+            , birthday: body.birthday  //필수
+            , weight: body.weight
+            , allergy: body.allergy
+            , remark: body.remark
+            , special: body.special
+            , main_pet: body.main_pet  //필수
+            , user_id: body.user_id  //필수
+            , image_url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
+            , image_key: "defalutPetImage.png"
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
@@ -113,10 +113,18 @@ PetModel.addPet = function(req) {
 }
 
 //펫 정보 수정
-PetModel.updatePet = function(pet_id) {
+PetModel.updatePet = function(pet_id,body) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            remark: "임신중"
+            name: body.name  //필수
+            , type: body.type  //필수
+            , gender: body.gender  //필수
+            , birthday: body.birthday  //필수
+            , weight: body.weight
+            , allergy: body.allergy
+            , remark: body.remark
+            , special: body.special
+            , main_pet: body.main_pet  //필수
         }, {
             where: {pet_id: pet_id}
         }).then((results) => {
