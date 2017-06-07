@@ -27,7 +27,7 @@ async function writeReview(req, res) {
     try{
         let file;
         let s3Path;
-        if (req.files == undefined){
+        if (req.files !== undefined){
             file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
             let ratio = 5;
