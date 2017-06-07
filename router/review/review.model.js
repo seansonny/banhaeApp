@@ -55,24 +55,10 @@ Model.addLikedUsers = function(req){
         const likedUsers = req.body.is_liked; //누른 사람의 이메일 (배열)
 
         let isLiked = false;
-        console.log(likedUsers);
-
-        // let arr = likedUsers.split(",");
-        // for ( var i in arr){
-        //     console.log(arr[i]);
-        // }
-
-        // for (var i = 0; i < likedUsers.length; i++){
-        //     console.log("likedUsers: ",likedUsers[i]);
-        //     console.log("likedUsers.length: ",likedUsers.length);
-        //     if(likedUsers[i] === user_info){
-        //         console.log(likedUsers[i]);
-        //         isLiked = true;
-        //         console.log("같다!!!!!!!!1",isLiked);
-        //     }
-        //
-        // }// for loop 제대로 동작 안함...
-        // console.log("**********",isLiked);
+        for (var i = 0; i < likedUsers.length; i++){
+            if(likedUsers[i] === user_info)
+                isLiked = true;
+        }
         if(!isLiked){
             ReviewSchema.findOneAndUpdate({_id: reviewId},
                 {$push: {"like_users" :  user_info}},
