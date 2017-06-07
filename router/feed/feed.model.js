@@ -16,8 +16,8 @@ let FeedSchema  = new Schema({
     HUMIDITY: {type: String},
     TYPE: {type: String},       //추후변경
     IS_SNACK: {type: Boolean},
-    INGREDIENT_INDEX: {type: Array},
-    INGREDIENT: {type: Array},
+    INGREDIENTS_INDEX: {type: Array},
+    INGREDIENTS: {type: Array},
     GRAIN_SIZE: {type: String},
     PRICE: {type: Number},
     ORIGIN: {type: String},

@@ -13,6 +13,7 @@ const petRouter = require('./router/pet/pet.controller');
 const questionRouter = require('./router/question/question.controller');
 
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
 app.use(morgan('dev'));
 
 app.use('ingredients', ingredientRouter);
