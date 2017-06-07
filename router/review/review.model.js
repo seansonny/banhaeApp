@@ -21,10 +21,10 @@ Model.sendReview = function(req, imgInfo){
             }
 
             review.feed_id = req.body.feed_id;
+            review.pet_id = req.body.pet_id;
             //유저 정보로 user_id 가져오는 로직 추가
             review.user_id = req.body.user_id;
             review.rating = req.body.rating;
-            review.likes_num = 0;
             resolve(review);
         }catch( error ){
             console.log(error);
