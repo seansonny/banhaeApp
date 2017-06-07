@@ -33,14 +33,15 @@ async function uploadPetImg(req, res) {
         }
         else {
             let pet_info = await PetModel.getPetImg(pet_id);       //이전 파일이름, url 가져오기
-
             if(pet_info.image_url != "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png") {
-                let itemKey = pet_info.image_key;
-                imgUp.deleteS3(itemKey);
+                if(pet_info.image_url!=null) {
+                    let itemKey = pet_info.image_key;
+                    imgUp.deleteS3(itemKey);
+                }
             }
-
-            /*await imgUp.resizingImg(file, 200, 200);     // 사이즈 조정*/
-            let img_url = await imgUp.s3Upload(file.name, file, 'pets');     //s3에 업로드
+            await imgUp.resizingImg(file, 200, 200);     // 사이즈 조정
+            let img_url = await imgUp.s3Upload(file, 'pets');     //s3에 업로드
+            console.log(img_url);
             await PetModel.uploadPetImg(pet_id, img_url.itemKey, img_url.url);      //db에 파일이름 저장하기
             let result = {msg:"addPetImg 성공" };
             res.send(result);
@@ -99,7 +100,7 @@ async function getPetByID(req, res) {
 async function addPet(req, res) {
     try {
         //입력 처리
-        const pet = await PetModel.addPet();
+        const pet = await PetModel.addPet(req);
         let result = { data:pet, msg:"addPet 성공" };
         res.send(result);
     } catch (err) {
