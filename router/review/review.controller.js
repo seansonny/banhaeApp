@@ -25,21 +25,22 @@ router.post('/', upload.any(), writeReview);
 
 async function writeReview(req, res) {
     try{
-        let file;
+        let file=req.files[0];
         let s3Path;
-        if (req.files !== undefined){
+        if (file != undefined){
             file = req.files[0];
-            /*let sizeTest = await imgUp.sizeTest(file);
+            let sizeTest = await imgUp.sizeTest(file);
             let ratio = 5;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);*/
+            let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
             await imgUp.deleteLocalFile(file);
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
+        console.log(reviewData);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
         //사료 콜렉션에 있는 Review_Num 컬럼 변경
