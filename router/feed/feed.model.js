@@ -10,22 +10,22 @@ let FeedSchema  = new Schema({
     BRAND_ID: {type: Number},
     CHECKPOINTS: {type: Array},
     FULLNAME: {type: String},
-    TARGET_SIZE: {type: Number},
-    TARGET_AGE: {type: Number},
+    TARGET_SIZE: {type: String},  //추후변경
+    TARGET_AGE: {type: String},     //추후변경
     NAME: {type: String},
-    HUMIDITY: {type: Number},
-    TYPE: {type: Number},
+    HUMIDITY: {type: String},
+    TYPE: {type: String},       //추후변경
     IS_SNACK: {type: Boolean},
     INGREDIENT_INDEX: {type: Array},
-    INGREDIENT_NAME: {type: Array},
+    INGREDIENT: {type: Array},
     GRAIN_SIZE: {type: String},
     PRICE: {type: Number},
     ORIGIN: {type: String},
     MANUFACTURE: {type: String},
-    NUTRITION_NAME: {type: Array},
+    NUTRITION: {type: Array},
     NUTRITION_INDEX: {type: Array},
-    NUTRITION_UNIT: {type: Array},
-    PACKAGE_UNIT: {type: Array},
+    UNIT: {type: Array},
+    PACKAGE: {type: Array},
     RATING: {type: Number},
     REVIEW_NUM: {type: Number}
 });
@@ -40,6 +40,7 @@ FeedModel.getFeedByName = function(feed_name) {
                 reject(err);
             }
             else {
+                console.log(feed.TARGET_SIZE);
                 resolve(feed);
             }
         })
