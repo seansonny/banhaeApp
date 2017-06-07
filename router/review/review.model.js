@@ -52,13 +52,17 @@ Model.addLikedUsers = function(req){
     return new Promise((resolve, reject) =>{
         const user_info = "sswpro@gmail.com";
         const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
-        const likedUsers = req.body.is_liked; //누른 사람의 이메일 (배열)
+        let likedUsers = req.body.is_liked; //누른 사람의 이메일 (배열)
 
         let isLiked = false;
-        for (var i = 0; i < likedUsers.length; i++){
-            if(likedUsers[i] === user_info)
-                isLiked = true;
+        if(likedUsers !== undefined){
+            likedUsers = likedUsers instanceof Array ? likedUsers : [likedUsers];
+            for (var i = 0; i < likedUsers.length; i++){
+                if(likedUsers[i] === user_info)
+                    isLiked = true;
+            }
         }
+
         if(!isLiked){
             ReviewSchema.findOneAndUpdate({_id: reviewId},
                 {$push: {"like_users" :  user_info}},
