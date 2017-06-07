@@ -71,7 +71,7 @@ ImgUpload.s3Upload = function(file, directory){
             Key: itemKey,            // 필수
             ACL: 'public-read',
             Body: readStream,
-            ContentType: contentType
+            ContentType: 'image/png'
         }
 
         s3.putObject(params, function (err, data) {
