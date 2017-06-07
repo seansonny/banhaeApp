@@ -22,8 +22,8 @@ let FeedSchema  = new Schema({
     PRICE: {type: Number},
     ORIGIN: {type: String},
     MANUFACTURE: {type: String},
-    NUTRITION: {type: Array},
-    NUTRITION_INDEX: {type: Array},
+    NUTRITIONS: {type: Array},
+    NUTRITIONS_INDEX: {type: Array},
     UNIT: {type: Array},
     PACKAGE: {type: Array},
     RATING: {type: Number},
@@ -40,7 +40,6 @@ FeedModel.getFeedByName = function(feed_name) {
                 reject(err);
             }
             else {
-                console.log(feed.TARGET_SIZE);
                 resolve(feed);
             }
         })
