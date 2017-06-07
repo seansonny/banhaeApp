@@ -1,7 +1,7 @@
 convertExcel = require('excel-as-json').processFile;
 var mongoose = require('mongoose');
 
-convertExcel('./feeds.xlsx', './feeds.json', null, function(err,data){
+convertExcel('./Book1.xlsx', './feeds.json', null, function(err,data){
     console.log(data);
 });
 

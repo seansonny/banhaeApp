@@ -30,4 +30,4 @@ var FeedSchema = new mongoose.Schema({
     REVIEW_NUM: {type: Number}
 });
 
-module.exports = mongoose.model('FEED', FeedSchema);
+module.exports = mongoose.model('FEEDS',FeedSchema,'FEEDS');
