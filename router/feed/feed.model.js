@@ -40,7 +40,6 @@ FeedModel.getFeedByName = function(feed_name) {
                 reject(err);
             }
             else {
-                console.log(feed.TARGET_SIZE);
                 resolve(feed);
             }
         })
