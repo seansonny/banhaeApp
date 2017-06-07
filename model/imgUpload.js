@@ -57,7 +57,7 @@ ImgUpload.resizingImg = function(img, width, height){
 
 ImgUpload.s3Upload = function(file, directory){
     return new Promise((resolve, reject) =>{
-        //console.log(file);
+        console.log(file);
         let s3 = new AWS.S3();
         let contentType = file.mimetype;
         let readStream = fs.createReadStream(file.path);
