@@ -49,11 +49,12 @@ async function getPetByID(req, res) {
 async function addPet(req, res) {
     try {
         //유효성 체크
-        if (!req.body.name || !req.body.gender || !req.body.birthday || !req.body.weight || !req.body.user_id || !req.body.main_pet || !req.body.type) {
-            res.status(404).send({msg:"필수 입력값을 다 줘야죠"});
+        if (!req.body.name || !req.body.birthday || !req.body.weight || !req.body.user_id || !req.body.type) {
+            res.status(400).send({msg:"필수 입력값을 다 줘야죠"});
             return;
         }
         const pet = await PetModel.addPet(req.body);
+console.log('addPet result : ', pet);
 
         if(req.files[0]!= null) {
             await uploadPetImg(pet.pet_id, req.files[0]);
@@ -62,7 +63,8 @@ async function addPet(req, res) {
         let result = { data:pet, msg:"addPet 성공" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+console.log('addPet controller error : ', err);
+        res.status(500).send(err);
     }
 }
 
