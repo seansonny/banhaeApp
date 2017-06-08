@@ -9,7 +9,6 @@ router.route('/:ingredient_id')
     .get(showIngredientDetail)
     .delete(deleteIngredient)
 
-
 router.route('/')
     .post(addIngredient)
     .put(editIngredient);
