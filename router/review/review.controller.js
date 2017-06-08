@@ -72,12 +72,27 @@ async function likeReview(req, res) {
 
 async function showReviews(req, res) {
     try{
-        let showLatestReviews = await reviewModel.showLatestReviews();
-        //review_objId도 보내줘야함
-        res.send(showLatestReviews);
-    } catch( error ){
-        console.log(error);
-        res.status(error.code).send({msg:error.msg});
+        /*let showLatestReviews = await reviewModel.showLatestReviews();*/  //review_objId도 보내줘야함(보류)
+        let sort = req.query.sort;
+        let mode = req.query.type;
+
+        /*let reviewList = await reviewModel.showReviewList();*/
+
+        //최신순(디폴트값)
+        let reviews = await reviewModel.showLatestReviews();
+
+        if(sort == "like") {
+            //좋아요순(like_users을 세야하나? 집계함수로 ㄱㄱ)
+            reviews = await reviewModel.showMostLikeReviews();
+        }
+
+        if(mode!=0) {  //개 이름값이 정확히 오면
+            //견종별 리뷰
+       }
+
+        res.send(reviews);
+    } catch(err){
+        res.send({msg:err.msg});
     }
 }
 

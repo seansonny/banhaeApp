@@ -8,6 +8,30 @@ const multer = require('multer');
 class Model{
 }
 
+Model.showMostLikeReviews = function() {
+    return new Promise((resolve,reject)=> {
+        ReviewSchema.aggregate([{"$project":{
+            "_id":1,
+            "pet_id":1,
+            "like_users":1,
+            "rating":1,
+            "user_id":1,
+            "feed_id":1,
+            "good":1,
+            "bad":1,
+            "time_stamp":1,
+            "length":{"$size": "$like_users"}}}
+            , {"$sort":{"length":-1}}], (err, feed)=>{
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve(feed);
+            }
+        })
+    });
+}
+
 Model.sendReview = function(req, imgInfo){
     return new Promise((resolve, reject)=>{
         try{
@@ -125,16 +149,11 @@ Model.addMyReview = function(review){
 
 Model.showLatestReviews = function(){
     return new Promise((resolve, reject)=>{
-        const reviewCounts = 3;
         ReviewSchema.find()
-            .sort({'time_stamp': -1})
-            .limit(reviewCounts).exec(function(err, docs){
+            .sort({'time_stamp': -1}).exec((err, docs) => {
             if(err) {
-                console.log(err);
                 reject(err);
-                return;
             }
-            console.log(docs);
             resolve(docs);
         })
     })
