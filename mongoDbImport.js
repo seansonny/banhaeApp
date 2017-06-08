@@ -1,8 +1,9 @@
 convertExcel = require('excel-as-json').processFile;
 var mongoose = require('mongoose');
 
-convertExcel('./0607.xlsx', './0607.json', null, function(err,data){
+convertExcel('./feedN.xlsx', './feedN.json', null, function(err,data){
     console.log(data);
 });
 
-//$ mongoimport --db banhae --collection FEEDS --type json --drop --file "0607.json" --jsonArray
+// $ mongoimport --db banhae --collection allergys --type json --drop --file "allergy.json" --jsonArray
+// $ mongoimport --db banhae --collection FEEDS --type json --drop --file "feedN.json" --jsonArray

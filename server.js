@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
-app.use('ingredients', ingredientRouter);
+app.use('/ingredients', ingredientRouter);
 app.use('/users', usersRouter);
 app.use('/reviews', reviewRouter);
 app.use('/requests', requestRouter);
