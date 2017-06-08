@@ -27,7 +27,9 @@ var FeedSchema = new mongoose.Schema({
     UNIT: {type: Array},
     PACKAGE: {type: Array},
     RATING: {type: Number},
-    REVIEW_NUM: {type: Number}
+    REVIEW_NUM: {type: Number},
+    ALLERGY_LISTS: {type: Array},
+    INDEX: {type: Number}
 });
 
 module.exports = mongoose.model('FEEDS',FeedSchema,'FEEDS');

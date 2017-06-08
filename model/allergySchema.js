@@ -10,7 +10,7 @@ let allergySchema = new mongoose.Schema({
     index :Number,
     class : String,
     name : String,
-    ingredients : Array
+    ingredients : Array,
 });
 
-module.exports = mongoose.model('allergy', allergySchema);
+module.exports = mongoose.model('allergie', allergySchema);
