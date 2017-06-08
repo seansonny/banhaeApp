@@ -62,9 +62,9 @@ ImgUpload.s3Upload = function(file, directory){
         let contentType = file.mimetype;
         let readStream = fs.createReadStream(file.path);
         // 버킷 내 객체 키 생성
-        let date = new Date().toString().split('GMT')[0];
+        let date = new Date().now;
         let folderName = directory;
-        let itemKey = folderName + '/' + file.originalname +' -t* '+ date;
+        let itemKey = folderName + '/' + file.originalname + date;
         let bucketName = config.bucketName;
         let params = {
             Bucket: bucketName,     // 필수
