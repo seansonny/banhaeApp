@@ -27,7 +27,8 @@ let FeedSchema  = new Schema({
     UNIT: {type: Array},
     PACKAGE: {type: Array},
     RATING: {type: Number},
-    REVIEW_NUM: {type: Number}
+    REVIEW_NUM: {type: Number},
+    IMAGE_URL : {type: String}
 });
 
 let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
