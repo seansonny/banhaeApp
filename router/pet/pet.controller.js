@@ -24,10 +24,10 @@ router.delete('/upload/:pet_id', deletePetImg); //펫 이미지 삭제*/
 async function getPetList(req, res) {
     try {
         const pet = await PetModel.getPetList();
-        let result = { data:pet, msg:"getPetList 성공" };
+        let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -38,10 +38,10 @@ async function getPetByID(req, res) {
             res.send({"msg":"No Pet ID!!"})
         }
         const pet = await PetModel.getPetByID(pet_id);
-        let result = { data:pet, msg:"getPetByID 성공" };
+        let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -59,10 +59,10 @@ async function addPet(req, res) {
             await uploadPetImg(pet.pet_id, req.files[0]);
         }
 
-        let result = { data:pet, msg:"addPet 성공" };
+        let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -81,10 +81,10 @@ async function updatePet(req, res) {
             await imgUp.deleteS3(itemKey);
             await uploadPetImg(pet_id, req.files[0]);
         }
-        let result = { data:pet, msg:"updatePet 성공" };
+        let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -97,10 +97,10 @@ async function deletePet(req, res) {
 
         await deletePetImg(pet_id);
         const pet = await PetModel.deletePet(pet_id);
-        let result = { data:pet, msg:"deletePet 성공" };
+        let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 /*******************************************************************************************************************/
