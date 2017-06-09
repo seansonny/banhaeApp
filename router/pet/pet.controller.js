@@ -48,13 +48,12 @@ async function getPetByID(req, res) {
 //펫정보추가
 async function addPet(req, res) {
     try {
-        //유효성 체크
+        //유효성 체크 gender, mian_pet
         if (!req.body.name || !req.body.birthday || !req.body.weight || !req.body.user_id || !req.body.type) {
             res.status(400).send({msg:"필수 입력값을 다 줘야죠"});
             return;
         }
         const pet = await PetModel.addPet(req.body);
-console.log('addPet result : ', pet);
 
         if(req.files[0]!= null) {
             await uploadPetImg(pet.pet_id, req.files[0]);
@@ -63,7 +62,6 @@ console.log('addPet result : ', pet);
         let result = { data:pet, msg:"addPet 성공" };
         res.send(result);
     } catch (err) {
-console.log('addPet controller error : ', err);
         res.status(500).send(err);
     }
 }
@@ -109,7 +107,7 @@ async function deletePet(req, res) {
 //펫 이미지 업로드
 async function uploadPetImg(pet_id, file) {
     try {
-        await imgUp.resizingImg(file, 200, 200);     // 사이즈 조정
+        await imgUp.resizingImg(file, 500, 500);     // 사이즈 조정
         let img_url = await imgUp.s3Upload(file, 'pets');     //s3에 업로드
         await PetModel.uploadPetImg(pet_id, img_url.itemKey, img_url.url);      //db에 파일이름 저장하기
     } catch (err) {

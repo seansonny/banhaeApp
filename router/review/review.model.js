@@ -147,7 +147,7 @@ Model.addMyReview = function(review){
     })
 };
 
-Model.showLatestReviews = function(){
+Model.showLatestReviews = function(){ // limit
     return new Promise((resolve, reject)=>{
         const reviewCounts = 3;
         ReviewSchema.find()

@@ -30,7 +30,7 @@ async function writeReview(req, res) {
         if (file != undefined){
             file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
-            let ratio = 5;
+            let ratio = 2;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
             let resized = await imgUp.resizingImg(file, width, height);
@@ -76,8 +76,6 @@ async function showReviews(req, res) {
         let sort = req.query.sort;
         let mode = req.query.type;
 
-        /*let reviewList = await reviewModel.showReviewList();*/
-
         //최신순(디폴트값)
         let reviews = await reviewModel.showLatestReviews();
 
@@ -86,9 +84,9 @@ async function showReviews(req, res) {
             reviews = await reviewModel.showMostLikeReviews();
         }
 
-        if(mode!=0) {  //개 이름값이 정확히 오면
-            //견종별 리뷰
-       }
+        if(mode != 'all') {  //개 이름값이 정확히 오면
+            //review에서 dog_type이 없다
+        }
 
         res.send(reviews);
     } catch(err){
