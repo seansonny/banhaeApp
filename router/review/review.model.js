@@ -147,13 +147,18 @@ Model.addMyReview = function(review){
     })
 };
 
-Model.showLatestReviews = function(){
+Model.showLatestReviews = function(){ // limit
     return new Promise((resolve, reject)=>{
+        const reviewCounts = 3;
         ReviewSchema.find()
-            .sort({'time_stamp': -1}).exec((err, docs) => {
+            .sort({'time_stamp': -1})
+            .limit(reviewCounts).exec(function(err, docs){
             if(err) {
+                console.log(err);
                 reject(err);
+                return;
             }
+            console.log(docs);
             resolve(docs);
         })
     })
