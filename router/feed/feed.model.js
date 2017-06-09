@@ -99,7 +99,8 @@ FeedModel.addFeed = function() {
             NUTRITIONS_UNIT: ["이상","이상","이하"],
             PACKAGE_UNIT: [1.2, 2.27, 4.5, 9.98, 13.62],
             RATING: 5,
-            REVIEW_NUM: 0
+            REVIEW_NUM: 0,
+            IMAGE_URL: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutImage.png"
         });
 
         feed.save((err) => {
@@ -150,6 +151,22 @@ FeedModel.updateReviewNum = function(feed_id,change) {
         }
 
         FeedModel.update({_id:feed_id},{$inc:{REVIEW_NUM:value}}, (err)=>{
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
+    });
+}
+
+//사료 별점 수정
+FeedModel.updateRating = function(feedData, reviewData) {
+    return new Promise((resolve,reject)=> {
+        let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
+
+        FeedModel.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
             if(err) {
                 reject(err);
             }

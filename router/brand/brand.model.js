@@ -11,11 +11,12 @@ let BrandModel = sequelize.define('brand', {
     , recipe: {type: Sequelize.STRING, allowNull: true}
     , foundation: {type: Sequelize.STRING, allowNull: true}
     , recall: {type: Sequelize.TEXT, allowNull: true}
+    , image_url: {type: Sequelize.STRING}
 }, {
         timestamps: false
 });
 
-//검색할 때 사용할 예정(추후에 like 처리)
+//검색할 때 사용할 예정
 BrandModel.getBrandByName = function(brand_name) {
     return new Promise((resolve,reject)=> {
         BrandModel.findAll({
@@ -64,7 +65,8 @@ BrandModel.addBrand = function() {
             is_recall: 1,
             recipe: "회사 자체 레서피를 보유하고 있습니다.",
             foundation: "2006년",
-            recall: "2008년 11월 필수 감사 조사에 문제가 발생해서 호주의 오리젠 고양이 사료만 리콜 진행"
+            recall: "2008년 11월 필수 감사 조사에 문제가 발생해서 호주의 오리젠 고양이 사료만 리콜 진행",
+            image_url:"https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutImage.png"
         }).then((results) => {
             resolve(results);
         }).catch((err) => {

@@ -36,19 +36,22 @@ async function writeReview(req, res) {
             let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
-            await imgUp.deleteLocalFile(file);
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
-        //사료 콜렉션에 있는 Review_Num 컬럼 변경
+
+        let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
+        await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
     } catch( error ){
         console.log(error);
         res.status(error.code).send({msg:error.msg});
+    } finally {
+        await imgUp.deleteLocalFile(file);
     }
 }
 
