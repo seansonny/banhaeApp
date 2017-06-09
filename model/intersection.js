@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const AllergySchema = require('./model/allergySchema');
-const FeedSchema = require('./model/feedSchema');
+const AllergySchema = require('./allergySchema');
+const FeedSchema = require('./feedSchema');
 
 if (mongoose.connection.readyState < 1)
     mongoDB.connect();
@@ -106,3 +106,25 @@ async function intersection() {
 
 
 intersection();
+
+// // 사료 정보 보기
+// > db.feeds.find()
+// { "_id" : ObjectId("59375e54e6e3e9bb91ecc80d"), "name" : "feed1", "allergy" : [ "al1", "al2" ] }
+// { "_id" : ObjectId("59375e5fe6e3e9bb91ecc80e"), "name" : "feed2", "allergy" : [ "al1", "al3" ] }
+// { "_id" : ObjectId("59375e69e6e3e9bb91ecc80f"), "name" : "feed4", "allergy" : [ "al2", "al3" ] }
+// { "_id" : ObjectId("59377fc0e6e3e9bb91ecc810"), "name" : "feed5", "allergy" : [ "al2" ] }
+// { "_id" : ObjectId("59377fc8e6e3e9bb91ecc811"), "name" : "feed6", "allergy" : [ ] }
+//
+//
+// // 사료 중 특정 알러지 개수 알기
+// > db.feeds.aggregate( [ { $project: {name:1, allergy:1, count:{$size: {$setIntersection:[ '$allergy', ['al1', 'al2'] ]}  } } } ] )
+// { "_id" : ObjectId("59375e54e6e3e9bb91ecc80d"), "name" : "feed1", "allergy" : [ "al1", "al2" ], "count" : 2 }
+// { "_id" : ObjectId("59375e5fe6e3e9bb91ecc80e"), "name" : "feed2", "allergy" : [ "al1", "al3" ], "count" : 1 }
+// { "_id" : ObjectId("59375e69e6e3e9bb91ecc80f"), "name" : "feed4", "allergy" : [ "al2", "al3" ], "count" : 1 }
+// { "_id" : ObjectId("59377fc0e6e3e9bb91ecc810"), "name" : "feed5", "allergy" : [ "al2" ], "count" : 1 }
+// { "_id" : ObjectId("59377fc8e6e3e9bb91ecc811"), "name" : "feed6", "allergy" : [ ], "count" : 0 }
+//
+//
+
+
+
