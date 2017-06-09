@@ -108,7 +108,6 @@ console.log('PetModel.addPet :', body);
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
-console.log('addPet model error', err);
             reject(err);
         });
     });

@@ -26,14 +26,14 @@ router.post('/', upload.any(), writeReview);
 async function writeReview(req, res) {
     try{
         let file=req.files[0];
-        let s3Path;
+        let s3Path = {url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png", itemKey:"defalutPetImage.png"};
         if (file != undefined){
             file = req.files[0];
-            let sizeTest = await imgUp.sizeTest(file);
+            /*let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);
+            let resized = await imgUp.resizingImg(file, width, height);*/
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
             await imgUp.deleteLocalFile(file);
@@ -73,8 +73,10 @@ async function likeReview(req, res) {
 async function showReviews(req, res) {
     try{
         /*let showLatestReviews = await reviewModel.showLatestReviews();*/  //review_objId도 보내줘야함(보류)
+        let tempReviews = [];
         let sort = req.query.sort;
         let mode = req.query.type;
+        let page = req.query.page;
 
         //최신순(디폴트값)
         let reviews = await reviewModel.showLatestReviews();
@@ -85,8 +87,24 @@ async function showReviews(req, res) {
         }
 
         if(mode != 'all') {  //개 이름값이 정확히 오면
-            //review에서 dog_type이 없다
+            for(let i=0;i<reviews.length;i++) {
+                if(reviews[i].pet_type == mode) {
+                    tempReviews.push(reviews[i]);
+                }
+            }
+            reviews = tempReviews;
+            tempReviews = [];
         }
+        
+        //page처리
+        for(let i=(page-1)*5;i<(5*page);i++) {
+            if(reviews[i] == null) {
+                break;
+            }
+            tempReviews.push(reviews[i]);
+        }
+
+        reviews = tempReviews;
 
         res.send(reviews);
     } catch(err){
