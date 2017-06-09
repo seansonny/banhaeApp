@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const conn = require('../database/mongoDbConfig');
+const conn = require('../connection/mongoDbConfig');
 
 if (mongoose.connection.readyState < 1)
     conn.connect();
@@ -30,7 +30,10 @@ let FeedSchema = new mongoose.Schema({
     REVIEW_NUM: {type: Number},
     ALLERGY_LISTS: {type: Array},
     INDEX: {type: Number},
-    IMAGE_URL : {type: String}
-});
+    IMAGE_URL : {type: String},
+    INGRED_LISTS : {type: Array},
+    NUTRITIONS_LISTS : {type: Array},
 
-module.exports = mongoose.model('FEEDS',FeedSchema,'FEEDS');
+},        { strict: false });
+
+module.exports = mongoose.model('FEDS',FeedSchema,'FEDS');

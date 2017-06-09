@@ -1,9 +1,9 @@
-var pool = require('./database/mysqlConnection');
+var pool = require('../connection/mysqlConnection');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const FeedSchema = require('./model/feedSchema');
-const FedSchema = require('./model/fedsSchema');
+const FeedSchema = require('./feedSchema');
+const FedSchema = require('./fedsSchema');
 
 if (mongoose.connection.readyState < 1)
     mongoDB.connect();
@@ -13,9 +13,9 @@ if (mongoose.connection.readyState < 1)
 
 showFeeds = function(){
     return new Promise((resolve, reject) =>{
-        const counts = 1;
+        //const counts = 1;
         FeedSchema.find()
-            .limit(counts)
+            //.limit(counts)
             .exec(function(err, docs){
                 if(err) {
                     reject(err);
@@ -55,44 +55,44 @@ async function preprocessing() {
         let ingredients = await getIngredient(1);
 
         let feedsIngredients = [];
-        for (let i = 0; i < feeds.length; i++){
+        for (let i = 102; i < feeds.length; i++){
             let indi = i+1;
+
             let index = feeds[i].INGREDIENTS_INDEX;
             let names = feeds[i].INGREDIENTS;
             let aFeedIngred = [];
             for (let j = 0; j < index.length; j++){
                 let ind = index[j] -1;
                 let anIngred = ingredients[ind];
-                if(ind !== ingredients[ind].ingredient_id - 1){
+                if(ind !== ingredients[ind].ingredient_id - 1)
                     console.log("다름");
-                }else{
-                    let algFlag = "TRUE";
-                    let warningFlag = "TRUE";
-                    if(anIngred.allergy_num===0)
-                        algFlag = "FALSE";
-                    if(anIngred.is_warning===0)
-                        warningFlag= "FALSE";
+                let algFlag = "TRUE";
+                let warningFlag = "TRUE";
+                if(anIngred.allergy_num===0)
+                    algFlag = "FALSE";
+                if(anIngred.is_warning===0)
+                    warningFlag= "FALSE";
 
-                    let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
+                let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
 
-                    FedSchema.findOneAndUpdate({INDEX: indi},
-                        {$push: {"INGRED_LISTS" : ingredient}},
-                        {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-                        .exec(function(err, docs){
-                            if(err){
-                                console.log(err);
-                            }else{
-                                //console.log("success");
-                            }
-                        })
+                FedSchema.findOneAndUpdate({INDEX: indi},
+                    {$push: {"INGRED_LISTS" : ingredient}},
+                    {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+                    .exec(function(err, docs){
+                        if(err){
+                            console.log(err);
+                        }else{
+                            //console.log("success");
+                        }
+                    })
 
-                    aFeedIngred.push(ingredient);
-                }
+                aFeedIngred.push(ingredient);
+
             }
 
             feedsIngredients.push(aFeedIngred);
         }
-        console.log(feedsIngredients[0][0]);
+        //console.log(feedsIngredients[0][0]);
 
     }catch (error){
         console.log(error);
