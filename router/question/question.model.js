@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../../database/mysqlConfig');
+const sequelize = require('../../connection/mysqlConfig');
 
 let QuestionModel = sequelize.define('question', {
     question_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement:true}

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const FeedSchema = require('./model/feedSchema');
-const FedSchema = require('./model/fedsSchema');
+const FeedSchema = require('./feedSchema');
+const FedSchema = require('./fedsSchema');
 
 if (mongoose.connection.readyState < 1)
     mongoDB.connect();
@@ -11,9 +11,7 @@ if (mongoose.connection.readyState < 1)
 
 showFeeds = function(){
     return new Promise((resolve, reject) =>{
-        const counts = 1;
         FeedSchema.find()
-            .limit(counts)
             .exec(function(err, docs){
                 if(err) {
                     reject(err);
@@ -23,18 +21,6 @@ showFeeds = function(){
             })
     })
 };
-
-
-// [
-//     {
-//         "main": [10, 20, 30, 40] //mongo FEEDS > NUTRITIONS_INDEX
-//     },
-//     {
-//         "extra": ["칼슘(1.5%)", "비타민A(2.0%)", "미네랄(1.5mg)"]
-//         //mongo FEEDS >
-//         //NUTRITIONS + NUTRITIONS_INDEX + UNIT
-//     }
-// ]
 
 async function nutritionLists() {
     try{
@@ -62,7 +48,7 @@ async function nutritionLists() {
             let extraNut = {"extra" : extraList};
 
             FedSchema.findOneAndUpdate({INDEX: indi},
-                {$push: {"N_LISTS" : mainNut}},
+                {$push: {"NUTRITIONS_LISTS" : mainNut}},
                 {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
                 .exec(function(err, docs){
                     if(err){
@@ -71,16 +57,16 @@ async function nutritionLists() {
                         console.log("success");
                     }
                 })
-            // FedSchema.findOneAndUpdate({INDEX: indi},
-            //     {$push: {"N_LISTS" : extraNut}},
-            //     {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-            //     .exec(function(err, docs){
-            //         if(err){
-            //             console.log(err);
-            //         }else{
-            //             console.log("success");
-            //         }
-            //     })
+            FedSchema.findOneAndUpdate({INDEX: indi},
+                {$push: {"NUTRITIONS_LISTS" : extraNut}},
+                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+                .exec(function(err, docs){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        // console.log("success");
+                    }
+                })
         }
 
     }catch (error){

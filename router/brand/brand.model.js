@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../../database/mysqlConfig');
+const sequelize = require('../../connection/mysqlConfig');
 
 let BrandModel = sequelize.define('brand', {
     brand_id: {type: Sequelize.INTEGER, primaryKey: true}
