@@ -62,7 +62,7 @@ ImgUpload.s3Upload = function(file, directory){
         let contentType = file.mimetype;
         let readStream = fs.createReadStream(file.path);
         // 버킷 내 객체 키 생성
-        let date = new Date().now;
+        let date = new Date();
         let folderName = directory;
         let itemKey = folderName + '/' + file.originalname + date;
         let bucketName = config.bucketName;
@@ -71,7 +71,7 @@ ImgUpload.s3Upload = function(file, directory){
             Key: itemKey,            // 필수
             ACL: 'public-read',
             Body: readStream,
-            ContentType: contentType
+            ContentType: 'image/png'
         }
 
         s3.putObject(params, function (err, data) {
