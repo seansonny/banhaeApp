@@ -161,4 +161,20 @@ FeedModel.updateReviewNum = function(feed_id,change) {
     });
 }
 
+//사료 별점 수정
+FeedModel.updateRating = function(feedData, reviewData) {
+    return new Promise((resolve,reject)=> {
+        let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
+
+        FeedModel.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve();
+            }
+        });
+    });
+}
+
 module.exports = FeedModel;

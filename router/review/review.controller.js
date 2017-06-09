@@ -29,11 +29,11 @@ async function writeReview(req, res) {
         let s3Path = {url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png", itemKey:"defalutPetImage.png"};
         if (file != undefined){
             file = req.files[0];
-            let sizeTest = await imgUp.sizeTest(file);
+            /*let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);
+            let resized = await imgUp.resizingImg(file, width, height);*/
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
@@ -41,7 +41,9 @@ async function writeReview(req, res) {
         let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
-        //사료 콜렉션에 있는 Review_Num 컬럼 변경
+
+        let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
+        await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
