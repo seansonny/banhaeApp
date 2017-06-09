@@ -15,7 +15,7 @@ const questionRouter = require('./router/question/question.controller');
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
-app.use( (req, res, next) => { console.log(req.headers['content-type']); next(); } );
+/*app.use( (req, res, next) => { console.log(req.headers['content-type']); next(); } );*/
 app.use('/ingredients', ingredientRouter);
 app.use('/users', usersRouter);
 app.use('/reviews', reviewRouter);

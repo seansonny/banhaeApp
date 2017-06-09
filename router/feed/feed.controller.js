@@ -16,7 +16,7 @@ async function getFeedList(req, res) {
         let result = {count:feed.length, data:feed, msg:"getFeedList 성공" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -26,7 +26,8 @@ async function getFeedByName(req, res) {
         let feed_name = req.query.keyword;
         let sort = req.query.sort;
         if(!feed_name) {
-            res.send({"msg":"No Feed Name!!"})
+            res.status(400).send({"msg":"No Feed Name!!"})
+            return;
         }
         //Model접근
         const feed = await FeedModel.getFeedByName(feed_name);
@@ -49,25 +50,26 @@ async function getFeedByName(req, res) {
             });
         }
 
-        let result = { data:feed, msg:"getFeedByName 성공" };
+        let result = { data:feed, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
 async function getFeedByID(req, res) {
     try {
         let feed_id = req.params.feed_id;
-        /*if(!feed_id) {
-            res.send({"msg":"No Feed ID!!"});
-        }*/
+        if(!feed_id) {
+            res.status(400).send({"msg":"No Feed ID!!"});
+            return;
+        }
 
         const feed = await FeedModel.getFeedByID(feed_id);
-        let result = { data:feed, msg:"getFeedByID 성공" };
+        let result = { data:feed, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -75,49 +77,42 @@ async function addFeed(req, res) {
     try {
         //입력 처리
         const feed = await FeedModel.addFeed();
-        let result = { data:feed, msg:"addFeed 성공" };
+        let result = { data:feed, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
 async function updateFeed(req, res) {
     try {
         let feed_id = req.params.feed_id;
-        /*if(!feed_id) {
-            res.send({"msg":"No Feed ID!!"})
-        }*/
+        if(!feed_id) {
+            res.status(400).send({"msg":"No Feed ID!!"})
+            return;
+        }
 
         const feed = await FeedModel.updateFeed(feed_id);
-        let result = { msg:"updateFeed 성공" };
+        let result = { msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
 async function deleteFeed(req, res) {
     try {
         let feed_id = req.params.feed_id;
-       /* if(!feed_id) {
-            res.send({"msg":"No Feed ID!!"})
-        }*/
+        if(!feed_id) {
+            res.status(400).send({"msg":"No Feed ID!!"})
+            return;
+        }
 
         const feed = await FeedModel.deleteFeed(feed_id);
-        let result = {msg:"deleteFeed 성공" };
+        let result = { msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
-    }
-}
-
-async function sorting(req, res) {
-    try {
-
-        res.send(result);
-    } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 

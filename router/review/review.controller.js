@@ -26,7 +26,7 @@ router.post('/', upload.any(), writeReview);
 async function writeReview(req, res) {
     try{
         let file=req.files[0];
-        let s3Path;
+        let s3Path = {url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png", itemKey:"defalutPetImage.png"};
         if (file != undefined){
             file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
@@ -36,19 +36,22 @@ async function writeReview(req, res) {
             let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
-            await imgUp.deleteLocalFile(file);
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
-        //사료 콜렉션에 있는 Review_Num 컬럼 변경
+
+        let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
+        await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
     } catch( error ){
         console.log(error);
         res.status(error.code).send({msg:error.msg});
+    } finally {
+        await imgUp.deleteLocalFile(file);
     }
 }
 
@@ -73,8 +76,10 @@ async function likeReview(req, res) {
 async function showReviews(req, res) {
     try{
         /*let showLatestReviews = await reviewModel.showLatestReviews();*/  //review_objId도 보내줘야함(보류)
+        let tempReviews = [];
         let sort = req.query.sort;
         let mode = req.query.type;
+        let page = req.query.page;
 
         //최신순(디폴트값)
         let reviews = await reviewModel.showLatestReviews();
@@ -85,8 +90,24 @@ async function showReviews(req, res) {
         }
 
         if(mode != 'all') {  //개 이름값이 정확히 오면
-            //review에서 dog_type이 없다
+            for(let i=0;i<reviews.length;i++) {
+                if(reviews[i].pet_type == mode) {
+                    tempReviews.push(reviews[i]);
+                }
+            }
+            reviews = tempReviews;
+            tempReviews = [];
         }
+        
+        //page처리
+        for(let i=(page-1)*5;i<(5*page);i++) {
+            if(reviews[i] == null) {
+                break;
+            }
+            tempReviews.push(reviews[i]);
+        }
+
+        reviews = tempReviews;
 
         res.send(reviews);
     } catch(err){

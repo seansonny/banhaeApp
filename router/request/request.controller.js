@@ -9,31 +9,30 @@ router.delete('/:request_id', deleteRequest); //요청 삭제하기
 async function getRequestList(req, res) {
     try {
         const request = await RequestModel.getRequestList();
-        let result = {data: request, msg: "getRequestList 성공"};
+        let result = {data: request, msg:"success"};
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
 async function addRequest(req, res) {
     try {
-        console.log(req.body.user_id);
         const request = await RequestModel.addRequest(req);
-        let result = {data: request, msg: "addRequest 성공"};
+        let result = {data: request, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
 async function deleteRequest(req, res) {
     try {
         const request = await RequestModel.deleteRequest(req.params.request_id);
-        let result = {data: request, msg: "deleteRequest 성공"};
+        let result = {data: request, msg:"success"};
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
