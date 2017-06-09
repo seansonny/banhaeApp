@@ -1,4 +1,4 @@
-var seq = require('../../connection/sequelizeConnection');
+var seq = require('../../dbConnections/sequelizeConnection');
 var Sequelize = require('sequelize');
 var UserSchema = require('../../model/mongoUserSchema');
 

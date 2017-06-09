@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mongoDB = require('../../connection/mongoDbConfig');
+const mongoDB = require('../../dbConnections/mongoDbConfig');
 
 if (mongoose.connection.readyState < 1)
     mongoDB.connect();

@@ -1,4 +1,4 @@
-var pool = require('../connection/mysqlConnection');
+var pool = require('../dbConnections/mysqlConnection');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 

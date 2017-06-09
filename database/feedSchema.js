@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-const conn = require('../connection/mongoDbConfig');
+const conn = require('../dbConnections/mongoDbConfig');
 
 if (mongoose.connection.readyState < 1)
     conn.connect();
