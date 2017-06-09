@@ -36,7 +36,6 @@ async function writeReview(req, res) {
             let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
-            await imgUp.deleteLocalFile(file);
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
@@ -49,6 +48,8 @@ async function writeReview(req, res) {
     } catch( error ){
         console.log(error);
         res.status(error.code).send({msg:error.msg});
+    } finally {
+        await imgUp.deleteLocalFile(file);
     }
 }
 
