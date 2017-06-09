@@ -29,11 +29,11 @@ async function writeReview(req, res) {
         let s3Path = {url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png", itemKey:"defalutPetImage.png"};
         if (file != undefined){
             file = req.files[0];
-            /*let sizeTest = await imgUp.sizeTest(file);
+            let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);*/
+            let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
             await imgUp.deleteLocalFile(file);
