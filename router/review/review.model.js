@@ -45,13 +45,13 @@ Model.sendReview = function(req, imgInfo){
             }
 
             review.feed_id = req.body.feed_id;
-            review.pet_id = req.body.pet_id;
+            review.pet_id = parseInt(req.body.pet_id);
+            review.pet_type = req.body.pet_type;
             //유저 정보로 user_id 가져오는 로직 추가
             review.user_id = req.body.user_id;
-            review.rating = req.body.rating;
+            review.rating = parseFloat(req.body.rating);
             resolve(review);
         }catch( error ){
-            console.log(error);
             reject(error);
         }
     })
@@ -74,7 +74,7 @@ Model.showMyReviews = function(req){
 Model.addLikedUsers = function(req){
 
     return new Promise((resolve, reject) =>{
-        const user_info = "sswpro@gmail.com";
+        const user_info = "asdf@gmail.com";
         const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
         let likedUsers = req.body.is_liked; //누른 사람의 이메일 (배열)
 
@@ -149,16 +149,12 @@ Model.addMyReview = function(review){
 
 Model.showLatestReviews = function(){ // limit
     return new Promise((resolve, reject)=>{
-        const reviewCounts = 3;
         ReviewSchema.find()
-            .sort({'time_stamp': -1})
-            .limit(reviewCounts).exec(function(err, docs){
+            .sort({'time_stamp': -1}).exec(function(err, docs){
             if(err) {
-                console.log(err);
                 reject(err);
                 return;
             }
-            console.log(docs);
             resolve(docs);
         })
     })

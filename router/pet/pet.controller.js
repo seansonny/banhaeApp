@@ -48,8 +48,8 @@ async function getPetByID(req, res) {
 //펫정보추가
 async function addPet(req, res) {
     try {
-        //유효성 체크 gender, mian_pet
-        if (!req.body.name || !req.body.birthday || !req.body.weight || !req.body.user_id || !req.body.type) {
+        //유효성 체크
+        if (!req.body.name || !req.body.birthday || !req.body.weight || !req.body.user_id || !req.body.type || !req.body.gender || req.body.main_pet) {
             res.status(400).send({msg:"필수 입력값을 다 줘야죠"});
             return;
         }
