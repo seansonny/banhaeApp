@@ -9,10 +9,10 @@ router.delete('/:question_id', deleteQuestion); //질문 삭제하기
 async function getQuestionList(req, res) {
     try {
         const question = await QuestionModel.getQuestionList();
-        let result = { data:question, msg:"getQuestionList 성공" };
+        let result = { data:question, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -20,10 +20,10 @@ async function addQuestion(req, res) {
     try {
         //입력 처리
         const question = await QuestionModel.addQuestion();
-        let result = { data:question, msg:"addQuestion 성공" };
+        let result = { data:question, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -31,14 +31,15 @@ async function deleteQuestion(req, res) {
     try {
         let question_id = req.params.question_id;
         if(question_id == undefined) {
-            res.send({"msg":"No Question ID!!"})
+            res.status(400).send({"msg":"No Question ID!!"})
+            return;
         }
 
         const question = await QuestionModel.deleteQuestion(question_id);
-        let result = { data:question, msg:"deleteQuestion 성공" };
+        let result = { data:question, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.send(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
