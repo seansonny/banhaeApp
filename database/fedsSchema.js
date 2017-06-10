@@ -31,7 +31,7 @@ let FeedSchema = new mongoose.Schema({
     ALLERGY_LISTS: {type: Array},
     INDEX: {type: Number},
     IMAGE_URL : {type: String},
-    INGRED_LISTS : {type: Array},
+    INGREDIENTS_LISTS : {type: Array},
     NUTRITIONS_LISTS : {type: Array},
 
 },        { strict: false });

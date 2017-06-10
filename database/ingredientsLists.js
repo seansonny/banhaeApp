@@ -55,7 +55,7 @@ async function preprocessing() {
         let ingredients = await getIngredient(1);
 
         let feedsIngredients = [];
-        for (let i = 102; i < feeds.length; i++){
+        for (let i = 102; i < feeds.length; i++){ //i = 101, indi = 102, ingredients[102], ingredient_id 103 이상
             let indi = i+1;
 
             let index = feeds[i].INGREDIENTS_INDEX;
@@ -76,7 +76,7 @@ async function preprocessing() {
                 let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
 
                 FedSchema.findOneAndUpdate({INDEX: indi},
-                    {$push: {"INGRED_LISTS" : ingredient}},
+                    {$push: {"INGREDIENTS_LISTS" : ingredient}},
                     {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
                     .exec(function(err, docs){
                         if(err){
