@@ -28,7 +28,9 @@ let FeedSchema  = new Schema({
     PACKAGE: {type: Array},
     RATING: {type: Number},
     REVIEW_NUM: {type: Number},
-    IMAGE_URL : {type: String}
+    IMAGE_URL : {type: String},
+    INGREDIENTS_LISTS : {type: Array},
+    NUTRITIONS_LISTS : {type: Array}
 });
 
 let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
