@@ -22,17 +22,37 @@ showFeeds = function(){
     })
 };
 
-async function nutritionLists() {
-    try{
-        let feeds = await showFeeds();
+addMainNuts = function(feeds){
+    return new Promise((resolve, reject) => {
+        for(let i = 0; i < feeds.length; i++){
+            let amounts = feeds[i].NUTRITIONS_INDEX;
+            let mainNut = {"main" : [amounts[0], amounts[1], amounts[2], amounts[3]]};
+            let indi = i+1;
 
+            FedSchema.findOneAndUpdate({INDEX: indi},
+                {$push: {"NUTRITIONS_LISTS" : mainNut}},
+                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+                .exec(function(err, docs){
+                    if(err){
+                        console.log(err);
+                        reject(err);
+                    }else{
+                        //console.log("success");
+                    }
+                })
+        }
+        resolve("success");
+    });
+};
+
+addExtraNuts = function(feeds){
+    return new Promise((resolve, reject) => {
         for(let i = 0; i < feeds.length; i++){
             let amounts = feeds[i].NUTRITIONS_INDEX;
             let names = feeds[i].NUTRITIONS;
             let units = feeds[i].UNIT;
             let minleng = Math.min(amounts.length, names.length, units.length);
 
-            let mainNut = {"main" : [amounts[0], amounts[1], amounts[2], amounts[3]]};
             let extraList = [];
             for(let j = 4; j < minleng; j++){
                 let extra;
@@ -48,26 +68,28 @@ async function nutritionLists() {
             let extraNut = {"extra" : extraList};
 
             FedSchema.findOneAndUpdate({INDEX: indi},
-                {$push: {"NUTRITIONS_LISTS" : mainNut}},
-                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-                .exec(function(err, docs){
-                    if(err){
-                        console.log(err);
-                    }else{
-                        console.log("success");
-                    }
-                })
-            FedSchema.findOneAndUpdate({INDEX: indi},
                 {$push: {"NUTRITIONS_LISTS" : extraNut}},
                 {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
                 .exec(function(err, docs){
                     if(err){
                         console.log(err);
+                        reject(err);
                     }else{
-                        // console.log("success");
+                        //console.log("success");
                     }
                 })
         }
+        resolve("success");
+    });
+};
+
+async function nutritionLists() {
+    try{
+        let feeds = await showFeeds();
+        let mainNutrition = await addMainNuts(feeds);
+        console.log("Main Nutrition added: ", mainNutrition);
+        let extraNuts = await addExtraNuts(feeds);
+        console.log("Extra Nutrition added: ", extraNuts);
 
     }catch (error){
         console.log(error);

@@ -2,7 +2,7 @@ var express = require('express');
 var fs = require('fs');
 var gm = require('gm');
 var AWS = require('aws-sdk');
-var config = require('../connection/s3Config.json');
+var config = require('../dbConnections/s3Config.json');
 
 AWS.config.region = config.region;
 AWS.config.accessKeyId = config.accessKeyId;

@@ -1,4 +1,4 @@
-var pool = require('../connection/mysqlConnection');
+var pool = require('../dbConnections/mysqlConnection');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
@@ -49,19 +49,21 @@ getIngredient = function(limits){
     })
 };
 
+//주의사항 카운트 넣기, 그리고 디비에도 추가
 async function preprocessing() {
     try{
         let feeds = await showFeeds();
         let ingredients = await getIngredient(1);
 
         let feedsIngredients = [];
-        for (let i = 102; i < feeds.length; i++){
+        for (let i = 0; i < feeds.length; i++){ //i = 101, indi = 102, ingredients[102], ingredient_id 103 이상
             let indi = i+1;
 
             let index = feeds[i].INGREDIENTS_INDEX;
             let names = feeds[i].INGREDIENTS;
+            let leng = Math.min(index.length, names.length);
             let aFeedIngred = [];
-            for (let j = 0; j < index.length; j++){
+            for (let j = 0; j < leng; j++){
                 let ind = index[j] -1;
                 let anIngred = ingredients[ind];
                 if(ind !== ingredients[ind].ingredient_id - 1)
@@ -76,7 +78,7 @@ async function preprocessing() {
                 let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
 
                 FedSchema.findOneAndUpdate({INDEX: indi},
-                    {$push: {"INGRED_LISTS" : ingredient}},
+                    {$push: {"INGREDIENTS_LISTS" : ingredient}},
                     {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
                     .exec(function(err, docs){
                         if(err){

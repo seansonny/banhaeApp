@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const seq = require('../../connection/mysqlConfig');
+const seq = require('../../dbConnections/mysqlConfig');
 
 let RequestModel = seq.define('requests', {
     request_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement:true}
