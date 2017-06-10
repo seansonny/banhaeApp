@@ -15,7 +15,7 @@ showFeeds = function(){
     return new Promise((resolve, reject) =>{
         //const counts = 1;
         FeedSchema.find()
-            //.limit(counts)
+        //.limit(counts) //테스트용
             .exec(function(err, docs){
                 if(err) {
                     reject(err);
@@ -56,7 +56,7 @@ async function preprocessing() {
         let ingredients = await getIngredient(1);
 
         let feedsIngredients = [];
-        for (let i = 0; i < feeds.length; i++){ //i = 101, indi = 102, ingredients[102], ingredient_id 103 이상
+        for (let i = 0; i < feeds.length; i++){ //101번 사료 뉴트리나 건강백서 프로페셔널 퍼피 재료중 allergy_num 값 이상있음
             let indi = i+1;
 
             let index = feeds[i].INGREDIENTS_INDEX;
@@ -64,35 +64,36 @@ async function preprocessing() {
             let leng = Math.min(index.length, names.length);
             let aFeedIngred = [];
             for (let j = 0; j < leng; j++){
-                let ind = index[j] -1;
-                let anIngred = ingredients[ind];
-                if(ind !== ingredients[ind].ingredient_id - 1)
-                    console.log("다름");
-                let algFlag = "TRUE";
-                let warningFlag = "TRUE";
-                if(anIngred.allergy_num===0)
-                    algFlag = "FALSE";
-                if(anIngred.is_warning===0)
-                    warningFlag= "FALSE";
+                try{ //엑셀 리스트 구분자 값(;)이 마지막에 들어가서 빈값이 있어서 try catch문 써줘야함 사료
+                    let listIndex = index[j] -1;
+                    let anIngred = ingredients[listIndex];
 
-                let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
+                    let algFlag = "TRUE";
+                    let warningFlag = "TRUE";
+                    if(anIngred.allergy_num===0)
+                        algFlag = "FALSE";
+                    if(anIngred.is_warning===0)
+                        warningFlag= "FALSE";
 
-                FedSchema.findOneAndUpdate({INDEX: indi},
-                    {$push: {"INGREDIENTS_LISTS" : ingredient}},
-                    {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-                    .exec(function(err, docs){
-                        if(err){
-                            console.log(err);
-                        }else{
-                            //console.log("success");
-                        }
-                    })
-
-                aFeedIngred.push(ingredient);
+                    let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
+                    aFeedIngred.push(ingredient);
+                }catch (error){
+                    //do nothing
+                }
 
             }
+            FedSchema.findOneAndUpdate({INDEX: indi},
+                {$push: {"INGREDIENTS_LISTS" : aFeedIngred}},
+                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+                .exec(function(err, docs){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        //console.log("success");
+                    }
+                })
 
-            feedsIngredients.push(aFeedIngred);
+            //feedsIngredients.push(aFeedIngred);
         }
         //console.log(feedsIngredients[0][0]);
 

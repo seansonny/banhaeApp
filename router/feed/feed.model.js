@@ -22,8 +22,8 @@ let FeedSchema  = new Schema({
     PRICE: {type: Number},
     ORIGIN: {type: String},
     MANUFACTURE: {type: String},
-    NUTRITIONS: {type: Array},
-    NUTRITIONS_INDEX: {type: Array},
+    NUTRITIONS: {type: Array}, //다음번에 제거
+    NUTRITIONS_INDEX: {type: Array}, //다음번에 제거
     UNIT: {type: Array},
     PACKAGE: {type: Array},
     RATING: {type: Number},
