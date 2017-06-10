@@ -49,7 +49,6 @@ getIngredient = function(limits){
     })
 };
 
-//주의사항 카운트 넣기, 그리고 디비에도 추가
 async function preprocessing() {
     try{
         let feeds = await showFeeds();
@@ -58,7 +57,7 @@ async function preprocessing() {
         let feedsIngredients = [];
         for (let i = 0; i < feeds.length; i++){ //101번 사료 뉴트리나 건강백서 프로페셔널 퍼피 재료중 allergy_num 값 이상있음
             let indi = i+1;
-
+            let warningCount = 0;
             let index = feeds[i].INGREDIENTS_INDEX;
             let names = feeds[i].INGREDIENTS;
             let leng = Math.min(index.length, names.length);
@@ -68,22 +67,25 @@ async function preprocessing() {
                     let listIndex = index[j] -1;
                     let anIngred = ingredients[listIndex];
 
-                    let algFlag = "TRUE";
-                    let warningFlag = "TRUE";
-                    if(anIngred.allergy_num===0)
-                        algFlag = "FALSE";
-                    if(anIngred.is_warning===0)
-                        warningFlag= "FALSE";
+                    let algFlag = "FALSE";
+                    let warningFlag = "FALSE";
+                    if(anIngred.allergy_num!==0)
+                        algFlag = "TRUE";
+                    if(anIngred.is_warning!==0){
+                        warningFlag= "TRUE";
+                        warningCount++;
+                    }
 
                     let ingredient = {"name":names[j], "ingredient_id":anIngred.ingredient_id, "is_allergy":algFlag, "is_warning":warningFlag};
                     aFeedIngred.push(ingredient);
+
                 }catch (error){
                     //do nothing
                 }
-
             }
+            let result = {"warningCount" : warningCount, "lists" : aFeedIngred};
             FedSchema.findOneAndUpdate({INDEX: indi},
-                {$push: {"INGREDIENTS_LISTS" : aFeedIngred}},
+                {$push: {"INGREDIENTS_LISTS" : result}},
                 {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
                 .exec(function(err, docs){
                     if(err){
