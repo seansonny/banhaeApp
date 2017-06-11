@@ -1,6 +1,6 @@
 var seq = require('../../dbConnections/sequelizeConnection');
 var Sequelize = require('sequelize');
-var UserSchema = require('../../model/mongoUserSchema');
+var UserSchema = require('../../database/mongoUserSchema');
 
 class Model {
 }

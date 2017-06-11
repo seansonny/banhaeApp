@@ -25,10 +25,10 @@ RequestModel.getRequestList = function() {
 //질문하기
 RequestModel.addRequest = function(req) {
     return new Promise((resolve,reject)=> {
-
+        let intCategory = req.body.category;
         RequestModel.create({
             user_id: req.body.user_id,
-            category: req.body.category,
+            category: parseInt(intCategory),
             request: req.body.request,
             feed_name: req.body.feed_name
             }).then((results) => {

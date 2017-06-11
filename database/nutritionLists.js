@@ -4,9 +4,6 @@ mongoose.Promise = require('bluebird');
 const FeedSchema = require('./feedSchema');
 const FedSchema = require('./fedsSchema');
 
-if (mongoose.connection.readyState < 1)
-    mongoDB.connect();
-
 //FEEDS 에서 들고와서 FEDS 에서 수정할 것
 
 showFeeds = function(){

@@ -5,9 +5,6 @@ mongoose.Promise = require('bluebird');
 const FeedSchema = require('./feedSchema');
 const FedSchema = require('./fedsSchema');
 
-if (mongoose.connection.readyState < 1)
-    mongoDB.connect();
-
 //ingredient MySQL DB는 전체 db2.0 060917 기준
 //FEEDS 에서 들고와서 FEDS 에서 수정할 것
 
