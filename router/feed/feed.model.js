@@ -1,44 +1,12 @@
 const mongoose = require('mongoose');
-const mongoDB = require('../../dbConnections/mongoDbConfig');
+const FeedSchema = require('../../database/feedSchema');
 
-if (mongoose.connection.readyState < 1)
-    mongoDB.connect();
-
-const Schema = mongoose.Schema;
-
-let FeedSchema  = new Schema({
-    BRAND_ID: {type: Number},
-    CHECKPOINTS: {type: Array},
-    FULLNAME: {type: String},
-    TARGET_SIZE: {type: String},  //추후변경
-    TARGET_AGE: {type: String},     //추후변경
-    NAME: {type: String},
-    HUMIDITY: {type: String},
-    TYPE: {type: String},       //추후변경
-    IS_SNACK: {type: Boolean},
-    INGREDIENTS_INDEX: {type: Array},
-    INGREDIENTS: {type: Array},
-    GRAIN_SIZE: {type: String},
-    PRICE: {type: Number},
-    ORIGIN: {type: String},
-    MANUFACTURE: {type: String},
-    NUTRITIONS: {type: Array},
-    NUTRITIONS_INDEX: {type: Array},
-    UNIT: {type: Array},
-    PACKAGE: {type: Array},
-    RATING: {type: Number},
-    REVIEW_NUM: {type: Number},
-    IMAGE_URL : {type: String},
-    INGREDIENTS_LISTS : {type: Array},
-    NUTRITIONS_LISTS : {type: Array}
-});
-
-let FeedModel = mongoose.model('FEEDS',FeedSchema,'FEEDS');
-
+class FeedModel{
+}
 //검색할 때 사용할 예정(추후에 like 처리)
 FeedModel.getFeedByName = function(feed_name) {
     return new Promise((resolve,reject)=> {
-        FeedModel.find({NAME: {$regex:feed_name}}/*{},{NAME:1,REVIEW_NUM:1,RATING:1}*/, (err, feed)=>{
+        FeedSchema.find({NAME: {$regex:feed_name}}/*{},{NAME:1,REVIEW_NUM:1,RATING:1}*/, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -52,7 +20,7 @@ FeedModel.getFeedByName = function(feed_name) {
 //브랜드 상세 정보보기
 FeedModel.getFeedByID = function(feed_id) {
     return new Promise((resolve,reject)=> {
-        FeedModel.findOne({_id:feed_id}, (err, feed)=>{
+        FeedSchema.findOne({_id:feed_id}, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -66,7 +34,7 @@ FeedModel.getFeedByID = function(feed_id) {
 //사료 이름 목록 가져오기
 FeedModel.getFeedList = function() {
     return new Promise((resolve,reject)=> {
-        FeedModel.find({},{NAME:1}, (err, feed)=>{
+        FeedSchema.find({},{NAME:1}, (err, feed)=>{
             if(err) {
                 reject(err);
             }
@@ -81,7 +49,7 @@ FeedModel.getFeedList = function() {
 FeedModel.addFeed = function() {
     return new Promise((resolve,reject)=> {
 
-        let feed = new FeedModel({
+        let feed = new FeedSchema({
             BRAND_ID: 126,
             CHECKPOINTS: [2,3,4,5],
             FULLNAME: "Taste of the wild(TOW)",
@@ -120,7 +88,7 @@ FeedModel.addFeed = function() {
 //사료 정보수정
 FeedModel.updateFeed = function(feed_id) {
     return new Promise((resolve,reject)=> {
-        FeedModel.update({_id:feed_id},{$set:{TYPE:1}}, (err)=>{
+        FeedSchema.update({_id:feed_id},{$set:{TYPE:1}}, (err)=>{
             if(err) {
                 reject(err);
             }
@@ -134,7 +102,7 @@ FeedModel.updateFeed = function(feed_id) {
 //사료 정보삭제
 FeedModel.deleteFeed = function(feed_id) {
     return new Promise((resolve,reject)=> {
-        FeedModel.remove({_id:feed_id}, (err)=>{
+        FeedSchema.remove({_id:feed_id}, (err)=>{
             if(err) {
                 reject(err);
             }
@@ -153,7 +121,7 @@ FeedModel.updateReviewNum = function(feed_id,change) {
            value = -1;
         }
 
-        FeedModel.update({_id:feed_id},{$inc:{REVIEW_NUM:value}}, (err)=>{
+        FeedSchema.update({_id:feed_id},{$inc:{REVIEW_NUM:value}}, (err)=>{
             if(err) {
                 reject(err);
             }
@@ -169,7 +137,7 @@ FeedModel.updateRating = function(feedData, reviewData) {
     return new Promise((resolve,reject)=> {
         let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
 
-        FeedModel.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
+        FeedSchema.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
             if(err) {
                 reject(err);
             }

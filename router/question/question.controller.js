@@ -19,7 +19,7 @@ async function getQuestionList(req, res) {
 async function addQuestion(req, res) {
     try {
         //입력 처리
-        const question = await QuestionModel.addQuestion();
+        const question = await QuestionModel.addQuestion(req);
         let result = { data:question, msg:"success" };
         res.send(result);
     } catch (err) {

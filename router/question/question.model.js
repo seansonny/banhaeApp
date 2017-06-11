@@ -22,20 +22,20 @@ QuestionModel.getQuestionList = function() {
 }
 
 //질문하기
-QuestionModel.addQuestion = function() {
+QuestionModel.addQuestion = function(req) {
     return new Promise((resolve,reject)=> {
+        let intCategory = req.body.category;
         QuestionModel.create({
-            user_id: "ddkkd1",
-            question: "언제 버전업해요?",
-            category: 1
-                }).then((results) => {
+            user_id: req.body.user_id,
+            category: parseInt(intCategory),
+            question: req.body.question
+            }).then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
         });
-    });
-}
-
+    })
+};
 //질문 삭제
 QuestionModel.deleteQuestion = function(question_id) {
     return new Promise((resolve,reject)=> {
