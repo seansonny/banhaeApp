@@ -13,9 +13,26 @@ router.delete('/:feed_id', deleteFeed); //사료 삭제하기
 
 async function getMyFeeds(req, res){
     try{
+        const tempId = "asdf@gmail.com"; //토큰 정보로
+        let petInfo = await FeedSearch.getMyPetInfo(tempId);
 
+        const weight = petInfo[0].weight;
+        const birthday = petInfo[0].birthday.split('-');
+        const allergy = petInfo[0].allergy.split(';');
+        let size = "대형견"; // weight 범위 추가
+        let age = "퍼피"; //birthday 계산 추가
+
+        let type = "주식용";//req.query.type;
+        let humidity = "건식";//req.query.humidity;
+        let priceMin = 55000;//req.query.priceMin; //parseFloat
+        let priceMax = 120000;//req.query.priceMax; //parseFloat
+
+        const mySearch = {allergy, type, humidity, priceMin, priceMax, size, age};
+        let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
+        res.send(myFeedsSearch);
     }catch(err){
-
+        console.log(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
