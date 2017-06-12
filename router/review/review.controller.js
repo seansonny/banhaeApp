@@ -103,7 +103,7 @@ async function showReviews(req, res) {
 
             let pet_age = Age.countAge(petSimpleInfo.birthday);
 
-            let info = JSON.parse(JSON.stringify(petSimpleInfo));
+            let info = JSON.parse(JSON.stringify(reviews[i]));
             info.pet_age = pet_age;
             info.pet_weight = petSimpleInfo.weight;
             info.pet_gender = petSimpleInfo.gender;
