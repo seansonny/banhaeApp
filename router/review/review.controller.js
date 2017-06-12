@@ -3,8 +3,8 @@ const reviewModel = require('./review.model');
 const FeedModel = require('../feed/feed.model');
 const PetModel = require('../pet/pet.model');
 const UserModel = require('../user/user.model');
-const Age = require('../../model/age')
-const imgUp = require('../../model/imgUpload');
+const Age = require('../../etc/age')
+const imgUp = require('../../etc/imgUpload');
 const multer = require('multer');
 const upload = multer({
     dest : 'tmp'
