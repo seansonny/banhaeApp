@@ -67,6 +67,7 @@ async function likeReview(req, res) {
     }
 }
 
+//장기적으로 like_users 빼고 보내기
 async function showReviews(req, res) {
     let user_email = "asdf@gmail.com";//토큰 정보
     try{
@@ -99,7 +100,6 @@ async function showReviews(req, res) {
                 break;
             }
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
-            console.log(likeInfo);
             //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
             let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
             let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
@@ -110,6 +110,7 @@ async function showReviews(req, res) {
             info.pet_age = pet_age;
             info.pet_weight = petSimpleInfo.weight;
             info.pet_gender = petSimpleInfo.gender;
+            info.pet_image = petSimpleInfo.image_url;
             info.feed_image = feedSimpleInfo.IMAGE_URL;
             info.feed_name = feedSimpleInfo.NAME;
             info.like_num = likeInfo.like_num;
