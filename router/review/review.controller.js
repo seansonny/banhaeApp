@@ -112,6 +112,7 @@ async function showReviews(req, res) {
             info.pet_weight = petSimpleInfo.weight;
             info.pet_gender = petSimpleInfo.gender;
             info.pet_image = petSimpleInfo.image_url;
+            info.pet_name = petSimpleInfo.name;
             info.feed_image = feedSimpleInfo.IMAGE_URL;
             info.feed_name = feedSimpleInfo.NAME;
             info.like_num = likeInfo.like_num;
