@@ -30,6 +30,7 @@ myFeed.getMyPetInfo = function(user_id){
     })
 };
 
+
 myFeed.myFeedsSearch = function(mySearch){
     return new Promise((resolve, reject) =>{
         FeedSchema.aggregate( [
