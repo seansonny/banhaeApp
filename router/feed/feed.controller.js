@@ -1,6 +1,7 @@
 const express = require('express');
 const FeedModel = require('./feed.model');
 const FeedSearch = require('./feedSearch');
+const countAge = require('../../model/age');
 const router = express.Router();
 
 router.get('/search', getFeedByName); // 사료 검색용
@@ -32,7 +33,18 @@ async function getMyFeeds(req, res){
             size = "대형견";
         }
 
-        let age = "퍼피"; //birthday 계산 추가
+        let targetAge = "ALL";
+        if(birthday){
+            let age = countAge.countAge(birthday);
+            if(age < 1){
+                targetAge = "퍼피";
+            }else if (age <= 7){
+                targetAge = "어덜트";
+            }else{
+                targetAge = "시니어"
+            }
+        }
+        console.log(targetAge);
 
         let type = "주식용";
         if(parseInt(req.query.type) === 2){
@@ -41,6 +53,7 @@ async function getMyFeeds(req, res){
             type = "주식용";
         }
 
+        //엑셀 데이터 바꾸고 확인 할 것
         let humidity = "건식";
         if(parseInt(req.query.humidity)=== 1){
             humidity = "건사료";
@@ -63,7 +76,7 @@ async function getMyFeeds(req, res){
         if (req.query.page)
             page = req.query.page;
         const feedsPerpage = 5;
-        const mySearch = {allergy, type, humidity, priceMin, priceMax, size, age};
+        const mySearch = {allergy, type, humidity, priceMin, priceMax, size, targetAge};
         let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
 
         let noAllergy = [];

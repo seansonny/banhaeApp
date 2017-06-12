@@ -36,7 +36,7 @@ myFeed.myFeedsSearch = function(mySearch){
         FeedSchema.aggregate( [
             {$match: {TYPE : mySearch.type, HUMIDITY : mySearch.humidity,
                             $and : [{PRICE :{$gte : mySearch.priceMin}},{PRICE :{$lte : mySearch.priceMax}}],
-                                            $or : [{TARGET_AGE:mySearch.age}, {TARGET_AGE: "ALL"}],
+                                            $or : [{TARGET_AGE:mySearch.targetAge}, {TARGET_AGE: "ALL"}],
                                             $or : [{TARGET_SIZE:mySearch.size}, {TARGET_SIZE: "ALL"}] }},
                                 { $project:
                                     {INDEX:1, name:1, ALLERGY_LISTS:1, FULLNAME:1, BRAND_ID:1,
