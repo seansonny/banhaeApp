@@ -98,22 +98,20 @@ async function showReviews(req, res) {
                 break;
             }
             //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
-            let petSimpleInfo = await PetModel.getSimplePetByID(50);
+            let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
 
             let pet_age = Age.countAge(petSimpleInfo.birthday);
 
-            console.log(pet_age);
+            let info = JSON.parse(JSON.stringify(petSimpleInfo));
+            info.pet_age = pet_age;
+            info.pet_weight = petSimpleInfo.weight;
+            info.pet_gender = petSimpleInfo.gender;
+            info.feed_image = feedSimpleInfo.IMAGE_URL;
+            info.feed_name = feedSimpleInfo.NAME;
 
-           /* let petJson = {pet_weight:petSimpleInfo.weight
-            ,pet_gender:petSimpleInfo.gender
-            ,pet_age:pet_age
-            }
-            console.log(petJson);*/
-
-
-            tempReviews.push(reviews[i]);
+            tempReviews.push(info);
         }
-
 
         reviews = tempReviews;
 
