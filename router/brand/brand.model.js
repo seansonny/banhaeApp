@@ -66,7 +66,7 @@ BrandModel.addBrand = function() {
             recipe: "회사 자체 레서피를 보유하고 있습니다.",
             foundation: "2006년",
             recall: "2008년 11월 필수 감사 조사에 문제가 발생해서 호주의 오리젠 고양이 사료만 리콜 진행",
-            image_url:"https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutImage.png"
+            image_url:null
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
