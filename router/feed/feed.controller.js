@@ -34,10 +34,30 @@ async function getMyFeeds(req, res){
 
         let age = "퍼피"; //birthday 계산 추가
 
-        let type = "주식용";//req.query.type;
-        let humidity = "건사료";//req.query.humidity;
-        let priceMin = 500;//req.query.priceMin; //parseFloat
-        let priceMax = 170000;//req.query.priceMax; //parseFloat
+        let type = "주식용";
+        if(parseInt(req.query.type) === 2){
+            type = "간식용";
+        }else if (parseInt(req.query.type) === 3){
+            type = "주식용";
+        }
+
+        let humidity = "건식";
+        if(parseInt(req.query.humidity)=== 1){
+            humidity = "건사료";
+        }else if(parseInt(req.query.humidity)=== 2){
+            humidity = "습식";
+        }else if(parseInt(req.query.humidity)=== 3){
+            humidity = "반습식";
+        }
+
+        let priceMin = 0;
+        if (req.query.priceMin){
+            priceMin = parseFloat(req.query.priceMin);
+        }
+        let priceMax = 90000000;
+        if (req.query.priceMax){
+            priceMax = parseFloat(req.query.priceMax);
+        }
 
         let page = 1;
         if (req.query.page)
