@@ -1,6 +1,7 @@
 const express = require('express');
 const FeedModel = require('./feed.model');
 const FeedSearch = require('./feedSearch');
+const countAge = require('../../model/age');
 const router = express.Router();
 
 router.get('/search', getFeedByName); // 사료 검색용
@@ -13,9 +14,95 @@ router.delete('/:feed_id', deleteFeed); //사료 삭제하기
 
 async function getMyFeeds(req, res){
     try{
+        const tempId = "asdf@gmail.com"; //토큰 정보로
+        let petInfo = await FeedSearch.getMyPetInfo(tempId);
+
+        const weight = petInfo[0].weight;
+        const birthday = petInfo[0].birthday;
+        const allergy = petInfo[0].allergy.split(';');
+
+        for (let i = 0; i < allergy.length; i++)
+            allergy[i] = parseInt(allergy[i]);
+
+        let size = "ALL";
+        if(weight < 5){
+            size = "소형견";
+        }else if(weight < 20){
+            size = "중형견";
+        }else{
+            size = "대형견";
+        }
+
+        let targetAge = "ALL";
+        if(birthday){
+            let age = countAge.countAge(birthday);
+            if(age < 1){
+                targetAge = "퍼피";
+            }else if (age <= 7){
+                targetAge = "어덜트";
+            }else{
+                targetAge = "시니어"
+            }
+        }
+        console.log(targetAge);
+
+        let type = "주식용";
+        if(parseInt(req.query.type) === 2){
+            type = "간식용";
+        }else if (parseInt(req.query.type) === 3){
+            type = "주식용";
+        }
+
+        //엑셀 데이터 바꾸고 확인 할 것
+        let humidity = "건식";
+        if(parseInt(req.query.humidity)=== 1){
+            humidity = "건사료";
+        }else if(parseInt(req.query.humidity)=== 2){
+            humidity = "습식";
+        }else if(parseInt(req.query.humidity)=== 3){
+            humidity = "반습식";
+        }
+
+        let priceMin = 0;
+        if (req.query.priceMin){
+            priceMin = parseFloat(req.query.priceMin);
+        }
+        let priceMax = 90000000;
+        if (req.query.priceMax){
+            priceMax = parseFloat(req.query.priceMax);
+        }
+
+        let page = 1;
+        if (req.query.page)
+            page = req.query.page;
+        const feedsPerpage = 5;
+        const mySearch = {allergy, type, humidity, priceMin, priceMax, size, targetAge};
+        let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
+
+        let noAllergy = [];
+        for (let i = 0; i < myFeedsSearch.length; i++){
+            if (myFeedsSearch[i].allergyCount === 0){
+                noAllergy.push(myFeedsSearch[i]);
+            }
+        }
+
+        let pages = (noAllergy.length)/feedsPerpage;
+        let startPage = (page-1)*5;
+        let endPage = page*5;
+
+        let result = [];
+        if (pages >= page||page === 1){
+            for (let i = startPage; i < endPage; i++){
+                result.push(noAllergy[i]);
+            }
+            res.send(noAllergy);
+        }else{
+            res.send("검색 결과 없음");
+        }
 
     }catch(err){
-
+        console.log(err);
+        res.status(500).send({msg:err.msg});
     }
 }
 
@@ -43,12 +130,12 @@ async function getFeedByName(req, res) {
         const feed = await FeedModel.getFeedByName(feed_name);
         //기타 처리 후 클라이언트 응답
         //sort 방법에 따라 sorting han, point, review
-        if(sort == 'point') {
+        if(sort === 'point') {
             feed.sort(function (a,b) {
                 return a.RATING < b.RATING ? 1 : a.RATING > b.RATING ? -1 : 0;
             });
             //별점순
-        } else if(sort == 'review') {
+        } else if(sort === 'review') {
             //리뷰 많은순
             feed.sort(function (a,b) {
                 return a.REVIEW_NUM < b.REVIEW_NUM ? 1 : a.REVIEW_NUM > b.REVIEW_NUM ? -1 : 0;
