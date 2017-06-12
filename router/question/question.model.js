@@ -3,7 +3,7 @@ const sequelize = require('../../dbConnections/mysqlConfig');
 
 let QuestionModel = sequelize.define('question', {
     question_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement:true}
-    , user_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}
+    , user_id: {type: Sequelize.STRING, references:{model:'../../etc/usersModel', key:'user_id'}}
     , question: {type: Sequelize.TEXT, allowNull: true}
     , category: {type: Sequelize.INTEGER, allowNull: true}
 }, {

@@ -1,9 +1,9 @@
 const express = require('express');
 const PetModel = require('./pet.model');
-const age = require('../../model/age');
+const age = require('../../etc/age');
 const fs = require('fs');
 const router = express.Router();
-const imgUp = require('../../model/imgUpload');
+const imgUp = require('../../etc/imgUpload');
 
 //multer 기본 설정
 const multer = require('multer');

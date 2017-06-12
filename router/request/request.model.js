@@ -3,7 +3,7 @@ const seq = require('../../dbConnections/mysqlConfig');
 
 let RequestModel = seq.define('requests', {
     request_id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement:true}
-    , user_id: {type: Sequelize.STRING, references:{model:'../../model/usersModel', key:'user_id'}}
+    , user_id: {type: Sequelize.STRING, references:{model:'../../etc/usersModel', key:'user_id'}}
     , category: {type: Sequelize.INTEGER}
     , request: {type: Sequelize.TEXT}
     , feed_name: {type: Sequelize.TEXT, allowNull: true}
