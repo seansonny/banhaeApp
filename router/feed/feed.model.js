@@ -71,7 +71,7 @@ FeedModel.addFeed = function() {
             PACKAGE_UNIT: [1.2, 2.27, 4.5, 9.98, 13.62],
             RATING: 5,
             REVIEW_NUM: 0,
-            IMAGE_URL: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutImage.png"
+            IMAGE_URL: null
         });
 
         feed.save((err) => {
