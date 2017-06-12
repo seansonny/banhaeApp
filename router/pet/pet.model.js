@@ -48,7 +48,7 @@ PetModel.getPetByID = function(pet_id) {
 //펫 목록 가져오기
 PetModel.getPetList = function() {
     return new Promise((resolve,reject)=> {
-        PetModel.findAndCount({attributes:['name','image_url','gender','weight','birthday','type']}).then((results) => {
+        PetModel.findAndCount({attributes:['name','image_url','gender','weight','birthday','type','pet_id']}).then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
