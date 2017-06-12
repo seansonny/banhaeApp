@@ -23,6 +23,7 @@ async function getMyFeeds(req, res){
         for (let i = 0; i < allergy.length; i++)
             allergy[i] = parseInt(allergy[i]);
 
+        let size = "ALL";
         if(weight < 5){
             size = "소형견";
         }else if(weight < 20){
@@ -38,6 +39,10 @@ async function getMyFeeds(req, res){
         let priceMin = 500;//req.query.priceMin; //parseFloat
         let priceMax = 170000;//req.query.priceMax; //parseFloat
 
+        let page = 1;
+        if (req.query.page)
+            page = req.query.page;
+        const feedsPerpage = 5;
         const mySearch = {allergy, type, humidity, priceMin, priceMax, size, age};
         let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
 
@@ -48,7 +53,20 @@ async function getMyFeeds(req, res){
             }
         }
 
-        res.send(noAllergy);
+        let pages = (noAllergy.length)/feedsPerpage;
+        let startPage = (page-1)*5;
+        let endPage = page*5;
+
+        let result = [];
+        if (pages >= page||page === 1){
+            for (let i = startPage; i < endPage; i++){
+                result.push(noAllergy[i]);
+            }
+            res.send(noAllergy);
+        }else{
+            res.send("검색 결과 없음");
+        }
+
     }catch(err){
         console.log(err);
         res.status(500).send({msg:err.msg});
