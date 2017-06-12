@@ -33,8 +33,42 @@ myFeed.getMyPetInfo = function(user_id){
 
 myFeed.myFeedsSearch = function(mySearch){
     return new Promise((resolve, reject) =>{
-//         let allergy = FeedSchema.aggregate(
-//             [
+        FeedSchema.aggregate( [
+            {$match: {TYPE : mySearch.type, HUMIDITY : mySearch.humidity,
+                            $and : [{PRICE :{$lte : mySearch.priceMax}},{PRICE :{$lte : mySearch.priceMax}}],
+                                            $or : [{TARGET_AGE:mySearch.age}, {TARGET_AGE: "ALL"}],
+                                            $or : [{TARGET_SIZE:mySearch.size}, {TARGET_SIZE: "ALL"}] }},
+                                { $project: {INDEX:1, name:1, ALLERGY_LISTS:1, FULLNAME:1, BRAND_ID:1,
+                                    TARGET_SIZE:1, TARGET_AGE:1,HUMIDITY:1, TYPE:1,
+                                    FEED_ID:1, NAME:1, PRICE:1, ORIGIN:1, MANUFACTURE:1,
+                                    NUTRITIONS_LISTS:1, INGREDIENTS_LISTS:1, IMAGE_URL:1,
+                                    allergyCount:{$size: {$setIntersection:[ '$ALLERGY_LISTS', mySearch.allergy ]}  } } },
+                                    {"$sort":{"allergyCount":1}}] )
+            .exec(function(err, docs){
+                if(err) {
+                    reject(err);
+                    return;
+                }
+                resolve(docs);
+            });
+
+
+        // Mongoose: FEEDS.aggregate([ { '$project': { name: 1, ALLERGY_LISTS: 1, count: { '$size': { '$setIntersection': [ '$
+        //     ALLERGY_LISTS', [ '1', '2', '5', '41', '17' ] ] } } } } ], {})
+
+        // FeedSchema.aggregate( [ { $project: {name:1, ALLERGY_LISTS:1, commonToBoth: {$setIntersection:[ '$ALLERGY_LISTS', mySearch.allergy ]}   } } ] )
+        //           .exec(function(err, docs){
+        //         if(err) {
+        //             reject(err);
+        //             return;
+        //         }
+        //         resolve(docs);
+        //     });
+        // Mongoose: FEEDS.aggregate([ { '$project': { name: 1, ALLERGY_LISTS: 1, commonToBoth: { '$setIntersection': [ '$ALLERGY_LISTS', [ '1', '2', '
+        //     5', '41', '17' ] ] } } } ], {})
+
+
+
 //                 { $project: { A: 1, B: 1, commonToBoth: { $setIntersection: [ "$A", "$B" ] }, _id: 0 } }
 //             ]
 //         );
@@ -48,48 +82,25 @@ myFeed.myFeedsSearch = function(mySearch){
 // { "_id" : ObjectId("59377fc8e6e3e9bb91ecc811"), "name" : "feed6", "allergy" : [ ], "count" : 0 }
 
 
-        FeedSchema.find({
-            $and : [
-                { $or : [{TARGET_SIZE:mySearch.size}, {TARGET_SIZE: "ALL"}]},
-                { $or : [{TARGET_AGE:mySearch.age}, {TARGET_AGE: "ALL"}]},
-                { TYPE : mySearch.type},
-                { HUMIDITY : mySearch.humidity},
-                { PRICE : {$gte: mySearch.priceMin}},
-                { PRICE :{$lte : mySearch.priceMax}}
-            ]})
-            .exec(function(err, docs){
-                if(err) {
-                    reject(err);
-                    return;
-                }
-                resolve(docs);
-            })
+        // FeedSchema.find({
+        //     $and : [
+        //         { $or : [{TARGET_SIZE:mySearch.size}, {TARGET_SIZE: "ALL"}]},
+        //         { $or : [{TARGET_AGE:mySearch.age}, {TARGET_AGE: "ALL"}]},
+        //         { TYPE : mySearch.type},
+        //         { HUMIDITY : mySearch.humidity},
+        //         { PRICE : {$gte: mySearch.priceMin}},
+        //         { PRICE :{$lte : mySearch.priceMax}}
+        //     ]})
+        //     .exec(function(err, docs){
+        //         if(err) {
+        //             reject(err);
+        //             return;
+        //         }
+        //         resolve(docs);
+        //     })
     })
 };
 
-// Model.showMostLikeReviews = function() {
-//     return new Promise((resolve,reject)=> {
-//         ReviewSchema.aggregate([{"$project":{
-//             "_id":1,
-//             "pet_id":1,
-//             "like_users":1,
-//             "rating":1,
-//             "user_id":1,
-//             "feed_id":1,
-//             "good":1,
-//             "bad":1,
-//             "time_stamp":1,
-//             "length":{"$size": "$like_users"}}}
-//             , {"$sort":{"length":-1}}], (err, feed)=>{
-//             if(err) {
-//                 reject(err);
-//             }
-//             else {
-//                 resolve(feed);
-//             }
-//         })
-//     });
-// }
 
 // // 사료 정보 보기
 // > db.feeds.find()

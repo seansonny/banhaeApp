@@ -17,19 +17,38 @@ async function getMyFeeds(req, res){
         let petInfo = await FeedSearch.getMyPetInfo(tempId);
 
         const weight = petInfo[0].weight;
-        const birthday = petInfo[0].birthday.split('-');
+        const birthday = petInfo[0].birthday;
         const allergy = petInfo[0].allergy.split(';');
-        let size = "대형견"; // weight 범위 추가
+
+        for (let i = 0; i < allergy.length; i++)
+            allergy[i] = parseInt(allergy[i]);
+
+        if(weight < 5){
+            size = "소형견";
+        }else if(weight < 20){
+            size = "중형견";
+        }else{
+            size = "대형견";
+        }
+
         let age = "퍼피"; //birthday 계산 추가
 
         let type = "주식용";//req.query.type;
-        let humidity = "건식";//req.query.humidity;
-        let priceMin = 55000;//req.query.priceMin; //parseFloat
-        let priceMax = 120000;//req.query.priceMax; //parseFloat
+        let humidity = "건사료";//req.query.humidity;
+        let priceMin = 500;//req.query.priceMin; //parseFloat
+        let priceMax = 170000;//req.query.priceMax; //parseFloat
 
         const mySearch = {allergy, type, humidity, priceMin, priceMax, size, age};
         let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
-        res.send(myFeedsSearch);
+
+        let noAllergy = [];
+        for (let i = 0; i < myFeedsSearch.length; i++){
+            if (myFeedsSearch[i].allergyCount === 0){
+                noAllergy.push(myFeedsSearch[i]);
+            }
+        }
+
+        res.send(noAllergy);
     }catch(err){
         console.log(err);
         res.status(500).send({msg:err.msg});
@@ -60,12 +79,12 @@ async function getFeedByName(req, res) {
         const feed = await FeedModel.getFeedByName(feed_name);
         //기타 처리 후 클라이언트 응답
         //sort 방법에 따라 sorting han, point, review
-        if(sort == 'point') {
+        if(sort === 'point') {
             feed.sort(function (a,b) {
                 return a.RATING < b.RATING ? 1 : a.RATING > b.RATING ? -1 : 0;
             });
             //별점순
-        } else if(sort == 'review') {
+        } else if(sort === 'review') {
             //리뷰 많은순
             feed.sort(function (a,b) {
                 return a.REVIEW_NUM < b.REVIEW_NUM ? 1 : a.REVIEW_NUM > b.REVIEW_NUM ? -1 : 0;

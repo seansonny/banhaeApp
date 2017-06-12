@@ -64,12 +64,12 @@ async function preprocessing() {
                     let listIndex = index[j] -1;
                     let anIngred = ingredients[listIndex];
 
-                    let algFlag = "FALSE";
-                    let warningFlag = "FALSE";
+                    let algFlag = false;
+                    let warningFlag = false;
                     if(anIngred.allergy_num!==0)
-                        algFlag = "TRUE";
+                        algFlag = true;
                     if(anIngred.is_warning!==0){
-                        warningFlag= "TRUE";
+                        warningFlag= true;
                         warningCount++;
                     }
 
