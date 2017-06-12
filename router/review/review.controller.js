@@ -2,6 +2,7 @@ const express = require('express');
 const reviewModel = require('./review.model');
 const FeedModel = require('../feed/feed.model');
 const PetModel = require('../pet/pet.model');
+const UserModel = require('../user/user.model');
 const Age = require('../../model/age')
 const imgUp = require('../../model/imgUpload');
 const multer = require('multer');
@@ -103,7 +104,7 @@ async function showReviews(req, res) {
             //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
             let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
             let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
-
+            let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
             let pet_age = Age.countAge(petSimpleInfo.birthday);
 
             let info = JSON.parse(JSON.stringify(reviews[i]));
@@ -115,6 +116,7 @@ async function showReviews(req, res) {
             info.feed_name = feedSimpleInfo.NAME;
             info.like_num = likeInfo.like_num;
             info.my_tastes = likeInfo.myTastes;
+            info.user_nickname = userSimpleInfo.data.nickname;
 
             tempReviews.push(info);
         }
