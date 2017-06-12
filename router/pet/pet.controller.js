@@ -1,5 +1,6 @@
 const express = require('express');
 const PetModel = require('./pet.model');
+const age = require('../../model/age');
 const fs = require('fs');
 const router = express.Router();
 const imgUp = require('../../model/imgUpload');
@@ -24,7 +25,20 @@ router.delete('/upload/:pet_id', deletePetImg); //펫 이미지 삭제*/
 async function getPetList(req, res) {
     try {
         const pet = await PetModel.getPetList();
-        let result = { data:pet, msg:"success" };
+
+        let info = {};
+        info.count = pet.count;
+        info.pets = [];
+
+        //pet list 재구성
+        for(let i=0;i<pet.rows.length;i++) {
+            let pet_age = await age.countAge(pet.rows[i].birthday);
+
+            info.pets.push({age: pet_age, name:pet.rows[i].name, image_url:pet.rows[i].image_url, gender:pet.rows[i].gender,
+                weight:pet.rows[i].weight, type:pet.rows[i].type})
+        }
+
+        let result = { data:info, msg:"success" };
         res.send(result);
     } catch (err) {
         res.status(500).send({msg:err.msg});
