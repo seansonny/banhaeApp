@@ -48,7 +48,7 @@ PetModel.getPetByID = function(pet_id) {
 //펫 목록 가져오기
 PetModel.getPetList = function() {
     return new Promise((resolve,reject)=> {
-        PetModel.findAndCount({attributes:['name','image_url','gender','weight','birthday','type']}).then((results) => {
+        PetModel.findAndCount({attributes:['name','image_url','gender','weight','birthday','type','pet_id']}).then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
@@ -89,7 +89,7 @@ PetModel.getPetImg = function(pet_id) {
 PetModel.deletePetImg = function(pet_id) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            image_url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png",
+            image_url: null,
             image_key: null
         }, {
             where: {pet_id: pet_id}
@@ -116,8 +116,8 @@ console.log('PetModel.addPet :', body);
             , special: body.special
             , main_pet: parseInt(body.main_pet)  //필수
             , user_id: body.user_id  //필수
-            , image_url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png"
-            , image_key: "defalutPetImage.png"
+            , image_url: null
+            , image_key: null
         }).then((results) => {
             resolve(results);
         }).catch((err) => {
