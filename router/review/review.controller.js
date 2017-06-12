@@ -1,7 +1,9 @@
 const express = require('express');
 const reviewModel = require('./review.model');
-const imgUp = require('../../model/imgUpload');
 const FeedModel = require('../feed/feed.model');
+const PetModel = require('../pet/pet.model');
+const Age = require('../../model/age')
+const imgUp = require('../../model/imgUpload');
 const multer = require('multer');
 const upload = multer({
     dest : 'tmp'
@@ -9,19 +11,11 @@ const upload = multer({
 
 var router = express.Router();
 
-router.route('/likes')
-    .post(likeReview);
-
-router.route('/')
-    .get(showReviews);
-
-router.route('/myReviews')
-    .get(showMyReviews);
-
-router.route('/:review_id')
-    .delete(deleteReview);
-
-router.post('/', upload.any(), writeReview);
+router.route('/').get(showReviews);                         //리뷰 목록보기
+router.route('/:review_id').delete(deleteReview);           //리뷰 삭제하기
+router.post('/', upload.any(), writeReview);                //리뷰추가하기
+router.route('/likes').post(likeReview);                    //공감
+router.route('/myReviews').get(showMyReviews);              //내가 쓴 리뷰보기
 
 async function writeReview(req, res) {
     try{
@@ -75,7 +69,6 @@ async function likeReview(req, res) {
 
 async function showReviews(req, res) {
     try{
-        /*let showLatestReviews = await reviewModel.showLatestReviews();*/  //review_objId도 보내줘야함(보류)
         let tempReviews = [];
         let sort = req.query.sort;
         let mode = req.query.type;
@@ -85,7 +78,7 @@ async function showReviews(req, res) {
         let reviews = await reviewModel.showLatestReviews();
 
         if(sort == "like") {
-            //좋아요순(like_users을 세야하나? 집계함수로 ㄱㄱ)
+            //좋아요순
             reviews = await reviewModel.showMostLikeReviews();
         }
 
@@ -99,12 +92,25 @@ async function showReviews(req, res) {
             tempReviews = [];
         }
         
-        //page처리
+        //page처리(5개씩 전송)
         for(let i=(page-1)*5;i<(5*page);i++) {
             if(reviews[i] == null) {
                 break;
             }
-            tempReviews.push(reviews[i]);
+            //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
+            let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
+
+            let pet_age = Age.countAge(petSimpleInfo.birthday);
+
+            let info = JSON.parse(JSON.stringify(reviews[i]));
+            info.pet_age = pet_age;
+            info.pet_weight = petSimpleInfo.weight;
+            info.pet_gender = petSimpleInfo.gender;
+            info.feed_image = feedSimpleInfo.IMAGE_URL;
+            info.feed_name = feedSimpleInfo.NAME;
+
+            tempReviews.push(info);
         }
 
         reviews = tempReviews;

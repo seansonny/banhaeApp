@@ -19,6 +19,19 @@ let PetModel = sequelize.define('pet', {
     timestamps: false
 });
 
+//펫 주요 정보보기(pet_age, pet_weight, pet_gender)
+PetModel.getSimplePetByID = function(pet_id) {
+    return new Promise((resolve,reject)=> {
+        PetModel.find({
+            where: {pet_id:pet_id}
+        }).then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
 //펫 상세 정보보기
 PetModel.getPetByID = function(pet_id) {
     return new Promise((resolve,reject)=> {
