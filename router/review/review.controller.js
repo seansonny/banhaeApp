@@ -68,6 +68,7 @@ async function likeReview(req, res) {
 }
 
 async function showReviews(req, res) {
+    let user_email = "asdf@gmail.com";//토큰 정보
     try{
         let tempReviews = [];
         let sort = req.query.sort;
@@ -77,14 +78,14 @@ async function showReviews(req, res) {
         //최신순(디폴트값)
         let reviews = await reviewModel.showLatestReviews();
 
-        if(sort == "like") {
+        if(sort === "like") {
             //좋아요순
             reviews = await reviewModel.showMostLikeReviews();
         }
 
-        if(mode != 'all') {  //개 이름값이 정확히 오면
+        if(mode !== 'all') {  //개 이름값이 정확히 오면
             for(let i=0;i<reviews.length;i++) {
-                if(reviews[i].pet_type == mode) {
+                if(reviews[i].pet_type === mode) {
                     tempReviews.push(reviews[i]);
                 }
             }
@@ -94,9 +95,11 @@ async function showReviews(req, res) {
         
         //page처리(5개씩 전송)
         for(let i=(page-1)*5;i<(5*page);i++) {
-            if(reviews[i] == null) {
+            if(reviews[i] === null) {
                 break;
             }
+            let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
+            console.log(likeInfo);
             //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
             let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
             let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
@@ -109,6 +112,8 @@ async function showReviews(req, res) {
             info.pet_gender = petSimpleInfo.gender;
             info.feed_image = feedSimpleInfo.IMAGE_URL;
             info.feed_name = feedSimpleInfo.NAME;
+            info.like_num = likeInfo.like_num;
+            info.my_tastes = likeInfo.myTastes;
 
             tempReviews.push(info);
         }

@@ -17,7 +17,8 @@ var reviewSchema = new mongoose.Schema({
     rating : Number,
     time_stamp : {type: Date, default: Date.now},
     like_users : Array, // 좋아요 누른 사람의 email 로 바뀜
-    pet_type : String
+    pet_type : String,
+
 });
 
 module.exports = mongoose.model('REVIEW', reviewSchema);

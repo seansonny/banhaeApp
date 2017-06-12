@@ -8,6 +8,22 @@ const multer = require('multer');
 class Model{
 }
 
+Model.reviewLikeInfo = function(user_email, review){
+    try{
+        let myTastes = false;
+        let like_users = review.like_users;
+        for (let i = 0; i < like_users.length; i++){
+            if(like_users[i]===user_email){
+                myTastes = true;
+            }
+        }
+        let info = {"like_num":like_users.length, "myTastes":myTastes};
+        return (info);
+    }catch (err){
+        return err;
+    }
+};
+
 Model.showMostLikeReviews = function() {
     return new Promise((resolve,reject)=> {
         ReviewSchema.aggregate([{"$project":{
