@@ -19,7 +19,6 @@ async function getQuestionList(req, res) {
 
 async function addQuestion(req, res) {
     try {
-        //입력 처리
         const question = await QuestionModel.addQuestion(req);
         let result = { data:question, msg:"success" };
         res.send(result);
@@ -35,7 +34,6 @@ async function deleteQuestion(req, res) {
             res.status(400).send({"msg":"No Question ID!!"})
             return;
         }
-
         const question = await QuestionModel.deleteQuestion(question_id);
         let result = { data:question, msg:"success" };
         res.send(result);

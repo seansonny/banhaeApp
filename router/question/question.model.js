@@ -27,7 +27,7 @@ QuestionModel.addQuestion = function(req) {
         let intCategory = req.body.category;
 
         QuestionModel.create({
-            user_id: req.body.user_id,
+            user_id: req.user.email,
             category: parseInt(intCategory),
             question: req.body.question
             }).then((results) => {

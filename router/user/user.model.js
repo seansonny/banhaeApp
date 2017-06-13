@@ -147,8 +147,6 @@ Model.editUser = function (pw_info, req, token) {
         let pw = pw_info.hash;
         let salt = pw_info.salt;
 
-        // let token2 = UserValidation.userToken;
-        // console.log("t " + token2);
         try{
             Users.update({nickname: nickname, pw: pw, salt: salt},
             {where: {token: token}});
