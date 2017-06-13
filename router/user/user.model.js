@@ -83,6 +83,28 @@ Model.isUniqueNickname = function(nickName){
     })
 };
 
+Model.loginUser = function(user_email){
+
+    return new Promise((resolve, reject) => {
+        try{
+            Users.findOne({where: {user_id: user_email}}).then(user => {
+                const user1 = user.dataValues;
+                const userData = {
+                    user_id: user1.user_id,
+                    pw: user1.pw,
+                    salt: user1.salt,
+                    nickname: user1.nickname
+                };
+                resolve({msg:"success", data:userData});
+            });
+
+        }catch ( error ){
+            console.log(error);
+            reject("이메일, 비밀번호 다시 확인");
+        }
+    });
+};
+
 Model.showUser = function(user_email){
 
     return new Promise((resolve, reject) => {
