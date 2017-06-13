@@ -1,9 +1,10 @@
 const express = require('express');
 const QuestionModel = require('./question.model');
 const router = express.Router();
+const auth = require('../user/auth');
 
 router.get('/', getQuestionList);  //질문 목록 가져오기
-router.post('/', addQuestion); //질문하기
+router.post('/', auth.isAuthenticated(),addQuestion); //질문하기
 router.delete('/:question_id', deleteQuestion); //질문 삭제하기
 
 async function getQuestionList(req, res) {
