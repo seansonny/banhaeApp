@@ -2,6 +2,13 @@ const crypto = require('crypto');
 
 class Validation{
 }
+const jwt = require('jsonwebtoken');
+// Passport 설정
+
+var JwtStrategy = require('passport-jwt').Strategy,
+    ExtractJwt = require('passport-jwt').ExtractJwt;
+
+const secretKey = 'secretttt';
 
 Validation.userInputValidation = function(req) {
 
@@ -33,16 +40,32 @@ Validation.userInputValidation = function(req) {
     })
 };
 
-Validation.generatePassword = function(user_pw){
+Validation.decodingToken = function(authorization){
     return new Promise((resolve, reject) =>{
         try{
+            //decode 성공시
+            let token = {
+                "user_email" : "asdf@gmail.com"
+            };
+            resolve(token);
+        }catch( err ){
+            reject("decodingToken Error");
+        }
+    })
+};
 
-            const randomInt = Math.round(Math.random()*100000000);
-            user_pw += randomInt;
+Validation.generatePassword = function(user_pw, salt){
+    return new Promise((resolve, reject) =>{
+        try{
+            if(salt === "초기유저"){
+                salt = Math.round(Math.random()*100000000);
+                user_pw += salt;
+            }
+
             const hash = crypto.createHash('sha256').update(user_pw).digest('base64');
             const pw_info = {
                 hash : hash,
-                salt: randomInt
+                salt: salt
             };
             resolve(pw_info);
         }catch( error ){
@@ -52,13 +75,20 @@ Validation.generatePassword = function(user_pw){
     });
 };
 
-Validation.userToken = function(){
+Validation.userToken = function(payloadInfo){
 
     return new Promise((resolve, reject)=> {
         //로그인이 구현 되고 보내온 토큰 정보로  디코딩 ==>이메일
-        const tempEmail = "asdf@gmail.com";
        try{
-            resolve(tempEmail);
+            const payload = {
+               email: payloadInfo.email,
+               nickname: payloadInfo.nickname
+            };
+            const option = {
+               expiresIn: '1 year'
+            };
+            const token = jwt.sign(payload, secretKey, option);
+            resolve(token);
        } catch( error ){
            reject("No valid token");
        }

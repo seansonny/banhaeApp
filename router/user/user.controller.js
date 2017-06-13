@@ -16,8 +16,29 @@ router.route('/check/:nickname')
 router.route('/:email')
     .get(checkUniqueEmail);
 
+router.route('/login')
+    .post(handleLogin);
+
 //router.rout('/users/lists')
 //  .get(showUserLists);
+
+async function handleLogin(req, res){
+    let token;
+    try{
+        let userInfo = await UserModel.loginUser(req.body.email);
+        let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.salt);
+        payloadInfo = {
+            "email" : userInfo.user_id,
+            "nickname" : userInfo.nickname
+        };
+        if(encrypted.hash === userInfo.pw)
+            token = UserValidation.userToken(payloadInfo);
+        res.send({ msg: 'success', token: token });
+
+    }catch (err){
+        res.status(500).send({msg:"로그인 실패"});
+    }
+}
 
 async function checkUniqueEmail(req, res){
     const email = req.params.email;
@@ -38,30 +59,28 @@ async function checkUniqueEmail(req, res){
 }
 
 async function addUser(req, res) {
+    try{
         let user_info = await UserValidation.userInputValidation(req);
         if(user_info.msg !== "success"){
-            res.status(789).send({msg:"필수 정보 누락(아이디, 비밀번호, 성별, 생년월일은 필수 입력 정보입니다"});
+            res.status(400).send({msg:"필수 정보 누락(아이디, 비밀번호, 성별, 생년월일은 필수 입력 정보입니다"});
             return
         }
-        let pw_info = await UserValidation.generatePassword(user_info.data.pw);
+        let pw_info = await UserValidation.generatePassword(user_info.data.pw, "초기유저");
         let send_info = await UserValidation.sendInfo(user_info.data, pw_info);
-
         let result = await UserModel.addUser(send_info);
-        // mysql 성공시 mongdoDb에도 추가
-        let mongoDbUser = await UserModel.addMongoUser(send_info);
+        let mongoDbUser = await UserModel.addMongoUser(send_info); // mysql 성공시 mongdoDb에도 추가
+        res.send("회원 가입 성공");
+    }catch (err){
+        res.status(500).send({msg:"회원가입 에러"});
+    }
 
-        if (result === mongoDbUser === "success"){
-            res.send("회원 가입 성공");
-        }else{
-            res.send("회원 가입 에러");
-        }
         //로그인 로직
 }
 
 async function showUser(req, res) {
     try{
-        let user_email = await UserValidation.userToken(req); //클라이언트에서 보낸 토큰정보에서 email꺼내기(UerValidation)
-        let result = await UserModel.showUser(user_email);
+        let token = await UserValidation.decodingToken(req.headers.authorization);
+        let result = await UserModel.showUser(token.user_email);
         res.send(result);
     }catch ( error ){
         res.status(error.code).send({msg:error.msg});
