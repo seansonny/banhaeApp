@@ -33,10 +33,11 @@ function cookieExtractor(req, res) {
     {
         token = req.cookies.token;
     }
+    //req.user.email 으로
+    //req.user.nickname 으로
     //console.log(token);
-    let decoded = auth.decode(token);
     //console.log(decoded);
-    res.send(decoded);
+    res.send(req.user);
 };
 
 
@@ -50,10 +51,10 @@ async function handleLogin(req, res){
             "nickname" : userInfo.data.nickname
         };
 
-        if(encrypted.hash === userInfo.data.pw)
+        //if(encrypted.hash === userInfo.data.pw)
             token = await UserValidation.userToken(payloadInfo);
 
-        res.cookie('token', token,{ maxAge: 86400000, expires: new Date(Date.now() + 86400000)});
+        res.cookie('token', token,{ maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
         res.send({ msg: 'success', token: token });
     }catch (err){
         res.status(500).send({msg:"로그인 실패"});
