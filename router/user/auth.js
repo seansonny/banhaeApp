@@ -7,7 +7,7 @@ function isAuthenticated() {
     return compose()
     // Validate jwt
         .use(function(req, res, next) {
-            var decoded = jwt.verify(req.headers.authorization, secretKey);
+            var decoded = jwt.verify(req.cookies.token, secretKey);
             req.user = decoded;
             next();
         })
