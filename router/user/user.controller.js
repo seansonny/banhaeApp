@@ -43,11 +43,8 @@ function cookieExtractor(req, res) {
 async function handleLogin(req, res){
     let token;
     try{
-        console.log(req.body);
-
         let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
         let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
-        console.log(userInfo.data.salt);
         payloadInfo = {
             "email" : userInfo.data.user_id,
             "nickname" : userInfo.data.nickname
@@ -55,6 +52,7 @@ async function handleLogin(req, res){
 
         if(encrypted.hash === userInfo.data.pw)
             token = await UserValidation.userToken(payloadInfo);
+
         res.cookie('token', token,{ maxAge: 86400000, expires: new Date(Date.now() + 86400000)});
         res.send({ msg: 'success', token: token });
     }catch (err){
