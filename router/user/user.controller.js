@@ -22,6 +22,21 @@ router.route('/login')
 //router.rout('/users/lists')
 //  .get(showUserLists);
 
+router.post('/test', cookieExtractor);
+
+function cookieExtractor(req, res) {
+    //console.log(req.cookies);
+    //console.log(req);
+    var token = null;
+    if (req && req.cookies)
+    {
+        token = req.cookies.token;
+    }
+    //console.log(token);
+    res.send(token);
+};
+
+
 async function handleLogin(req, res){
     let token;
     try{
