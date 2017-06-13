@@ -21,7 +21,7 @@ router.route('/myReviews').get(showMyReviews);              //내가 쓴 리뷰�
 async function writeReview(req, res) {
     try{
         let file=req.files[0];
-        let s3Path = {url: "https://s3.ap-northeast-2.amazonaws.com/banhaebucket/defalutPetImage.png", itemKey:"defalutPetImage.png"};
+        let s3Path = {url: null, itemKey:null};
         if (file != undefined){
             file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
