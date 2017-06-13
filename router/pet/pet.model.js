@@ -102,7 +102,7 @@ PetModel.deletePetImg = function(pet_id) {
 }
 
 //펫 정보 추가
-PetModel.addPet = function(body) {
+PetModel.addPet = function(body,user) {
 console.log('PetModel.addPet :', body);
     return new Promise((resolve,reject)=> {
         PetModel.create({
@@ -115,7 +115,7 @@ console.log('PetModel.addPet :', body);
             , remark: body.remark
             , special: body.special
             , main_pet: parseInt(body.main_pet)  //필수
-            , user_id: body.user_id  //필수
+            , user_id: user.email  //필수
             , image_url: null
             , image_key: null
         }).then((results) => {

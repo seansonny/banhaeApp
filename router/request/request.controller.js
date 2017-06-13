@@ -1,9 +1,10 @@
 const RequestModel = require('./request.model');
 const express = require('express');
 const router = express.Router();
+const auth = require('../user/auth');
 
 router.get('/', getRequestList);  //요청 목록 가져오기
-router.post('/', addRequest); //요청하기
+router.post('/', auth.isAuthenticated(), addRequest); //요청하기
 router.delete('/:request_id', deleteRequest); //요청 삭제하기
 
 async function getRequestList(req, res) {

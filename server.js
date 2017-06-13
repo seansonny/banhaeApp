@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const passport = require('passport');
 const app = express();
 
 const ingredientRouter = require('./router/ingredient/ingredient.controller');
@@ -12,7 +13,6 @@ const brandRouter = require('./router/brand/brand.controller');
 const feedRouter = require('./router/feed/feed.controller');
 const petRouter = require('./router/pet/pet.controller');
 const questionRouter = require('./router/question/question.controller');
-const passport = require('passport');
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());

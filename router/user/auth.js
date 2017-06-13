@@ -7,9 +7,14 @@ function isAuthenticated() {
     return compose()
     // Validate jwt
         .use(function(req, res, next) {
-            var decoded = jwt.verify(req.cookies.token, secretKey);
-            req.user = decoded;
-           next();
+            jwt.verify(req.cookies.token, secretKey, (err, decoded) => {
+                if(err) {
+                    res.status(401).send({msg:"No Token"});
+                    return;
+                }
+                req.user = decoded;
+                next();
+            });
         })
 }
 

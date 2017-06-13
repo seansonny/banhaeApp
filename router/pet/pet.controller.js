@@ -4,6 +4,7 @@ const age = require('../../etc/age');
 const fs = require('fs');
 const router = express.Router();
 const imgUp = require('../../etc/imgUpload');
+const auth = require('../user/auth');
 
 //multer 기본 설정
 const multer = require('multer');
@@ -13,14 +14,9 @@ const upload = multer({
 
 router.get('/list', getPetList);  //펫 목록 가져오기
 router.get('/:pet_id', getPetByID);  //펫 상세보기
-router.post('/', upload.any(),addPet);  //펫 정보 추가
+router.post('/', upload.any(), auth.isAuthenticated(), addPet);  //펫 정보 추가
 router.put('/:pet_id', upload.any(), updatePet); //펫 정보 수정하기
 router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
-/*router.post('/upload/:pet_id', upload.single('myPet'), uploadPetImg); //펫 이미지 업로드
-router.post('/upload', function (req,res) {
-    res.send("No pet_id");
-});
-router.delete('/upload/:pet_id', deletePetImg); //펫 이미지 삭제*/
 
 async function getPetList(req, res) {
     try {
@@ -63,13 +59,13 @@ async function getPetByID(req, res) {
 async function addPet(req, res) {
     try {
         //유효성 체크
-        if (!req.body.name || !req.body.birthday || !req.body.weight || !req.body.user_id || !req.body.type || !req.body.gender || !req.body.main_pet) {
+        if (!req.body.name || !req.body.birthday || !req.body.weight || !req.user.email || !req.body.type || !req.body.gender || !req.body.main_pet) {
             res.status(400).send({msg:"필수 입력값을 다 줘야죠"});
             return;
         }
-        const pet = await PetModel.addPet(req.body);
+        const pet = await PetModel.addPet(req.body, req.user);
 
-        if(req.files[0]!= null) {
+        if (req.files && req.files != undefined){
             await uploadPetImg(pet.pet_id, req.files[0]);
         }
 

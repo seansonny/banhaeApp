@@ -6,6 +6,7 @@ const UserModel = require('../user/user.model');
 const Age = require('../../etc/age')
 const imgUp = require('../../etc/imgUpload');
 const multer = require('multer');
+const auth = require('../user/auth');
 const upload = multer({
     dest : 'tmp'
 });
@@ -14,16 +15,15 @@ var router = express.Router();
 
 router.route('/').get(showReviews);                         //리뷰 목록보기
 router.route('/:review_id').delete(deleteReview);           //리뷰 삭제하기
-router.post('/', upload.any(), writeReview);                //리뷰추가하기
+router.post('/', auth.isAuthenticated(), upload.any(), writeReview);                //리뷰추가하기
 router.route('/likes').post(likeReview);                    //공감
 router.route('/myReviews').get(showMyReviews);              //내가 쓴 리뷰보기
 
 async function writeReview(req, res) {
     try{
-        let file=req.files[0];
         let s3Path = {url: null, itemKey:null};
-        if (file != undefined){
-            file = req.files[0];
+        if (req.files && req.files != undefined){
+            let file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
@@ -46,7 +46,9 @@ async function writeReview(req, res) {
         console.log(error);
         res.status(error.code).send({msg:error.msg});
     } finally {
-        await imgUp.deleteLocalFile(file);
+        if (req.files && req.files != undefined){
+            await imgUp.deleteLocalFile(req.files[0]);
+        }
     }
 }
 
