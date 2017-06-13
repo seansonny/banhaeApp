@@ -103,7 +103,7 @@ async function getMyFeeds(req, res){
         for (let i = startPage; i < endPage; i++){
             result.push(noAllergy[i]);
         }
-        res.send(result);
+        res.send({"data":result});
 
 
     }catch(err){
