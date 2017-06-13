@@ -27,7 +27,7 @@ RequestModel.addRequest = function(req) {
     return new Promise((resolve,reject)=> {
         let intCategory = req.body.category;
         RequestModel.create({
-            user_id: req.body.user_id,
+            user_id: req.user.email,
             category: parseInt(intCategory),
             request: req.body.request,
             feed_name: req.body.feed_name

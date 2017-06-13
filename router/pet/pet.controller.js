@@ -65,7 +65,7 @@ async function addPet(req, res) {
         }
         const pet = await PetModel.addPet(req.body, req.user);
 
-        if(req.files) {
+        if (req.files && req.files != undefined){
             await uploadPetImg(pet.pet_id, req.files[0]);
         }
 
