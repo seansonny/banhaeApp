@@ -13,7 +13,7 @@ const secretKey = 'secretttt';
    var opts = {
        jwtFromRequest: ExtractJwt.fromHeader('authorization'),
        secretOrKey: secretKey
-   };
+     };
 
 Validation.userInputValidation = function(req) {
 
@@ -92,7 +92,6 @@ Validation.userToken = function(payloadInfo){
                expiresIn: '1 year'
             };
             const token = jwt.sign(payload, secretKey, option);
-            console.log('token :',token);
             resolve(token);
        } catch( error ){
            reject("No valid token");
