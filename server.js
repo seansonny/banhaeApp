@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const app = express();
 
@@ -15,6 +16,7 @@ const passport = require('passport');
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(passport.initialize());
 /*app.use( (req, res, next) => { console.log(req.headers['content-type']); next(); } );*/

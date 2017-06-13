@@ -25,6 +25,7 @@ QuestionModel.getQuestionList = function() {
 QuestionModel.addQuestion = function(req) {
     return new Promise((resolve,reject)=> {
         let intCategory = req.body.category;
+
         QuestionModel.create({
             user_id: req.body.user_id,
             category: parseInt(intCategory),

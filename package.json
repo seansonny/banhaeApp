@@ -6,6 +6,8 @@
   "dependencies": {
     "aws-sdk": "^2.68.0",
     "body-parser": "^1.17.2",
+    "composable-middleware": "^0.3.0",
+    "cookie-parser": "^1.4.3",
     "crypto": "^0.0.3",
     "excel-as-json": "^2.0.1",
     "express": "^4.15.3",

@@ -10,10 +10,10 @@ var JwtStrategy = require('passport-jwt').Strategy,
 
 const secretKey = 'secretttt';
 
-// var opts = {
-//     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-//     secretOrKey: secretKey
-// };
+   var opts = {
+       jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+       secretOrKey: secretKey
+   };
 
 Validation.userInputValidation = function(req) {
 
@@ -81,7 +81,6 @@ Validation.generatePassword = function(user_pw, salt){
 };
 
 Validation.userToken = function(payloadInfo){
-
     return new Promise((resolve, reject)=> {
         //로그인이 구현 되고 보내온 토큰 정보로  디코딩 ==>이메일
        try{
