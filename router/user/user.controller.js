@@ -25,14 +25,20 @@ router.route('/login')
 async function handleLogin(req, res){
     let token;
     try{
-        let userInfo = await UserModel.loginUser(req.body.email);
-        let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.salt);
+        console.log(req.body);
+
+        let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
+        let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
+        console.log(userInfo.data.salt);
         payloadInfo = {
             "email" : userInfo.user_id,
             "nickname" : userInfo.nickname
         };
-        if(encrypted.hash === userInfo.pw)
-            token = UserValidation.userToken(payloadInfo);
+
+        if(encrypted.hash === userInfo.data.pw)
+            token = await UserValidation.userToken(payloadInfo);
+        // console.log(token);
+        // res.cookie('token', token);
         res.send({ msg: 'success', token: token });
 
     }catch (err){

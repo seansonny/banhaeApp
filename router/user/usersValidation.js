@@ -10,6 +10,11 @@ var JwtStrategy = require('passport-jwt').Strategy,
 
 const secretKey = 'secretttt';
 
+// var opts = {
+//     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+//     secretOrKey: secretKey
+// };
+
 Validation.userInputValidation = function(req) {
 
     return new Promise((resolve, reject) =>{
@@ -59,14 +64,14 @@ Validation.generatePassword = function(user_pw, salt){
         try{
             if(salt === "초기유저"){
                 salt = Math.round(Math.random()*100000000);
-                user_pw += salt;
             }
-
+            user_pw += salt;
             const hash = crypto.createHash('sha256').update(user_pw).digest('base64');
             const pw_info = {
                 hash : hash,
                 salt: salt
             };
+            // console.log(pw_info.hash);
             resolve(pw_info);
         }catch( error ){
             reject("generate Password Error");
@@ -88,6 +93,7 @@ Validation.userToken = function(payloadInfo){
                expiresIn: '1 year'
             };
             const token = jwt.sign(payload, secretKey, option);
+            console.log('token :',token);
             resolve(token);
        } catch( error ){
            reject("No valid token");

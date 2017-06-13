@@ -100,7 +100,7 @@ Model.loginUser = function(user_email){
 
         }catch ( error ){
             console.log(error);
-            reject("findOne rejected");
+            reject("이메일, 비밀번호 다시 확인");
         }
     });
 };
