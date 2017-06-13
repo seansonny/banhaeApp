@@ -52,8 +52,7 @@ async function handleLogin(req, res){
 
         if(encrypted.hash === userInfo.data.pw)
             token = await UserValidation.userToken(payloadInfo);
-        // console.log(token);
-        res.cookie('token', token);
+        res.cookie('token', token,{ maxAge: 86400000, expires: new Date(Date.now() + 86400000)});
         res.send({ msg: 'success', token: token });
     }catch (err){
         res.status(500).send({msg:"로그인 실패"});
