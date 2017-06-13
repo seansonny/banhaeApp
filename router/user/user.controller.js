@@ -1,6 +1,7 @@
 const express = require('express');
 const UserModel = require('./user.model');
 const UserValidation = require('./usersValidation');
+const auth = require('./auth');
 
 var router = express.Router();
 
@@ -22,7 +23,7 @@ router.route('/login')
 //router.rout('/users/lists')
 //  .get(showUserLists);
 
-router.post('/test', cookieExtractor);
+router.post('/test', auth.isAuthenticated(), cookieExtractor);
 
 function cookieExtractor(req, res) {
     //console.log(req.cookies);
@@ -33,7 +34,9 @@ function cookieExtractor(req, res) {
         token = req.cookies.token;
     }
     //console.log(token);
-    res.send(token);
+    let decoded = auth.decode(token);
+    //console.log(decoded);
+    res.send(decoded);
 };
 
 
@@ -46,8 +49,8 @@ async function handleLogin(req, res){
         let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
         console.log(userInfo.data.salt);
         payloadInfo = {
-            "email" : userInfo.user_id,
-            "nickname" : userInfo.nickname
+            "email" : userInfo.data.user_id,
+            "nickname" : userInfo.data.nickname
         };
 
         if(encrypted.hash === userInfo.data.pw)
