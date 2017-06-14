@@ -140,7 +140,6 @@ async function showReviews(req, res) {
 }
 
 async function deleteReview(req, res) {
-
     try{
         let review_id = req.params.review_id;
         let reviewData = await reviewModel.deleteReview(review_id, req.user.email);
@@ -152,7 +151,7 @@ async function deleteReview(req, res) {
         res.send(deleteResult);
     } catch( error ){
         console.log(error);
-        res.status(error.code).send({msg:error.msg});
+        res.status(500).send({msg:error});
     }
 }
 
