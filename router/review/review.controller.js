@@ -78,7 +78,10 @@ async function showReviews(req, res) {
     let user_email = "비회원";
     if (req.user.email !== null && req.user.email !== undefined){
         user_email = req.user.email;
+    }else{
+        user_email = req.user.email;
     }
+
     try{
         let tempReviews = []; //몽고 디비에서
         let sort = req.query.sort;
