@@ -75,7 +75,7 @@ Model.sendReview = function(req, imgInfo){
 
 Model.showMyReviews = function(req){
     return new Promise((resolve, reject) =>{
-        const user_info = "asdf@gmail.com";
+        const user_info = req.user.eamil;
         let mongoUser = UserSchema.findOne({email: user_info});
         mongoUser.exec(function (err, user){
             if (err){
@@ -87,47 +87,71 @@ Model.showMyReviews = function(req){
     })
 };
 
+Model.getLikeUsers = function(review_obj, user_info){
+    return new Promise((resolve, reject) =>{
+        ReviewSchema.find({'_id' : review_obj}, {$elemMatch: like_users})
+            .sort({'time_stamp': -1}).exec(function(err, docs){
+                if(err) {
+                    reject(err);
+                    return;
+                }
+                resolve(docs);
+            });
+    })
+};
+
+
 Model.addLikedUsers = function(req){
 
     return new Promise((resolve, reject) =>{
-        const user_info = "asdf@gmail.com";
         const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
-        let likedUsers = req.body.is_liked; //누른 사람의 이메일 (배열)
+        const user_info = "asdf@gmail.com";
 
-        let isLiked = false;
-        if(likedUsers !== undefined){
-            likedUsers = likedUsers instanceof Array ? likedUsers : [likedUsers];
-            for (var i = 0; i < likedUsers.length; i++){
-                if(likedUsers[i] === user_info)
-                    isLiked = true;
-            }
-        }
+        let isLiked = ReviewSchema.find({"_id" :reviewId}, {"like_users" : {"$in" : [user_info]}});
+        // resolve(isLiked);
 
-        if(!isLiked){
-            ReviewSchema.findOneAndUpdate({_id: reviewId},
-                {$push: {"like_users" :  user_info}},
-                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-                .exec(function(err, docs){
-                    if(err){
-                        console.log(err);
-                        reject(err);
-                    }else{
-                        resolve(likedUsers);
-                    }
-                })
-        }else{
-            ReviewSchema.findOneAndUpdate({_id: reviewId},
-                {$pull: {"like_users" :  user_info}},
-                {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
-                .exec(function(err, docs){
-                    if(err){
-                        console.log(err);
-                        reject(err);
-                    }else{
-                        resolve(likedUsers);
-                    }
-                })
-        }
+
+        // const user_info = req.user.email;
+
+        // console.log(likeUsers);
+
+        //
+        // let isLiked = false;
+        // if(likeUsers !== undefined){
+        //     likeUsers = likeUsers instanceof Array ? likeUsers : [likeUsers];
+        //     for (let i = 0; i < likeUsers.length; i++){
+        //         if(likeUsers[i] === user_info)
+        //             isLiked = true;
+        //     }
+        // }
+
+
+
+        // if(!isLiked){
+        //     ReviewSchema.findOneAndUpdate({_id: reviewId},
+        //         {$push: {"like_users" :  user_info}},
+        //         {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+        //         .exec(function(err, docs){
+        //             if(err){
+        //                 console.log(err);
+        //                 reject(err);
+        //             }else{
+        //                 resolve(likedUsers);
+        //             }
+        //         })
+        // }else{
+        //     ReviewSchema.findOneAndUpdate({_id: reviewId},
+        //         {$pull: {"like_users" :  user_info}},
+        //         {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
+        //         .exec(function(err, docs){
+        //             if(err){
+        //                 console.log(err);
+        //                 reject(err);
+        //             }else{
+        //                 resolve(likedUsers);
+        //             }
+        //         })
+        // }
 
     })
 };
@@ -148,7 +172,7 @@ Model.addMyReview = function(review){
     return new Promise((resolve, reject)=>{
         //로그인 정보를 통해 user collection을 조회 하고
         //그 중에서 my_reviews document(배열)에 review _id를 추가
-        const user_info = "asdf@gmail.com";
+        const user_info = req.user.email;
         UserSchema.findOneAndUpdate({email: user_info},
             {$push: {"my_reviews" : review._id}},
             {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
@@ -176,10 +200,10 @@ Model.showLatestReviews = function(){ // limit
     })
 };
 
-Model.deleteReview = function(review_id){
+Model.deleteReview = function(review_id, email){
 
     return new Promise((resolve, reject) =>{
-        const user_info = "asdf@gmail.com";
+        const user_info = email;
         let reviewData;
         //없을 때 테스트
         ReviewSchema.find({_id: review_id})
@@ -203,9 +227,9 @@ Model.deleteReview = function(review_id){
     })
 };
 
-Model.deleteMyReview = function(review_id){
+Model.deleteMyReview = function(review_id, email){
     return new Promise((resolve, reject) =>{
-        const user_info = "asdf@gmail.com";
+        const user_info = email;
         //없을 때 테스트
         UserSchema.findOneAndUpdate({email: user_info},
             {$pull: {"my_reviews" : review_id}},

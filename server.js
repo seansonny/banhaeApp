@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(passport.initialize());
 /*app.use( (req, res, next) => { console.log(req.headers['content-type']); next(); } );*/
-//app.use('/ingredients', authMiddleware,ingredientRouter);
+
 app.use('/ingredients',ingredientRouter);
 app.use('/users', usersRouter);
 app.use('/reviews', reviewRouter);

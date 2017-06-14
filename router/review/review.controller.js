@@ -13,16 +13,17 @@ const upload = multer({
 
 var router = express.Router();
 
-router.route('/').get(showReviews);                         //리뷰 목록보기
-router.route('/:review_id').delete(deleteReview);           //리뷰 삭제하기
+router.get('/', showReviews);                         //리뷰 목록보기
+router.delete('/:review_id', auth.isAuthenticated(), deleteReview);           //리뷰 삭제하기
 router.post('/', auth.isAuthenticated(), upload.any(), writeReview);                //리뷰추가하기
-router.route('/likes').post(likeReview);                    //공감
-router.route('/myReviews').get(showMyReviews);              //내가 쓴 리뷰보기
+router.post('/likes',likeReview);
+// router.post('/likes', auth.isAuthenticated(), likeReview);                    //공감
+router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //내가 쓴 리뷰보기
 
 async function writeReview(req, res) {
     try{
         let s3Path = {url: null, itemKey:null};
-        if (req.files && req.files != undefined){
+        if (req.files && req.files !== undefined){
             let file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
@@ -46,7 +47,7 @@ async function writeReview(req, res) {
         console.log(error);
         res.status(error.code).send({msg:error.msg});
     } finally {
-        if (req.files && req.files != undefined){
+        if (req.files && req.files !== undefined){
             await imgUp.deleteLocalFile(req.files[0]);
         }
     }
@@ -63,6 +64,8 @@ async function showMyReviews(req, res){
 
 async function likeReview(req, res) {
     try{
+        // let likeUsers = await reviewModel.getLikeUsers(req.body.review_objId, "asdf@gmail.com");
+        // // let likeUsers = await reviewModel.getLikeUsers(req.body.review_objId, req.user.email);
         let review = await reviewModel.addLikedUsers(req);
         res.send(review);
     }catch(error){
@@ -72,9 +75,9 @@ async function likeReview(req, res) {
 
 //장기적으로 like_users 빼고 보내기
 async function showReviews(req, res) {
-    let user_email = "asdf@gmail.com";//토큰 정보
+    let user_email = req.user.email; // 고쳐야 함
     try{
-        let tempReviews = [];
+        let tempReviews = []; //몽고 디비에서
         let sort = req.query.sort;
         let mode = req.query.type;
         let page = req.query.page;
@@ -136,10 +139,10 @@ async function deleteReview(req, res) {
 
     try{
         let review_id = req.params.review_id;
-        let reviewData = await reviewModel.deleteReview(review_id);
+        let reviewData = await reviewModel.deleteReview(review_id, req.user.email);
 
         imgUp.deleteS3(reviewData[0].img_key); //사진 삭제
-        let deleteResult = await reviewModel.deleteMyReview(review_id); //디비 삭제
+        let deleteResult = await reviewModel.deleteMyReview(review_id, req.user.email); //디비 삭제
         //사료 콜렉션에 있는 Review_Num 컬럼 변경
         await FeedModel.updateReviewNum(reviewData[0].feed_id, 1);  //0이면 증가, 1이면 감소
         res.send(deleteResult);
