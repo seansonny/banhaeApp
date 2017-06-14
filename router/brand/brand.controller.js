@@ -1,5 +1,6 @@
 const express = require('express');
 const BrandModel = require('./brand.model');
+const FeedModel = require('../feed/feed.model');
 const router = express.Router();
 
 router.get('/search', getBrandByName);  //브랜드 검색용
@@ -12,7 +13,19 @@ router.delete('/:brand_id', deleteBrand); //브랜드 삭제하기
 async function getBrandList(req, res) {
     try {
         const brand = await BrandModel.getBrandList();
-        let result = { data:brand, msg:"success" };
+        const feed = await FeedModel.getFeedList();
+        let data = [];
+
+        for(let i=0;i<brand.count+feed.count;i++) {
+            if(i<brand.count) {
+                data[i] = {NAME:brand.rows[i].name};
+            }
+            else {
+                data[i] = feed.feed[i-brand.count];
+            }
+        }
+
+        let result = { data:data, msg:"success" };
         res.send(result);
     } catch (err) {
         res.status(500).send({msg:err.msg});

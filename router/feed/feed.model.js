@@ -34,12 +34,18 @@ FeedModel.getFeedByID = function(feed_id) {
 //사료 이름 목록 가져오기
 FeedModel.getFeedList = function() {
     return new Promise((resolve,reject)=> {
-        FeedSchema.find({},{NAME:1}, (err, feed)=>{
+        FeedSchema.find({},{_id:0,NAME:1}, (err, feed)=>{
             if(err) {
                 reject(err);
             }
             else {
-                resolve(feed);
+                FeedSchema.find().count(function(err, count){
+                    if(err) {
+                        reject(err);
+                    } else {
+                        resolve({feed:feed,count:count});
+                    }
+                });
             }
         })
     });
