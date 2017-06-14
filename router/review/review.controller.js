@@ -75,7 +75,6 @@ async function likeReview(req, res) {
     }
 }
 
-//장기적으로 like_users 빼고 보내기
 async function showReviews(req, res) {
     let user_email = "비회원";
     if (req.cookies.token !== null && req.cookies.token !== undefined){

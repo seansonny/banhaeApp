@@ -123,19 +123,8 @@ async function getFeedList(req, res) {
     }
 }
 
-async function getFeedByName(req, res) {
-    try {
-        // 요청값 체크
-        let feed_name = req.query.keyword;
-        let sort = req.query.sort;
-        if(!feed_name) {
-            res.status(400).send({"msg":"No Feed Name!!"})
-            return;
-        }
-        //Model접근
-        const feed = await FeedModel.getFeedByName(feed_name);
-        //기타 처리 후 클라이언트 응답
-        //sort 방법에 따라 sorting han, point, review
+function feedFilter(feeds, sort){
+    return new Promise((resolve, reject)=>{
         if(sort === 'point') {
             feed.sort(function (a,b) {
                 return a.RATING < b.RATING ? 1 : a.RATING > b.RATING ? -1 : 0;
@@ -152,6 +141,23 @@ async function getFeedByName(req, res) {
                 return a.NAME < b.NAME ? -1 : a.NAME > b.NAME ? 1 : 0;
             });
         }
+    })
+}
+
+async function getFeedByName(req, res) {
+    try {
+        // 요청값 체크
+        let feed_name = req.query.keyword;
+        let sort = req.query.sort;
+        if(!feed_name) {
+            res.status(400).send({"msg":"No Feed Name!!"})
+            return;
+        }
+        //Model접근
+        const feed = await FeedModel.getFeedByName(feed_name);
+        //기타 처리 후 클라이언트 응답
+        //sort 방법에 따라 sorting han, point, review
+        let filtered = await feedFilter(feed, sort);
 
         let result = { data:feed, msg:"success" };
         res.send(result);

@@ -7,6 +7,7 @@ function isAuthenticated() {
     return compose()
     // Validate jwt
         .use(function(req, res, next) {
+            console.log(req.cookies.token);
             jwt.verify(req.cookies.token, secretKey, (err, decoded) => {
                 if(err) {
                     res.status(401).send({msg:"No Token"});
