@@ -102,11 +102,14 @@ Model.getLikeUsers = function(review_obj, user_info){
 
 Model.isLiked = function(req) {
     return new Promise((resolve, reject) => {
-        const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
-        console.log(ObjectId(reviewId));
-        const user_info = "asdf@gmail.com";
-        let review = ReviewSchema.findOne({'_id': reviewId}, {like_users: 1})
-        resolve(review);
+        try {
+            const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
+            let review = ReviewSchema.findOne({'_id': reviewId}, {like_users: 1})
+            resolve(review);
+        } catch (err) {
+            reject(err);
+        }
+
     })
 }
 
