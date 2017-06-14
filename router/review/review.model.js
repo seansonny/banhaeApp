@@ -160,12 +160,9 @@ Model.writeReview = function(review){
     })
 };
 
-Model.addMyReview = function(review){
+Model.addMyReview = function(user_eamil, review){
     return new Promise((resolve, reject)=>{
-        //로그인 정보를 통해 user collection을 조회 하고
-        //그 중에서 my_reviews document(배열)에 review _id를 추가
-        const user_info = req.user.email;
-        UserSchema.findOneAndUpdate({email: user_info},
+        UserSchema.findOneAndUpdate({email: user_eamil},
             {$push: {"my_reviews" : review._id}},
             {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
             .exec(function(err, docs){

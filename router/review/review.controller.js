@@ -16,15 +16,14 @@ var router = express.Router();
 
 router.get('/', showReviews);                         //리뷰 목록보기
 router.delete('/:review_id', auth.isAuthenticated(), deleteReview);           //리뷰 삭제하기
-router.post('/', auth.isAuthenticated(), upload.any(), writeReview);                //리뷰추가하기
-router.post('/likes',auth.isAuthenticated(), likeReview);
-// router.post('/likes', auth.isAuthenticated(), likeReview);                    //공감
+router.post('/', upload.any(), auth.isAuthenticated(), writeReview);                //리뷰추가하기
+router.post('/likes',auth.isAuthenticated(), likeReview);                //공감
 router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //내가 쓴 리뷰보기
 
 async function writeReview(req, res) {
     try{
         let s3Path = {url: null, itemKey:null};
-        if (req.files && req.files !== undefined){
+        if (req.files[0] && req.files[0] !== undefined){
             let file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
@@ -37,7 +36,7 @@ async function writeReview(req, res) {
 
         let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
-        await reviewModel.addMyReview(reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
+        await reviewModel.addMyReview(req.user.eamil, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
         let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
         await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
