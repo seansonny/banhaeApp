@@ -159,7 +159,7 @@ async function getFeedByName(req, res) {
         //sort 방법에 따라 sorting han, point, review
         let filtered = await feedFilter(feed, sort);
 
-        let result = { data:feed, msg:"success" };
+        let result = { data:filtered, msg:"success" };
         res.send(result);
     } catch (err) {
         res.status(500).send({msg:err.msg});
