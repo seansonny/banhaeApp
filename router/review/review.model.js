@@ -107,8 +107,11 @@ Model.addLikedUsers = function(req){
         const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
         const user_info = "asdf@gmail.com";
 
-        let isLiked = ReviewSchema.find({"_id" :reviewId}, {"like_users" : {"$in" : [user_info]}});
-        // resolve(isLiked);
+        let isLiked = ReviewSchema.find({"_id" :reviewId}, {"like_users" : 1});
+        if (isLiked !== null){
+            console.log(isLiked);
+        }
+        // resolve("?");
 
 
         // const user_info = req.user.email;
