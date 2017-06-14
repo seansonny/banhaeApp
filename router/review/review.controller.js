@@ -3,6 +3,7 @@ const reviewModel = require('./review.model');
 const FeedModel = require('../feed/feed.model');
 const PetModel = require('../pet/pet.model');
 const UserModel = require('../user/user.model');
+const UserValidation = require('../user/usersValidation');
 const Age = require('../../etc/age')
 const imgUp = require('../../etc/imgUpload');
 const multer = require('multer');
@@ -76,11 +77,10 @@ async function likeReview(req, res) {
 //장기적으로 like_users 빼고 보내기
 async function showReviews(req, res) {
     let user_email = "비회원";
-    if (req.user.email !== null && req.user.email !== undefined){
-        user_email = req.user.email;
-    }else{
-        user_email = req.user.email;
+    if (req.cookies.token !== null && req.cookies.token !== undefined){
+        user_email = await UserValidation.jwtVerification(req);
     }
+    console.log("showReviews 호출 id: ",user_email);
 
     try{
         let tempReviews = []; //몽고 디비에서
@@ -105,8 +105,7 @@ async function showReviews(req, res) {
             reviews = tempReviews;
             tempReviews = [];
         }
-        
-        //page처리(5개씩 전송)
+
         for(let i=(page-1)*5;i<(5*page);i++) {
             if(reviews[i] === null) {
                 break;

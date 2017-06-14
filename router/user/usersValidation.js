@@ -15,6 +15,18 @@ const secretKey = 'secretttt';
        secretOrKey: secretKey
      };
 
+Validation.jwtVerification = function (req) {
+    return new Promise((resolve, reject)=> {
+        jwt.verify(req.cookies.token, secretKey, (err, decoded) => {
+            if (err) {
+                reject("Invalid Token");
+                return;
+            }
+            resolve(decoded.email);
+        });
+    })
+};
+
 Validation.userInputValidation = function(req) {
 
     return new Promise((resolve, reject) =>{
