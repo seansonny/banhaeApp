@@ -17,7 +17,7 @@ var router = express.Router();
 router.get('/', showReviews);                         //리뷰 목록보기
 router.delete('/:review_id', auth.isAuthenticated(), deleteReview);           //리뷰 삭제하기
 router.post('/', auth.isAuthenticated(), upload.any(), writeReview);                //리뷰추가하기
-router.post('/likes',likeReview);
+router.post('/likes',auth.isAuthenticated(), likeReview);
 // router.post('/likes', auth.isAuthenticated(), likeReview);                    //공감
 router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //내가 쓴 리뷰보기
 
@@ -65,12 +65,13 @@ async function showMyReviews(req, res){
 
 async function likeReview(req, res) {
     try{
-        // let likeUsers = await reviewModel.getLikeUsers(req.body.review_objId, "asdf@gmail.com");
-        // // let likeUsers = await reviewModel.getLikeUsers(req.body.review_objId, req.user.email);
-        let review = await reviewModel.addLikedUsers(req);
-        res.send(review);
-    }catch(error){
-        res.status(error.code).send({msg:error.msg});
+        let like = await reviewModel.isLiked(req);
+        let likeFlag = like.like_users.length;
+        let likeReview = await reviewModel.addLikedUsers(req, likeFlag);
+        res.send(likeReview);
+    }catch(err){
+        console.log(err)
+        res.send({msg:err.msg});
     }
 }
 
