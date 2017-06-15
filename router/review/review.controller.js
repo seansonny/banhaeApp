@@ -23,16 +23,16 @@ router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //�
 async function writeReview(req, res) {
     try{
         let s3Path = {url: null, itemKey:null};
-        /*if (req.files[0] && req.files[0] !== undefined){
+        if (req.files[0] && req.files[0] !== undefined){
             let file = req.files[0];
-            /!*let sizeTest = await imgUp.sizeTest(file);
+            let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);*!/
+            let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
-        }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기*/
+        }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
         //user.email을 바탕으로 pet_id 받아오기
         let petInfo = await PetModel.getSimplePetByUser(req.user.email);
 
