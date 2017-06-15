@@ -36,7 +36,7 @@ async function writeReview(req, res) {
         //user.email을 바탕으로 pet_id 받아오기
         let petInfo = await PetModel.getSimplePetByUser(req.user.email);
 
-        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo.pet_id);
+        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(req.user.email, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
