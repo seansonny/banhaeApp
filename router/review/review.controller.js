@@ -106,7 +106,7 @@ async function showReviews(req, res) {
         }
 
         for(let i=(page-1)*5;i<(5*page);i++) {
-            if(reviews[i] === null) {
+            if(reviews[i] == null) {
                 break;
             }
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
