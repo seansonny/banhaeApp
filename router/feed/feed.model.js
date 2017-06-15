@@ -141,17 +141,9 @@ FeedModel.updateReviewNum = function(feed_id,change) {
 //사료 별점 수정
 FeedModel.updateRating = function(feedData, reviewData) {
     return new Promise((resolve,reject)=> {
-        console.log("feedData.RATING : " + feedData.RATING);
-        console.log("feedData.rating : " + feedData.rating);
-        console.log("reviewData.rating : " + reviewData.rating);
-        console.log("feedData.REVIEW_NUM : " + feedData.REVIEW_NUM);
-        console.log("reviewData.feed_id : " + reviewData.feed_id);
-
         let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
 
-        console.log(rating);
-
-        FeedSchema.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
+        FeedSchema.update({_id:reviewData.feed_id},{$set:{rating:rating}}, (err)=>{
             if(err) {
                 reject(err);
             }
