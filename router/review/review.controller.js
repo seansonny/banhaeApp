@@ -37,7 +37,7 @@ async function writeReview(req, res) {
         let reviewData = await reviewModel.sendReview(req, s3Path);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(req.user.eamil, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
-        console.log(reviewData);
+
         let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
         await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
@@ -106,7 +106,7 @@ async function showReviews(req, res) {
         }
 
         for(let i=(page-1)*5;i<(5*page);i++) {
-            if(reviews[i] === null) {
+            if(reviews[i] == null) {
                 break;
             }
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
