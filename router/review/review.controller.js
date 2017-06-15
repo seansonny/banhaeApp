@@ -23,20 +23,22 @@ router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //�
 async function writeReview(req, res) {
     try{
         let s3Path = {url: null, itemKey:null};
-        if (req.files[0] && req.files[0] !== undefined){
+        /*if (req.files[0] && req.files[0] !== undefined){
             let file = req.files[0];
-            let sizeTest = await imgUp.sizeTest(file);
+            /!*let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
             let height = sizeTest.data.height/ratio;
-            let resized = await imgUp.resizingImg(file, width, height);
+            let resized = await imgUp.resizingImg(file, width, height);*!/
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
-        }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
+        }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기*/
+        //user.email을 바탕으로 pet_id 받아오기
+        let petInfo = await PetModel.getSimplePetByUser(req.user.email);
 
-        let reviewData = await reviewModel.sendReview(req, s3Path);
+        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo.pet_id);
         let writeReview = await reviewModel.writeReview(reviewData);
-        await reviewModel.addMyReview(req.user.eamil, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
+        await reviewModel.addMyReview(req.user.email, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
         let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
         await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
@@ -47,9 +49,9 @@ async function writeReview(req, res) {
         console.log(error);
         res.status(500).send({msg:error});
     } finally {
-        if (req.files[0] && req.files[0] !== undefined){
+        /*if (req.files[0] && req.files[0] !== undefined){
             await imgUp.deleteLocalFile(req.files[0]);
-        }
+        }*/
     }
 }
 
@@ -104,11 +106,11 @@ async function showReviews(req, res) {
             reviews = tempReviews;
             tempReviews = [];
         }
-
         for(let i=(page-1)*5;i<(5*page);i++) {
             if(reviews[i] == null) {
                 break;
             }
+
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
             //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
             let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
@@ -129,6 +131,7 @@ async function showReviews(req, res) {
             info.user_nickname = userSimpleInfo.data.nickname;
 
             tempReviews.push(info);
+            console.log(info);
         }
 
         reviews = tempReviews;
