@@ -6,7 +6,7 @@ const auth = require('../user/auth')
 const router = express.Router();
 
 router.get('/search', getFeedByName); // 사료 검색용
-router.get('/mySearch', auth.isAuthenticated(), getMyFeeds); // 맞춤 검색용
+router.get('/mySearch', /*auth.isAuthenticated(),*/ getMyFeeds); // 맞춤 검색용
 router.get('/list', getFeedList);  //사료 목록 가져오기
 router.get('/:feed_id', getFeedByID);  //사료 상세보기
 router.post('/', addFeed); //사료 추가하기
