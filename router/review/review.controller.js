@@ -23,7 +23,7 @@ router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //ë
 async function writeReview(req, res) {
     try{
         let s3Path = {url: null, itemKey:null};
-        if (req.file && req.files !== undefined){
+        if (req.file[0] && req.files[0] !== undefined){
             let file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
@@ -47,7 +47,7 @@ async function writeReview(req, res) {
         console.log(error);
         res.status(error.code).send({msg:error.msg});
     } finally {
-        if (req.files && req.files !== undefined){
+        if (req.files[0] && req.files[0] !== undefined){
             await imgUp.deleteLocalFile(req.files[0]);
         }
     }
