@@ -18,7 +18,7 @@ let FeedSchema = new mongoose.Schema({
     IS_SNACK: {type: Boolean},
     INGREDIENTS_INDEX: {type: Array},
     INGREDIENTS: {type: Array},
-    GRAIN_SIZE: {type: String},
+    GRAIN_SIZE: {type: Number},
     PRICE: {type: Number},
     ORIGIN: {type: String},
     MANUFACTURE: {type: String},

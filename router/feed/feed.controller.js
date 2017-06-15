@@ -2,7 +2,7 @@ const express = require('express');
 const FeedModel = require('./feed.model');
 const FeedSearch = require('./feedSearch');
 const countAge = require('../../etc/age');
-const auth = require('../user/auth')
+const auth = require('../user/auth');
 const router = express.Router();
 
 router.get('/search', getFeedByName); // 사료 검색용
