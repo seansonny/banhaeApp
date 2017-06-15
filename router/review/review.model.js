@@ -36,6 +36,7 @@ Model.showMostLikeReviews = function() {
             "good":1,
             "bad":1,
             "time_stamp":1,
+            "pet_type":1,
             "length":{"$size": "$like_users"}}}
             , {"$sort":{"length":-1}}], (err, feed)=>{
             if(err) {
