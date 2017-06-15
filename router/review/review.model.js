@@ -64,7 +64,7 @@ Model.sendReview = function(req, imgInfo, petInfo){
 
             review.feed_id = req.body.feed_id;
             review.pet_id = parseInt(petInfo.pet_id);
-            review.pet_type = petInfo.pet_type;
+            review.pet_type = petInfo.type;
             //유저 정보로 user_id 가져오는 로직 추가
             review.user_id = req.user.email;
             review.rating = parseFloat(req.body.rating);
