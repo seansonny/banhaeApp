@@ -32,6 +32,18 @@ PetModel.getSimplePetByID = function(pet_id) {
     });
 }
 
+//유저 아이디로 대표견의 주요 정보 보기
+PetModel.getSimplePetByUser = function(user_id) {
+    return new Promise((resolve,reject)=> {
+        PetModel.find({where: {user_id:user_id, main_pet:1}})
+            .then((results) => {
+            resolve(results);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
 //펫 상세 정보보기
 PetModel.getPetByID = function(pet_id) {
     return new Promise((resolve,reject)=> {
