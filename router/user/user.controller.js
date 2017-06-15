@@ -46,7 +46,7 @@ async function handleLogin(req, res){
     try{
         // let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
         // let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
-        payloadInfo = {
+        let payloadInfo = {
             "email" : "asdf@gmail.com", //userInfo.data.user_id,
             "nickname" : "123"//userInfo.data.nickname
         };

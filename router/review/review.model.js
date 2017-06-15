@@ -50,7 +50,7 @@ Model.showMostLikeReviews = function() {
     });
 }
 
-Model.sendReview = function(req, imgInfo){
+Model.sendReview = function(req, imgInfo, pet_id){
     return new Promise((resolve, reject)=>{
         try{
             let review = new ReviewSchema();
@@ -63,7 +63,7 @@ Model.sendReview = function(req, imgInfo){
             }
 
             review.feed_id = req.body.feed_id;
-            review.pet_id = parseInt(req.body.pet_id);
+            review.pet_id = parseInt(pet_id);
             review.pet_type = req.body.pet_type;
             //유저 정보로 user_id 가져오는 로직 추가
             review.user_id = req.user.email;
@@ -165,9 +165,9 @@ Model.writeReview = function(review){
     })
 };
 
-Model.addMyReview = function(user_eamil, review){
+Model.addMyReview = function(user_email, review){
     return new Promise((resolve, reject)=>{
-        UserSchema.findOneAndUpdate({email: user_eamil},
+        UserSchema.findOneAndUpdate({email: user_email},
             {$push: {"my_reviews" : review._id}},
             {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨
             .exec(function(err, docs){
