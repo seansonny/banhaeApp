@@ -79,10 +79,6 @@ async function getMyFeeds(req, res){
             priceMax = parseFloat(req.query.priceMax);
         }
 
-        let page = 1;
-        if (req.query.page)
-            page = req.query.page;
-
         const mySearch = {allergy, type, humidity, priceMin, priceMax, size, targetAge};
         let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
 
@@ -125,7 +121,7 @@ feedFilter = function(feed, sort){
             feed.sort(function (a,b) {
                 return a.REVIEW_NUM < b.REVIEW_NUM ? 1 : a.REVIEW_NUM > b.REVIEW_NUM ? -1 : 0;
             });
-        } else if(sort === "가나다 순(기본)"){
+        } else if(sort === "han"){
             //가나다순
             feed.sort(function (a,b) {
                 return a.NAME < b.NAME ? -1 : a.NAME > b.NAME ? 1 : 0;
@@ -142,7 +138,7 @@ async function getFeedByName(req, res){
     try{
         // 요청값 체크
         let feed_name = req.query.keyword;
-        let sort = "가나다 순(기본)";
+        let sort = "han";
         if(req.query.sort !== undefined){
             sort= req.query.sort;
         }
