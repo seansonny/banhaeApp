@@ -20,8 +20,12 @@ let BrandModel = sequelize.define('brand', {
 BrandModel.getBrandByName = function(brand_name) {
     return new Promise((resolve,reject)=> {
         BrandModel.findAll({
-            where: {name: {like: "%"+brand_name.keyword+"%"}}
-        }).then((results) => {
+            where: {$or: [
+                {name: {like: "%"+brand_name.keyword+"%"}},
+                {name_en: {like: "%"+brand_name.keyword+"%"}},
+                {name_ab: {like: "%"+brand_name.keyword+"%"}}
+                ]}})
+            .then((results) => {
             resolve(results);
         }).catch((err) => {
             reject(err);
