@@ -28,13 +28,13 @@ async function getMyFeeds(req, res){
         const weight = petInfo[0].weight;
         const birthday = petInfo[0].birthday;
 
-        if(petInfo[0].allergy === null)
-            petInfo[0].allergy = ";";
+        //ALLERGY_LISTS
         const allergy = petInfo[0].allergy.split(';');
+        console.log(allergy);
 
         for (let i = 0; i < allergy.length; i++)
             allergy[i] = parseInt(allergy[i]);
-
+        console.log(allergy);
         let size = "ALL";
         if(weight < 5){
             size = "소형견";
@@ -60,7 +60,7 @@ async function getMyFeeds(req, res){
         if(parseInt(req.query.type) === 2){
             type = "간식용";
         }else if (parseInt(req.query.type) === 3){
-            type = "주식용";
+            type = "처방식";
         }
 
         //엑셀 데이터 바꾸고 확인 할 것
