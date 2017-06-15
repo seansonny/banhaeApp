@@ -42,7 +42,12 @@ async function getBrandByName(req, res) {
         }
         //Model접근
         const brand = await BrandModel.getBrandByName(brand_name);
-        //기타 처리 후 클라이언트 응답
+        //brand name 길이순으로 정렬 후 클라이언트 응답
+        if(brand.length >= 2) {
+            brand.sort(function (a,b) {
+                return a.name.length < b.name.length ? -1 : a.name.length > b.name.length ? 1 : 0;
+            });
+        }
         let result = { data:brand, msg:"success" };
         res.send(result);
     } catch (err) {
