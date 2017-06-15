@@ -27,6 +27,9 @@ async function getMyFeeds(req, res){
 
         const weight = petInfo[0].weight;
         const birthday = petInfo[0].birthday;
+
+        if(petInfo[0].allergy === null)
+            petInfo[0].allergy = ";";
         const allergy = petInfo[0].allergy.split(';');
 
         for (let i = 0; i < allergy.length; i++)
@@ -63,7 +66,7 @@ async function getMyFeeds(req, res){
         //엑셀 데이터 바꾸고 확인 할 것
         let humidity = "건식";
         if(parseInt(req.query.humidity)=== 1){
-            humidity = "건사료";
+            humidity = "건식";
         }else if(parseInt(req.query.humidity)=== 2){
             humidity = "습식";
         }else if(parseInt(req.query.humidity)=== 3){
