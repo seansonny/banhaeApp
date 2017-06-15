@@ -152,6 +152,7 @@ async function getFeedByName(req, res){
         //기타 처리 후 클라이언트 응답
         //sort 방법에 따라 sorting han, point, review
         let filtered = await feedFilter(feed, sort);
+        console.log(filtered);
         let result = { data:filtered, msg:"success" };
         res.send(result);
     } catch (err) {
