@@ -192,12 +192,10 @@ Model.showLatestReviews = function(){ // limit
     })
 };
 
-Model.deleteReview = function(review_id, email){
+Model.deleteReview = function(review_id){
 
     return new Promise((resolve, reject) =>{
-        const user_info = email;
         let reviewData;
-        //없을 때 테스트
         ReviewSchema.find({_id: review_id})
             .exec(function(err, results){
                 if(err){
@@ -222,7 +220,6 @@ Model.deleteReview = function(review_id, email){
 Model.deleteMyReview = function(review_id, email){
     return new Promise((resolve, reject) =>{
         const user_info = email;
-        //없을 때 테스트
         UserSchema.findOneAndUpdate({email: user_info},
             {$pull: {"my_reviews" : review_id}},
             {safe: true, upsert: true}) //safe upsert option 있어도 없어도 됨

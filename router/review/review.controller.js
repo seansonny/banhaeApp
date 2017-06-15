@@ -69,7 +69,7 @@ async function likeReview(req, res) {
         let likeReview = await reviewModel.addLikedUsers(req, likeFlag);
         res.send(likeReview);
     }catch(err){
-        console.log(err)
+        console.log(err);
         res.send({msg:err.msg});
     }
 }
@@ -84,7 +84,7 @@ async function showReviews(req, res) {
     try{
         let tempReviews = []; //몽고 디비에서
         let sort = req.query.sort;
-        let mode = req.query.type;
+        let petType = req.query.type;
         let page = req.query.page;
 
         //최신순(디폴트값)
@@ -95,9 +95,9 @@ async function showReviews(req, res) {
             reviews = await reviewModel.showMostLikeReviews();
         }
 
-        if(mode !== 'all') {  //개 이름값이 정확히 오면
+        if(petType !== 'all') {  //개 이름값이 정확히 오면
             for(let i=0;i<reviews.length;i++) {
-                if(reviews[i].pet_type === mode) {
+                if(reviews[i].pet_type === petType) {
                     tempReviews.push(reviews[i]);
                 }
             }
@@ -142,7 +142,7 @@ async function showReviews(req, res) {
 async function deleteReview(req, res) {
     try{
         let review_id = req.params.review_id;
-        let reviewData = await reviewModel.deleteReview(review_id, req.user.email);
+        let reviewData = await reviewModel.deleteReview(review_id);
 
         imgUp.deleteS3(reviewData[0].img_key); //사진 삭제
         let deleteResult = await reviewModel.deleteMyReview(review_id, req.user.email); //디비 삭제

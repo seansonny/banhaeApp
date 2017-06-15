@@ -2,10 +2,11 @@ const express = require('express');
 const FeedModel = require('./feed.model');
 const FeedSearch = require('./feedSearch');
 const countAge = require('../../etc/age');
+const auth = require('../user/auth')
 const router = express.Router();
 
 router.get('/search', getFeedByName); // 사료 검색용
-router.get('/mySearch', getMyFeeds); // 맞춤 검색용
+router.get('/mySearch', auth.isAuthenticated(), getMyFeeds); // 맞춤 검색용
 router.get('/list', getFeedList);  //사료 목록 가져오기
 router.get('/:feed_id', getFeedByID);  //사료 상세보기
 router.post('/', addFeed); //사료 추가하기
@@ -14,8 +15,15 @@ router.delete('/:feed_id', deleteFeed); //사료 삭제하기
 
 async function getMyFeeds(req, res){
     try{
-        const tempId = "asdf@gmail.com"; //토큰 정보로
-        let petInfo = await FeedSearch.getMyPetInfo(tempId);
+        const user_id = "asdf@gmail.com"; //토큰 정보로
+        let sort = "가나다 순(기본)";
+        if(req.query.sort !== undefined){
+            sort= req.query.sort;
+        }
+
+        //const user_id = req.user.email;
+
+        let petInfo = await FeedSearch.getMyPetInfo(user_id);
 
         const weight = petInfo[0].weight;
         const birthday = petInfo[0].birthday;
@@ -84,26 +92,8 @@ async function getMyFeeds(req, res){
                 noAllergy.push(myFeedsSearch[i]);
             }
         }
-
-        const feedPerPage = 5;
-        let leng = noAllergy.length;
-        let pages = (leng)/feedPerPage;
-
-        let startPage = (page-1)*feedPerPage;
-        let endPage = page*feedPerPage;
-
-        if(pages+1 < page){
-            res.send("검색 결과 없음");
-            return;
-        }else if((pages + 1)  === page){
-            endPage = startPage + leng % feedPerPage;
-        }
-
-        let result = [];
-        for (let i = startPage; i < endPage; i++){
-            result.push(noAllergy[i]);
-        }
-        res.send({"data":result});
+        let filtered = await feedFilter(noAllergy, sort);
+        res.send({"data":filtered});
 
 
     }catch(err){
@@ -123,19 +113,8 @@ async function getFeedList(req, res) {
     }
 }
 
-async function getFeedByName(req, res) {
-    try {
-        // 요청값 체크
-        let feed_name = req.query.keyword;
-        let sort = req.query.sort;
-        if(!feed_name) {
-            res.status(400).send({"msg":"No Feed Name!!"})
-            return;
-        }
-        //Model접근
-        const feed = await FeedModel.getFeedByName(feed_name);
-        //기타 처리 후 클라이언트 응답
-        //sort 방법에 따라 sorting han, point, review
+feedFilter = function(feed, sort){
+    return new Promise((resolve, reject)=>{
         if(sort === 'point') {
             feed.sort(function (a,b) {
                 return a.RATING < b.RATING ? 1 : a.RATING > b.RATING ? -1 : 0;
@@ -146,20 +125,43 @@ async function getFeedByName(req, res) {
             feed.sort(function (a,b) {
                 return a.REVIEW_NUM < b.REVIEW_NUM ? 1 : a.REVIEW_NUM > b.REVIEW_NUM ? -1 : 0;
             });
-        } else {
+        } else if(sort === "가나다 순(기본)"){
             //가나다순
             feed.sort(function (a,b) {
                 return a.NAME < b.NAME ? -1 : a.NAME > b.NAME ? 1 : 0;
             });
+        } else{
+            reject("필터오류");
+        }
+        console.log("사료검색 ",sort);
+        resolve(feed);
+    })
+}
+
+async function getFeedByName(req, res){
+    try{
+        // 요청값 체크
+        let feed_name = req.query.keyword;
+        let sort = "가나다 순(기본)";
+        if(req.query.sort !== undefined){
+            sort= req.query.sort;
         }
 
-        let result = { data:feed, msg:"success" };
+        if(!feed_name) {
+            res.status(400).send({"msg":"No Feed Name!!"})
+            return;
+        }
+        //Model접근
+        let feed = await FeedModel.getFeedByName(feed_name);
+        //기타 처리 후 클라이언트 응답
+        //sort 방법에 따라 sorting han, point, review
+        let filtered = await feedFilter(feed, sort);
+        let result = { data:filtered, msg:"success" };
         res.send(result);
     } catch (err) {
         res.status(500).send({msg:err.msg});
     }
 }
-
 
 async function getFeedByID(req, res) {
     try {
