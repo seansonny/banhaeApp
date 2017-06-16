@@ -14,6 +14,11 @@ const feedRouter = require('./router/feed/feed.controller');
 const petRouter = require('./router/pet/pet.controller');
 const questionRouter = require('./router/question/question.controller');
 
+app.use( (req, res, next) => {
+    console.log('cookie :', req.headers['cookie']);
+    next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(cookieParser());

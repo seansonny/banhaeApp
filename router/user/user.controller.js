@@ -44,18 +44,24 @@ function cookieExtractor(req, res) {
 async function handleLogin(req, res){
     let token;
     try{
-        // let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
-        // let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
+
+        let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
+        let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
+
         let payloadInfo = {
-            "email" : "asdf@gmail.com", //userInfo.data.user_id,
-            "nickname" : "123"//userInfo.data.nickname
+            "email" : userInfo.data.user_id,
+            "nickname" : userInfo.data.nickname
         };
 
-        //if(encrypted.hash === userInfo.data.pw)
-            token = await UserValidation.userToken(payloadInfo);
+        if(encrypted.hash === userInfo.data.pw) {
 
-        res.cookie('token', token,{ maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
-        res.send({ msg: 'success', token: token });
+            token = await UserValidation.userToken(payloadInfo);
+            res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
+            res.send({msg: 'success', token: token});
+        }else{
+            res.status(401).send({msg:"이메일, 비밀번호를 확인해 주세요"});
+        }
+
     }catch (err){
         res.status(500).send({msg:"로그인 실패"});
     }

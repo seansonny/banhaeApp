@@ -150,7 +150,6 @@ Model.editUser = function (pw_info, req, token) {
         try{
             Users.update({nickname: nickname, pw: pw, salt: salt},
             {where: {token: token}});
-               // {token: token});
             resolve({msg:"success"});
         }catch ( error ){
             reject("editUser rejected");

@@ -78,12 +78,12 @@ Validation.generatePassword = function(user_pw, salt){
                 salt = Math.round(Math.random()*100000000);
             }
             user_pw += salt;
+
             const hash = crypto.createHash('sha256').update(user_pw).digest('base64');
             const pw_info = {
                 hash : hash,
                 salt: salt
             };
-            // console.log(pw_info.hash);
             resolve(pw_info);
         }catch( error ){
             reject("generate Password Error");
