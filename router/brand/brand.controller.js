@@ -1,14 +1,31 @@
 const express = require('express');
 const BrandModel = require('./brand.model');
+const BrandCmpModel = require('./brand_cmp.model');
 const FeedModel = require('../feed/feed.model');
 const router = express.Router();
 
 router.get('/search', getBrandByName);  //브랜드 검색용
 router.get('/list', getBrandList);  //브랜드 목록 가져오기
 router.get('/:brand_id', getBrandByID);  //브랜드 상세보기
+router.get('/compare/:brand_id', getBrandByID_cmp);  //브랜드 비교하기용
 router.post('/', addBrand); //브랜드 추가하기
 router.put('/:brand_id', updateBrand); //브랜드 수정하기
 router.delete('/:brand_id', deleteBrand); //브랜드 삭제하기
+
+async function getBrandByID_cmp(req, res) {
+    try {
+        let brand_id = req.params.brand_id;
+        if(!brand_id) {
+            res.status(400).send({"msg":"No Brand ID!!"})
+            return;
+        }
+        const brand = await BrandCmpModel.getBrandByID_cmp(brand_id);
+        let result = { data:brand, msg:"success" };
+        res.send(result);
+    } catch (err) {
+        res.status(500).send({msg:err.msg});
+    }
+}
 
 async function getBrandList(req, res) {
     try {
