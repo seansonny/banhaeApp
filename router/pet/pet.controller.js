@@ -12,7 +12,7 @@ const upload = multer({
     dest : 'tmp'
 });
 
-router.get('/list', getPetList);  //펫 목록 가져오기
+router.get('/list', auth.isAuthenticated(), getPetList);  //펫 목록 가져오기
 router.get('/:pet_id', getPetByID);  //펫 상세보기
 router.post('/', upload.any(), auth.isAuthenticated(), addPet);  //펫 정보 추가
 router.put('/:pet_id', upload.any(), updatePet); //펫 정보 수정하기
@@ -20,7 +20,7 @@ router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
 
 async function getPetList(req, res) {
     try {
-        const pet = await PetModel.getPetList();
+        const pet = await PetModel.getPetList(req.user.email);
 
         let info = {};
         info.count = pet.count;
