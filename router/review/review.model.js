@@ -194,6 +194,19 @@ Model.showLatestReviews = function(){ // limit
     })
 };
 
+Model.showLatestFeedReviews = function(feed_id){ // limit
+    return new Promise((resolve, reject)=>{
+        ReviewSchema.find({feed_id:feed_id})
+            .sort({'time_stamp': -1}).exec(function(err, docs){
+            if(err) {
+                reject(err);
+                return;
+            }
+            resolve(docs);
+        })
+    })
+};
+
 Model.deleteReview = function(review_id){
 
     return new Promise((resolve, reject) =>{

@@ -14,7 +14,8 @@ const upload = multer({
 
 var router = express.Router();
 
-router.get('/', showReviews);                         //리뷰 목록보기
+router.get('/', showReviews);                         //리뷰보기
+router.get('/feed/:feed_id', showFeedReviews);        //특정 사료 리뷰보기
 router.delete('/:review_id', auth.isAuthenticated(), deleteReview);           //리뷰 삭제하기
 router.post('/', upload.any(), auth.isAuthenticated(), writeReview);                //리뷰추가하기
 router.post('/likes',auth.isAuthenticated(), likeReview);                //공감
@@ -106,6 +107,57 @@ async function showReviews(req, res) {
             reviews = tempReviews;
             tempReviews = [];
         }
+        for(let i=(page-1)*5;i<(5*page);i++) {
+            if(reviews[i] == null) {
+                break;
+            }
+
+            let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
+            //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
+            let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
+            let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
+            let pet_age = Age.countAge(petSimpleInfo.birthday);
+
+            let info = JSON.parse(JSON.stringify(reviews[i]));
+            info.pet_age = pet_age;
+            info.pet_weight = petSimpleInfo.weight;
+            info.pet_gender = petSimpleInfo.gender;
+            info.pet_image = petSimpleInfo.image_url;
+            info.pet_name = petSimpleInfo.name;
+            info.feed_image = feedSimpleInfo.IMAGE_URL;
+            info.feed_name = feedSimpleInfo.NAME;
+            info.like_num = likeInfo.like_num;
+            info.my_tastes = likeInfo.myTastes;
+            info.user_nickname = userSimpleInfo.data.nickname;
+
+            tempReviews.push(info);
+            console.log(info);
+        }
+
+        reviews = tempReviews;
+
+        res.send(reviews);
+    } catch(err){
+        res.send({msg:err.msg});
+    }
+}
+
+//사료에 들어가서 리뷰볼 때 사용
+async function showFeedReviews(req, res) {
+    try{
+        let user_email = "비회원";
+        if (req.cookies.token !== null && req.cookies.token !== undefined){
+            user_email = await UserValidation.jwtVerification(req);
+        }
+        console.log("showReviews 호출 id: ",user_email);
+
+        let tempReviews = []; //몽고 디비에서
+        let page = req.query.page;
+
+        //최신순(디폴트값)
+        let reviews = await reviewModel.showLatestFeedReviews(req.params.feed_id);
+
         for(let i=(page-1)*5;i<(5*page);i++) {
             if(reviews[i] == null) {
                 break;
