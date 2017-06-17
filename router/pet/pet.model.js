@@ -19,6 +19,19 @@ let PetModel = sequelize.define('pet', {
     timestamps: false
 });
 
+//대표견 변경
+PetModel.changeMainPet = function (mainPet) {
+    return new Promise((resolve,reject)=> {
+        PetModel.update({main_pet: 1}, {
+            where: {pet_id: mainPet}
+        }).then(()=> {
+            resolve();
+        }).catch(()=> {
+            reject(err);
+        })
+    });
+}
+
 //펫 주요 정보보기(pet_age, pet_weight, pet_gender)
 PetModel.getSimplePetByID = function(pet_id) {
     return new Promise((resolve,reject)=> {
@@ -140,20 +153,20 @@ console.log('PetModel.addPet :', body);
 }
 
 //펫 정보 수정
-PetModel.updatePet = function(pet_id,body) {
+PetModel.updatePet = function(pet_id,body,mainPet) {
     return new Promise((resolve,reject)=> {
         PetModel.update({
-            name: body.name  //필수
-            , type: body.type  //필수
-            , gender: body.gender  //필수
-            , birthday: body.birthday  //필수
-            , weight: body.weight
-            , allergy: body.allergy
-            , remark: body.remark
-            , special: body.special
-            , main_pet: body.main_pet  //필수
-        }, {
-            where: {pet_id: pet_id}
+                    name: body.name  //필수
+                    , type: body.type  //필수
+                    , gender: body.gender  //필수
+                    , birthday: body.birthday  //필수
+                    , weight: body.weight
+                    , allergy: body.allergy
+                    , remark: body.remark
+                    , special: body.special
+                    , main_pet: mainPet  //필수
+                }, {
+                    where: {pet_id: pet_id}
         }).then((results) => {
             resolve(results);
         }).catch((err) => {

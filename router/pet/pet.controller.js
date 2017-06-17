@@ -55,7 +55,7 @@ async function getPetByID(req, res) {
     }
 }
 
-//펫 정보 추가
+//펫정보추가
 async function addPet(req, res) {
     try {
         let main_pet = req.body.main_pet;
@@ -87,24 +87,36 @@ async function addPet(req, res) {
 
 async function updatePet(req, res) {
     try {
+        let main_pet = req.body.main_pet;
+
         let pet_id = req.params.pet_id;
         if(!pet_id) {
             res.send({"msg":"No Pet ID!!"})
         }
 
-        //만약에 main_pet이 2라면 이전에 2인 놈을 찾아서 1로 바꿈
-        const pet = await PetModel.updatePet(pet_id, req.body);
+        let mainPet = await PetModel.getPetByID(pet_id)   //해당 펫이 대표견인가?
 
-        if(req.files[0] != null) {
+        if(mainPet.main_pet == 1) {
+            if(main_pet == 2) {
+                let mainPet = await PetModel.getSimplePetByUser(req.user.email);  //메인펫 id 가져오기
+                await PetModel.changeMainPet(mainPet.pet_id);
+            }
+            await PetModel.updatePet(pet_id, req.body, main_pet);
+        } else {
+            main_pet = 2;
+            await PetModel.updatePet(pet_id, req.body, main_pet);
+        }
+
+        if (req.files[0] && req.files[0] != undefined){
             let pet_info = await PetModel.getPetImg(pet_id);    //이전 사진 파일_url 가져오기
             let itemKey = pet_info.image_key;
             await imgUp.deleteS3(itemKey);
             await uploadPetImg(pet_id, req.files[0]);
         }
-        let result = { data:pet, msg:"success" };
+        let result = { msg:"success" };
         res.send(result);
     } catch (err) {
-        res.status(500).send({msg:err.msg});
+        res.status(500).send({msg:err});
     }
 }
 
@@ -119,7 +131,7 @@ async function deletePet(req, res) {
         const chk_pet = await PetModel.getPetByID(pet_id);
 
         if(chk_pet.main_pet == 2) {
-            res.status(500).send({msg:"fail"});
+            res.status(500).send({msg:"mainPet"});
             return;
         }
 
