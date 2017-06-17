@@ -70,3 +70,7 @@ tmp/
 .idea/workspace.xml
 
 jwtTest.js
+
+dbConnections/mysqlConfig.json
+dbConnections/mongoDbConfig.json
+dbConnections/s3Config.json

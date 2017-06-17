@@ -58,44 +58,65 @@ async function getPetByID(req, res) {
 //펫정보추가
 async function addPet(req, res) {
     try {
+        let main_pet = req.body.main_pet;
+
         //유효성 체크
-        if (!req.body.name || !req.body.birthday || !req.body.weight || !req.user.email || !req.body.type || !req.body.gender || !req.body.main_pet) {
+        if (!req.body.name || !req.body.birthday || !req.body.weight /*|| !req.user.email*/ || !req.body.type || !req.body.gender || !main_pet) {
             res.status(400).send({msg:"필수 입력값을 다 줘야죠"});
             return;
         }
-        const pet = await PetModel.addPet(req.body, req.user);
-        console.log("req.files : " + req.files);
-        console.log("req.files[0] : " + req.files[0]);
-        if (req.files && req.files != undefined){
+        //만약 추가하는 강아지가 사용자의 첫 번째 강아지라면 -> 사용자의 아이디로 나오는 강아지가 없다면 main_pet = 2;
+        const myPet = await PetModel.getPetList(req.user.email);
+
+        if(myPet.count == 0) {
+            main_pet = 2;
+        }
+
+        const pet = await PetModel.addPet(req.body, req.user, main_pet);
+
+        if (req.files[0] && req.files[0] != undefined){
             await uploadPetImg(pet.pet_id, req.files[0]);
         }
 
         let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.status(500).send({msg:err.msg});
+        res.status(500).send({msg:"서버 내부 오류"});
     }
 }
 
 async function updatePet(req, res) {
     try {
+        let main_pet = req.body.main_pet;
+
         let pet_id = req.params.pet_id;
         if(!pet_id) {
             res.send({"msg":"No Pet ID!!"})
         }
 
-        const pet = await PetModel.updatePet(pet_id, req.body);
+        let mainPet = await PetModel.getPetByID(pet_id)   //해당 펫이 대표견인가?
 
-        if(req.files[0] != null) {
+        if(mainPet.main_pet == 1) {
+            if(main_pet == 2) {
+                let mainPet = await PetModel.getSimplePetByUser(req.user.email);  //메인펫 id 가져오기
+                await PetModel.changeMainPet(mainPet.pet_id);
+            }
+            await PetModel.updatePet(pet_id, req.body, main_pet);
+        } else {
+            main_pet = 2;
+            await PetModel.updatePet(pet_id, req.body, main_pet);
+        }
+
+        if (req.files[0] && req.files[0] != undefined){
             let pet_info = await PetModel.getPetImg(pet_id);    //이전 사진 파일_url 가져오기
             let itemKey = pet_info.image_key;
             await imgUp.deleteS3(itemKey);
             await uploadPetImg(pet_id, req.files[0]);
         }
-        let result = { data:pet, msg:"success" };
+        let result = { msg:"success" };
         res.send(result);
     } catch (err) {
-        res.status(500).send({msg:err.msg});
+        res.status(500).send({msg:err});
     }
 }
 
@@ -106,12 +127,20 @@ async function deletePet(req, res) {
             res.send({"msg":"No Pet ID!!"})
         }
 
+        //대표견인지 아닌지 확인
+        const chk_pet = await PetModel.getPetByID(pet_id);
+
+        if(chk_pet.main_pet == 2) {
+            res.status(500).send({msg:"mainPet"});
+            return;
+        }
+
         await deletePetImg(pet_id);
         const pet = await PetModel.deletePet(pet_id);
         let result = { data:pet, msg:"success" };
         res.send(result);
     } catch (err) {
-        res.status(500).send({msg:err.msg});
+        res.status(500).send({msg:"서버 내부 오류"});
     }
 }
 /*******************************************************************************************************************/

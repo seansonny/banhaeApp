@@ -35,12 +35,12 @@ app.use('/feeds', feedRouter);
 app.use('/pets', petRouter);
 app.use('/questions', questionRouter);
 
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
     console.log(err);
     res.sendStatus(404);
 });
 
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res) {
     console.log(err);
     res.status(500).send({mag: err.message});
 });
