@@ -6,13 +6,13 @@ const UserModel = require('../user/user.model');
 const UserValidation = require('../user/usersValidation');
 const Age = require('../../etc/age')
 const imgUp = require('../../etc/imgUpload');
-const multer = require('multer');
 const auth = require('../user/auth');
+const multer = require('multer');
 const upload = multer({
     dest : 'tmp'
 });
 
-var router = express.Router();
+let router = express.Router();
 
 router.get('/', showReviews);                         //리뷰보기
 router.get('/feed/:feed_id', showFeedReviews);        //특정 사료 리뷰보기
