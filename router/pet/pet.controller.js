@@ -31,7 +31,7 @@ async function getPetList(req, res) {
             let pet_age = await age.countAge(pet.rows[i].birthday);
 
             info.pets.push({age: pet_age, name:pet.rows[i].name, image_url:pet.rows[i].image_url, gender:pet.rows[i].gender,
-                weight:pet.rows[i].weight, type:pet.rows[i].type, pet_id:pet.rows[i].pet_id})
+                weight:pet.rows[i].weight, type:pet.rows[i].type, pet_id:pet.rows[i].pet_id, main_pet:pet.rows[i].main_pet})
         }
 
         let result = { data:info, msg:"success" };
