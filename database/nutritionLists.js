@@ -34,7 +34,7 @@ addMainNuts = function(feeds){
                         console.log(err);
                         reject(err);
                     }else{
-                        //console.log("success");
+                        console.log("success");
                     }
                 })
         }
@@ -72,13 +72,14 @@ addExtraNuts = function(feeds){
                         console.log(err);
                         reject(err);
                     }else{
-                        //console.log("success");
+                        console.log("success");
                     }
                 })
         }
         resolve("success");
     });
 };
+
 
 async function nutritionLists() {
     try{

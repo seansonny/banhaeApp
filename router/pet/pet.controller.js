@@ -70,6 +70,9 @@ async function addPet(req, res) {
 
         if(myPet.count == 0) {
             main_pet = 2;
+        }else if(main_pet == 2){
+            let mainPet = await PetModel.getSimplePetByUser(req.user.email);  //메인펫 id 가져오기
+            await PetModel.changeMainPet(mainPet.pet_id);
         }
 
         const pet = await PetModel.addPet(req.body, req.user, main_pet);
@@ -88,13 +91,12 @@ async function addPet(req, res) {
 async function updatePet(req, res) {
     try {
         let main_pet = req.body.main_pet;
-
         let pet_id = req.params.pet_id;
         if(!pet_id) {
             res.send({"msg":"No Pet ID!!"})
         }
 
-        let mainPet = await PetModel.getPetByID(pet_id)   //해당 펫이 대표견인가?
+        let mainPet = await PetModel.getPetByID(pet_id);  //해당 펫이 대표견인가?
 
         if(mainPet.main_pet == 1) {
             if(main_pet == 2) {
