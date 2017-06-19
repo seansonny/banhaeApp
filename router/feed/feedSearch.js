@@ -39,7 +39,7 @@ myFeed.myFeedsSearch = function(mySearch){
                                             $or : [{TARGET_AGE:mySearch.targetAge}, {TARGET_AGE: "ALL"}],
                                             $or : [{TARGET_SIZE:mySearch.size}, {TARGET_SIZE: "ALL"}] }},
                                 { $project:
-                                    {INDEX:1, name:1, ALLERGY_LISTS:1, FULLNAME:1, BRAND_ID:1,CHECKPOINTS:1,
+                                    {INDEX:1, name:1, ALLERGY_LISTS:1, FULLNAME:1, BRAND_ID:1,CHECKPOINTS:1,PACKAGE:1,
                                         TARGET_SIZE:1, TARGET_AGE:1,HUMIDITY:1, TYPE:1, GRAIN_SIZE:1,
                                         FEED_ID:1, NAME:1, PRICE:1, ORIGIN:1, MANUFACTURE:1, RATING:1, REVIEW_NUM:1,
                                         NUTRITIONS_LISTS:1, INGREDIENTS_LISTS:1, IMAGE_URL:1,

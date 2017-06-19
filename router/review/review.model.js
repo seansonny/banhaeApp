@@ -77,7 +77,7 @@ Model.sendReview = function(req, imgInfo, petInfo){
 
 Model.showMyReviews = function(req){
     return new Promise((resolve, reject) =>{
-        const user_info = req.user.eamil;
+        const user_info = req.user.email;
         let mongoUser = UserSchema.findOne({email: user_info});
         mongoUser.exec(function (err, user){
             if (err){
