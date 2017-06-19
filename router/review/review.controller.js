@@ -43,7 +43,7 @@ async function writeReview(req, res) {
         let  feedData = await FeedModel.getFeedByIndex(reviewData.feed_index);
 
         await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
-        await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
+        await FeedModel.updateReviewNum(reviewData.feed_index, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
     } catch( error ){
