@@ -27,4 +27,4 @@ var reviewSchema = new mongoose.Schema({
     pet_name : String
 });
 
-module.exports = mongoose.model('RE', reviewSchema);
+module.exports = mongoose.model('REVIEW', reviewSchema);
