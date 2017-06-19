@@ -135,14 +135,14 @@ FeedModel.deleteFeed = function(feed_id) {
 }
 
 //사료에 달린 리뷰 갯수 증가 혹은 감소
-FeedModel.updateReviewNum = function(feed_id,change) {
+FeedModel.updateReviewNum = function(feed_index,change) {
     return new Promise((resolve,reject)=> {
         let value = 1;
         if(change) {
            value = -1;
         }
 
-        FeedSchema.update({_id:feed_id},{$inc:{REVIEW_NUM:value}}, (err)=>{
+        FeedSchema.update({_id:feed_index},{$inc:{REVIEW_NUM:value}}, (err)=>{
             if(err) {
                 reject(err);
             }
@@ -158,7 +158,7 @@ FeedModel.updateRating = function(feedData, reviewData) {
     return new Promise((resolve,reject)=> {
         let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
 
-        FeedSchema.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
+        FeedSchema.update({_id:reviewData.feed_index},{$set:{RATING:rating}}, (err)=>{
             if(err) {
                 reject(err);
             }
