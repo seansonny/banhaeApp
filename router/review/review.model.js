@@ -1,5 +1,4 @@
 const ReviewSchema = require('../../database/reviewSchema');
-const ObjectID = require('mongodb').ObjectID;
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 ObjectId = mongoose.Types.ObjectId;
@@ -63,7 +62,7 @@ Model.sendReview = function(req, imgInfo, petInfo){
                 review.img_key = imgInfo.itemKey;
             }
 
-            review.feed_id = new ObjectID(req.body.feed_id);
+            review.feed_id = req.body.feed_id;
             review.pet_id = parseInt(petInfo.pet_id);
             review.pet_type = petInfo.type;
             //유저 정보로 user_id 가져오는 로직 추가
