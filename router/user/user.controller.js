@@ -24,7 +24,7 @@ router.route('/login')
 //router.rout('/users/lists')
 //  .get(showUserLists);
 
-router.post('/test', auth.isAuthenticated(), cookieExtractor);
+/*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
 
 function cookieExtractor(req, res) {
     //console.log(req.cookies);

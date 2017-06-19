@@ -25,10 +25,10 @@ async function writeReview(req, res) {
         let s3Path = {url: null, itemKey:null};
         if (req.files && req.files !== undefined && req.files[0] && req.files[0] !== undefined){
             let file = req.files[0];
-            let sizeTest = await imgUp.sizeTest(file);
+            /*let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
             let width = sizeTest.data.width/ratio;
-            let height = sizeTest.data.height/ratio;
+            let height = sizeTest.data.height/ratio;*/
             let resized = await imgUp.resizingImg(file, width, height);
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
@@ -41,7 +41,7 @@ async function writeReview(req, res) {
         await reviewModel.addMyReview(req.user.email, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
         let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
-        // await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
+        await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
@@ -49,9 +49,9 @@ async function writeReview(req, res) {
         console.log(error);
         res.status(500).send({msg:error});
     } finally {
-        /*if (req.files[0] && req.files[0] !== undefined){
-         await imgUp.deleteLocalFile(req.files[0]);
-         }*/
+        if (req.files && req.files !== undefined && req.files[0] && req.files[0] !== undefined){
+            await imgUp.deleteLocalFile(req.files[0]);
+         }
     }
 }
 
