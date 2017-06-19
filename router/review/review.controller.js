@@ -110,12 +110,11 @@ async function showReviews(req, res) {
             if(reviews[i] == null) {
                 break;
             }
-
+//feed_id ==> feed_index
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
             //tempReviews에 추가하기 전에 해당 사료와 글쓴이 대한 정보 불러오기
-            let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
+            let feedSimpleInfo = await FeedModel.getFeedByIndex(reviews[i].feed_index);
             let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
-
             let info = JSON.parse(JSON.stringify(reviews[i]));
             //해당 리뷰의 펫 정보
             // let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);

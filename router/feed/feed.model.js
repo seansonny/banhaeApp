@@ -32,6 +32,20 @@ FeedModel.getFeedByID = function(feed_id) {
     });
 }
 
+//브랜드 상세 정보보기
+FeedModel.getFeedByIndex = function(feed_index) {
+    return new Promise((resolve,reject)=> {
+        FeedSchema.findOne({INDEX:feed_index}, (err, feed)=>{
+            if(err) {
+                reject(err);
+            }
+            else {
+                resolve(feed);
+            }
+        })
+    });
+}
+
 //사료 이름 목록 가져오기
 FeedModel.getFeedList = function() {
     return new Promise((resolve,reject)=> {
