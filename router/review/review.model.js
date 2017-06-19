@@ -2,7 +2,6 @@ const ReviewSchema = require('../../database/reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 ObjectId = mongoose.Types.ObjectId;
-const FeedModel = require('../feed/feed.model');
 const UserSchema = require('../../database/mongoUserSchema');
 
 const multer = require('multer');
