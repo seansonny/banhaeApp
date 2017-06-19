@@ -129,5 +129,18 @@ Validation.sendInfo = function(user_info, pw_info){
     })
 };
 
+Validation.isValue = function(pw_info){
+    return new Promise((resolve, reject) => {
+        try{
+            if(pw_info != null && pw_info != "" && pw_info != undefined) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        } catch(err) {
+            reject(err);
+        }
+    })
+};
 
 module.exports = Validation;
