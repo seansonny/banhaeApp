@@ -19,9 +19,9 @@ FeedModel.getFeedByName = function(feed_name) {
 }
 
 //브랜드 상세 정보보기
-FeedModel.getFeedByID = function(feed_id) {
+FeedModel.getFeedByID = function(feed_index) {
     return new Promise((resolve,reject)=> {
-        FeedSchema.findOne({_id:feed_id}, (err, feed)=>{
+        FeedSchema.findOne({INDEX:feed_index}, (err, feed)=>{
             if(err) {
                 reject(err);
             }
