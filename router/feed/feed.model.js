@@ -142,7 +142,7 @@ FeedModel.updateReviewNum = function(feed_index,change) {
            value = -1;
         }
 
-        FeedSchema.update({_id:feed_index},{$inc:{REVIEW_NUM:value}}, (err)=>{
+        FeedSchema.update({INDEX:feed_index},{$inc:{REVIEW_NUM:value}}, (err)=>{
             if(err) {
                 reject(err);
             }
@@ -158,7 +158,7 @@ FeedModel.updateRating = function(feedData, reviewData) {
     return new Promise((resolve,reject)=> {
         let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
 
-        FeedSchema.update({_id:reviewData.feed_index},{$set:{RATING:rating}}, (err)=>{
+        FeedSchema.update({INDEX:reviewData.feed_index},{$set:{RATING:rating}}, (err)=>{
             if(err) {
                 reject(err);
             }
