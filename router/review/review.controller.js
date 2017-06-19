@@ -50,14 +50,17 @@ async function writeReview(req, res) {
         res.status(500).send({msg:error});
     } finally {
         /*if (req.files[0] && req.files[0] !== undefined){
-            await imgUp.deleteLocalFile(req.files[0]);
-        }*/
+         await imgUp.deleteLocalFile(req.files[0]);
+         }*/
     }
 }
 
 async function showMyReviews(req, res){
     try{
-        let myReviews = await reviewModel.showMyReviews(req);
+        let reviews = await reviewModel.showMyReviews(req);
+        let page = req.query.page;
+        let myReviews = await additionalInfo(req.user.email, reviews, page);
+
         res.send(myReviews);
     }catch (error){
         res.status(error.code).send({msg:error.msg});
@@ -104,42 +107,10 @@ async function showReviews(req, res) {
                 }
             }
             reviews = tempReviews;
-            tempReviews = [];
-        }
-        for(let i=(page-1)*5;i<(5*page);i++) {
-            if(reviews[i] == null) {
-                break;
-            }
-//feed_id ==> feed_index
-            let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
-            //tempReviews에 추가하기 전에 해당 사료와 글쓴이 대한 정보 불러오기
-            let feedSimpleInfo = await FeedModel.getFeedByIndex(reviews[i].feed_index);
-            let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
-            let info = JSON.parse(JSON.stringify(reviews[i]));
-            //해당 리뷰의 펫 정보
-            // let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
-            // info.pet_age = Age.countAge(petSimpleInfo.birthday);
-            // info.pet_weight = petSimpleInfo.weight;
-            // info.pet_gender = petSimpleInfo.gender;
-            // info.pet_image = petSimpleInfo.image_url;
-            // info.pet_name = petSimpleInfo.name;
-
-            //해당 리뷰의 사료 정보
-            info.feed_image = feedSimpleInfo.IMAGE_URL;
-            info.feed_name = feedSimpleInfo.NAME;
-
-            //해당 리뷰의 LIKE 정보
-            info.like_num = likeInfo.like_num;
-            info.my_tastes = likeInfo.myTastes;
-            info.user_nickname = userSimpleInfo.data.nickname;
-
-            tempReviews.push(info);
-            console.log(info);
         }
 
-        reviews = tempReviews;
-
-        res.send(reviews);
+        let showReviews = await additionalInfo(user_email, reviews, page);
+        res.send(showReviews);
     } catch(err){
         res.send({msg:err.msg});
     }
@@ -154,42 +125,13 @@ async function showFeedReviews(req, res) {
         }
         console.log("showReviews 호출 id: ",user_email);
 
-        let tempReviews = []; //몽고 디비에서
         let page = req.query.page;
-
         //최신순(디폴트값)
         let reviews = await reviewModel.showLatestFeedReviews(req.params.feed_id);
 
-        for(let i=(page-1)*5;i<(5*page);i++) {
-            if(reviews[i] == null) {
-                break;
-            }
+        let feedReviews = await additionalInfo(user_email, reviews, page);
 
-            let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
-            //tempReviews에 추가하기 전에 해당 사료와 글쓴이 대한 정보 불러오기
-            let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
-            let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
-            let info = JSON.parse(JSON.stringify(reviews[i]));
-
-            // let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
-            // info.pet_age = Age.countAge(petSimpleInfo.birthday);
-            // info.pet_weight = petSimpleInfo.weight;
-            // info.pet_gender = petSimpleInfo.gender;
-            // info.pet_image = petSimpleInfo.image_url;
-            // info.pet_name = petSimpleInfo.name;
-            info.feed_image = feedSimpleInfo.IMAGE_URL;
-            info.feed_name = feedSimpleInfo.NAME;
-            info.like_num = likeInfo.like_num;
-            info.my_tastes = likeInfo.myTastes;
-            info.user_nickname = userSimpleInfo.data.nickname;
-
-            tempReviews.push(info);
-            console.log(info);
-        }
-
-        reviews = tempReviews;
-
-        res.send(reviews);
+        res.send(feedReviews);
     } catch(err){
         res.send({msg:err.msg});
     }
@@ -209,6 +151,33 @@ async function deleteReview(req, res) {
         console.log(error);
         res.status(500).send({msg:error});
     }
+}
+
+async function additionalInfo(user_email, reviews, page){
+    let tempReviews = [];
+    for(let i=(page-1)*5;i<(5*page);i++) {
+        if(reviews[i] == null) {
+            break;
+        }
+        //tempReviews에 추가하기 전에 나의 LIKE정보, 해당 사료 및 글쓴이 대한 정보 불러오기
+        let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
+        let feedSimpleInfo = await FeedModel.getFeedByIndex(reviews[i].feed_index);
+        let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
+        let info = JSON.parse(JSON.stringify(reviews[i]));
+
+        //해당 리뷰의 사료 정보
+        info.feed_image = feedSimpleInfo.IMAGE_URL;
+        info.feed_name = feedSimpleInfo.NAME;
+
+        //해당 리뷰의 LIKE 정보
+        info.like_num = likeInfo.like_num;
+        info.my_tastes = likeInfo.myTastes;
+        info.user_nickname = userSimpleInfo.data.nickname;
+
+        tempReviews.push(info);
+        console.log(info);
+    }
+    return tempReviews;
 }
 
 module.exports = router;
