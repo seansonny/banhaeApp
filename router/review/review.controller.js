@@ -35,8 +35,7 @@ async function writeReview(req, res) {
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
 
         let petInfo = await PetModel.getSimplePetByUser(req.user.email);
-        let feed_info = await FeedModel.getFeedByID(req.body.feed_id);
-        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo, feed_info.INDEX);
+        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo, req.body.feed_id);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(req.user.email, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
