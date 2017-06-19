@@ -210,7 +210,7 @@ Model.showLatestReviews = function(){ // limit
 
 Model.showLatestFeedReviews = function(feed_id){ // limit
     return new Promise((resolve, reject)=>{
-        ReviewSchema.find({feed_id:feed_id})
+        ReviewSchema.find({feed_index:feed_id})
             .sort({'time_stamp': -1}).exec(function(err, docs){
             if(err) {
                 reject(err);
