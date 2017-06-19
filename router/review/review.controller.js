@@ -40,8 +40,9 @@ async function writeReview(req, res) {
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(req.user.email, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
-        let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
-        /*await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정*/
+        let  feedData = await FeedModel.getFeedByIndex(reviewData.feed_index);
+
+        await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
