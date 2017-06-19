@@ -1,5 +1,5 @@
 const ReviewSchema = require('../../database/reviewSchema');
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 ObjectId = mongoose.Types.ObjectId;
 const UserSchema = require('../../database/mongoUserSchema');

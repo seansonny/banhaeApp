@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const FeedSchema = require('../../database/feedSchema');
+const ObjectID = require('mongodb').ObjectID;
 
 class FeedModel{
 }
@@ -143,7 +144,7 @@ FeedModel.updateRating = function(feedData, reviewData) {
     return new Promise((resolve,reject)=> {
         let rating = ((feedData.RATING * feedData.REVIEW_NUM) + reviewData.rating) / (feedData.REVIEW_NUM+1);
 
-        FeedSchema.update({_id:reviewData.feed_id},{$set:{rating:rating}}, (err)=>{
+        FeedSchema.update({_id:reviewData.feed_id},{$set:{RATING:rating}}, (err)=>{
             if(err) {
                 reject(err);
             }
