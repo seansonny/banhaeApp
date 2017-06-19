@@ -92,6 +92,7 @@ Model.loginUser = function(user_email){
                 const userData = {
                     user_id: user1.user_id,
                     pw: user1.pw,
+                    gender:user1.gender,
                     salt: user1.salt,
                     nickname: user1.nickname
                 };

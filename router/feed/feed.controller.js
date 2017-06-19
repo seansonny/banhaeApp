@@ -28,11 +28,10 @@ async function getMyFeeds(req, res){
 
         //ALLERGY_LISTS
         const allergy = petInfo[0].allergy.split(';');
-        console.log(allergy);
 
         for (let i = 0; i < allergy.length; i++)
             allergy[i] = parseInt(allergy[i]);
-        console.log(allergy);
+
         let size = "ALL";
         if(weight < 5){
             size = "소형견";

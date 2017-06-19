@@ -15,6 +15,8 @@ router.route('/')
 router.route('/check/:nickname')
     .get(checkNickname);
 
+router.get('/basic', auth.isAuthenticated(), basicInfo);
+
 router.route('/:email')
     .get(checkUniqueEmail);
 
@@ -25,6 +27,18 @@ router.route('/login')
 //  .get(showUserLists);
 
 router.post('/test', auth.isAuthenticated(), cookieExtractor);
+
+
+function basicInfo(req, res){
+    let payloadInfo = {
+        "email" : req.user.email,
+        "nickname" : req.user.nickname,
+        "gender" : req.user.gender,
+        "image" : req.user.image,
+        "pet_name" : req.user.pet_name
+    };
+    res.send(payloadInfo);
+}
 
 function cookieExtractor(req, res) {
     //console.log(req.cookies);
