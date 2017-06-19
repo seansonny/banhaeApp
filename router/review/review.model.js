@@ -96,7 +96,8 @@ Model.showMyReviews = function(req){
             if (err){
                 reject(err);
             } else{
-                resolve(ReviewSchema.find({'_id': { $in: user.my_reviews}}));
+                resolve(ReviewSchema.find({'_id': { $in: user.my_reviews}})
+                                    .sort({'time_stamp': -1}));
             }
         })
     })
