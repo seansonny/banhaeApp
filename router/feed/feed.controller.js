@@ -80,7 +80,6 @@ async function getMyFeeds(req, res){
         }
 
         const mySearch = {allergy, type, humidity, priceMin, priceMax, size, targetAge};
-        //애견 사이즈로 필터링//애견 나이로 필터링//사료 타입에 따라 필터링//사료 용도에 따라 필터링//가격에 따라 필터링
         let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
 
         let noAllergy = [];
@@ -90,7 +89,6 @@ async function getMyFeeds(req, res){
             }
         }
 
-        //알러지로 필터링
         let filtered = await feedFilter(noAllergy, sort);
         res.send({"data":filtered});
     }catch(err){
