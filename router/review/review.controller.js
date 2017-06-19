@@ -4,7 +4,6 @@ const FeedModel = require('../feed/feed.model');
 const PetModel = require('../pet/pet.model');
 const UserModel = require('../user/user.model');
 const UserValidation = require('../user/usersValidation');
-const Age = require('../../etc/age')
 const imgUp = require('../../etc/imgUpload');
 const auth = require('../user/auth');
 const multer = require('multer');
