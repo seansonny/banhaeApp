@@ -24,7 +24,7 @@ router.get('/myReviews',auth.isAuthenticated(), showMyReviews);              //�
 async function writeReview(req, res) {
     try{
         let s3Path = {url: null, itemKey:null};
-        if (req.files[0] && req.files[0] !== undefined){
+        if (req.files && req.files !== undefined && req.files[0] && req.files[0] !== undefined){
             let file = req.files[0];
             let sizeTest = await imgUp.sizeTest(file);
             let ratio = 2;
@@ -34,15 +34,15 @@ async function writeReview(req, res) {
             let directory = 'reviews';
             s3Path = await imgUp.s3Upload(file, directory); //s3Path.url ,s3Path.folder
         }// 사진 사이즈에 맞게 비율로 조정, 리뷰에 맞는 사이즈 받기
-        //user.email을 바탕으로 pet_id 받아오기
-        let petInfo = await PetModel.getSimplePetByUser(req.user.email);
 
-        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo);
+        let petInfo = await PetModel.getSimplePetByUser(req.user.email);
+        let feed_info = await FeedModel.getFeedByID(req.body.feed_id);
+        let reviewData = await reviewModel.sendReview(req, s3Path, petInfo, feed_info.INDEX);
         let writeReview = await reviewModel.writeReview(reviewData);
         await reviewModel.addMyReview(req.user.email, reviewData); // 몽고 user collection schema 정의 후 내가 쓴 리뷰에 추가
 
         let  feedData = await FeedModel.getFeedByID(reviewData.feed_id);
-        await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
+        // await FeedModel.updateRating(feedData,reviewData); // 사료 별점 수정
         await FeedModel.updateReviewNum(reviewData.feed_id, 0);  //0이면 증가, 1이면 감소
 
         res.send({msg:"success", data: writeReview});
@@ -113,20 +113,24 @@ async function showReviews(req, res) {
             }
 
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
-            //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
-            let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            //tempReviews에 추가하기 전에 해당 사료와 글쓴이 대한 정보 불러오기
             let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
             let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
-            let pet_age = Age.countAge(petSimpleInfo.birthday);
 
             let info = JSON.parse(JSON.stringify(reviews[i]));
-            info.pet_age = pet_age;
-            info.pet_weight = petSimpleInfo.weight;
-            info.pet_gender = petSimpleInfo.gender;
-            info.pet_image = petSimpleInfo.image_url;
-            info.pet_name = petSimpleInfo.name;
+            //해당 리뷰의 펫 정보
+            // let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            // info.pet_age = Age.countAge(petSimpleInfo.birthday);
+            // info.pet_weight = petSimpleInfo.weight;
+            // info.pet_gender = petSimpleInfo.gender;
+            // info.pet_image = petSimpleInfo.image_url;
+            // info.pet_name = petSimpleInfo.name;
+
+            //해당 리뷰의 사료 정보
             info.feed_image = feedSimpleInfo.IMAGE_URL;
             info.feed_name = feedSimpleInfo.NAME;
+
+            //해당 리뷰의 LIKE 정보
             info.like_num = likeInfo.like_num;
             info.my_tastes = likeInfo.myTastes;
             info.user_nickname = userSimpleInfo.data.nickname;
@@ -164,18 +168,17 @@ async function showFeedReviews(req, res) {
             }
 
             let likeInfo = reviewModel.reviewLikeInfo(user_email, reviews[i]);
-            //tempReviews에 추가하기 전에 개에 대한 정보 불러오기
-            let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            //tempReviews에 추가하기 전에 해당 사료와 글쓴이 대한 정보 불러오기
             let feedSimpleInfo = await FeedModel.getFeedByID(reviews[i].feed_id);
             let userSimpleInfo = await UserModel.showUser(reviews[i].user_id);
-            let pet_age = Age.countAge(petSimpleInfo.birthday);
-
             let info = JSON.parse(JSON.stringify(reviews[i]));
-            info.pet_age = pet_age;
-            info.pet_weight = petSimpleInfo.weight;
-            info.pet_gender = petSimpleInfo.gender;
-            info.pet_image = petSimpleInfo.image_url;
-            info.pet_name = petSimpleInfo.name;
+
+            // let petSimpleInfo = await PetModel.getSimplePetByID(reviews[i].pet_id);
+            // info.pet_age = Age.countAge(petSimpleInfo.birthday);
+            // info.pet_weight = petSimpleInfo.weight;
+            // info.pet_gender = petSimpleInfo.gender;
+            // info.pet_image = petSimpleInfo.image_url;
+            // info.pet_name = petSimpleInfo.name;
             info.feed_image = feedSimpleInfo.IMAGE_URL;
             info.feed_name = feedSimpleInfo.NAME;
             info.like_num = likeInfo.like_num;

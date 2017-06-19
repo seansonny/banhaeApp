@@ -98,7 +98,10 @@ Validation.userToken = function(payloadInfo){
        try{
             const payload = {
                email: payloadInfo.email,
-               nickname: payloadInfo.nickname
+               nickname: payloadInfo.nickname,
+                gender: payloadInfo.gender,
+                image: payloadInfo.image,
+                pet_name:payloadInfo.pet_name
             };
             const option = {
                expiresIn: '1 year'

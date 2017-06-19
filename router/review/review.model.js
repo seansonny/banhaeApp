@@ -2,8 +2,11 @@ const ReviewSchema = require('../../database/reviewSchema');
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 ObjectId = mongoose.Types.ObjectId;
+const FeedModel = require('../feed/feed.model');
 const UserSchema = require('../../database/mongoUserSchema');
+
 const multer = require('multer');
+const Age = require('../../etc/age')
 
 class Model{
 }
@@ -38,6 +41,11 @@ Model.showMostLikeReviews = function() {
             "time_stamp":1,
             "pet_type":1,
             "resized_img":1,
+            "pet_age" : 1,
+            "pet_weight" : 1,
+            "pet_gender" : 1,
+            "pet_image" : 1,
+            "pet_name" : 1,
             "length":{"$size": "$like_users"}}}
             , {"$sort":{"length":-1}}], (err, feed)=>{
             if(err) {
@@ -50,7 +58,7 @@ Model.showMostLikeReviews = function() {
     });
 }
 
-Model.sendReview = function(req, imgInfo, petInfo){
+Model.sendReview = function(req, imgInfo, petInfo, index){
     return new Promise((resolve, reject)=>{
         try{
             let review = new ReviewSchema();
@@ -62,10 +70,16 @@ Model.sendReview = function(req, imgInfo, petInfo){
                 review.img_key = imgInfo.itemKey;
             }
 
-            review.feed_id = req.body.feed_id;
+            review.feed_index = index;
+            //해당 리뷰의 펫 정보
             review.pet_id = parseInt(petInfo.pet_id);
             review.pet_type = petInfo.type;
-            //유저 정보로 user_id 가져오는 로직 추가
+            review.pet_age = Age.countAge(petInfo.birthday);
+            review.pet_weight = petInfo.weight;
+            review.pet_gender = petInfo.gender;
+            review.pet_image = petInfo.image_url;
+            review.pet_name = petInfo.name;
+
             review.user_id = req.user.email;
             review.rating = parseFloat(req.body.rating);
             resolve(review);

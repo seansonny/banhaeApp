@@ -1,6 +1,7 @@
 const express = require('express');
 const UserModel = require('./user.model');
 const UserValidation = require('./usersValidation');
+const PetModel = require('../pet/pet.model');
 const auth = require('./auth');
 
 var router = express.Router();
@@ -46,11 +47,16 @@ async function handleLogin(req, res){
     try{
 
         let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
+        let petInfo = await PetModel.getSimplePetByUser(req.body.email);
         let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
-
+        // 디폴트 강아지 이름
+        //  사진
         let payloadInfo = {
             "email" : userInfo.data.user_id,
-            "nickname" : userInfo.data.nickname
+            "nickname" : userInfo.data.nickname,
+            "gender" : userInfo.data.gender,
+            "image" : petInfo.image_url,
+            "pet_name" : petInfo.name
         };
 
         if(encrypted.hash === userInfo.data.pw) {
