@@ -60,7 +60,7 @@ async function getMyFeeds(req, res){
             type = "처방식";
         }
 
-        //엑셀 데이터 바꾸고 확인 할 것
+
         let humidity = "건식";
         if(parseInt(req.query.humidity)=== 1){
             humidity = "건식";
@@ -80,6 +80,7 @@ async function getMyFeeds(req, res){
         }
 
         const mySearch = {allergy, type, humidity, priceMin, priceMax, size, targetAge};
+        //애견 사이즈로 필터링//애견 나이로 필터링//사료 타입에 따라 필터링//사료 용도에 따라 필터링//가격에 따라 필터링
         let myFeedsSearch = await FeedSearch.myFeedsSearch(mySearch);
 
         let noAllergy = [];
@@ -88,10 +89,10 @@ async function getMyFeeds(req, res){
                 noAllergy.push(myFeedsSearch[i]);
             }
         }
+
+        //알러지로 필터링
         let filtered = await feedFilter(noAllergy, sort);
         res.send({"data":filtered});
-
-
     }catch(err){
         console.log(err);
         res.status(500).send({msg:err.msg});
