@@ -162,13 +162,13 @@ async function getFeedByName(req, res){
 
 async function getFeedByID(req, res) {
     try {
-        let feed_id = req.params.feed_id;
-        if(!feed_id) {
+        let feed_index = req.params.feed_id;
+        if(!feed_index) {
             res.status(400).send({"msg":"No Feed ID!!"});
             return;
         }
 
-        const feed = await FeedModel.getFeedByID(feed_id);
+        const feed = await FeedModel.getFeedByIndex(feed_index);
         let result = { data:feed, msg:"success" };
         res.send(result);
     } catch (err) {
