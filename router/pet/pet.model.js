@@ -48,7 +48,10 @@ PetModel.getSimplePetByID = function(pet_id) {
 //유저 아이디로 대표견의 주요 정보 보기
 PetModel.getSimplePetByUser = function(user_id) {
     return new Promise((resolve,reject)=> {
-        PetModel.find({where: {user_id:user_id, main_pet:2}})
+        PetModel.find({where: {
+            user_id:user_id,
+            main_pet:2
+        }})
             .then((results) => {
             resolve(results);
         }).catch((err) => {

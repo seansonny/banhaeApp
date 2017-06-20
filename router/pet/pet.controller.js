@@ -13,10 +13,34 @@ const upload = multer({
 });
 
 router.get('/list', auth.isAuthenticated(), getPetList);  //펫 목록 가져오기
+router.get('/mainPet', auth.isAuthenticated(), getMainPet);  //메인 펫 상세정보
 router.get('/:pet_id', getPetByID);  //펫 상세보기
 router.post('/', upload.any(), auth.isAuthenticated(), addPet);  //펫 정보 추가
 router.put('/:pet_id', upload.any(), auth.isAuthenticated(),updatePet); //펫 정보 수정하기
 router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
+
+async function getMainPet(req, res) {
+    try {
+        let mainPet = await PetModel.getSimplePetByUser(req.user.email);
+        let pet_age = await age.countAge(mainPet.birthday);
+
+        let info = {
+            age: pet_age
+            , name: mainPet.name
+            , image_url: mainPet.image_url
+            , gender: mainPet.gender
+            , weight: mainPet.weight
+            , type: mainPet.type
+            , pet_id: mainPet.pet_id
+        };
+
+        let result = {data: info, msg: "success"};
+        res.send(result);
+    } catch (err) {
+        res.status(500).send();
+    }
+}
+
 
 async function getPetList(req, res) {
     try {
