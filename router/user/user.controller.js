@@ -35,7 +35,8 @@ function basicInfo(req, res){
         "nickname" : req.user.nickname,
         "gender" : req.user.gender,
         "image" : req.user.image,
-        "pet_name" : req.user.pet_name
+        "pet_name" : req.user.pet_name,
+        "pet_gender" : req.user.pet_gender
     };
     res.send(payloadInfo);
 }
@@ -70,7 +71,8 @@ async function handleLogin(req, res){
             "nickname" : userInfo.data.nickname,
             "gender" : userInfo.data.gender,
             "image" : petInfo.image_url,
-            "pet_name" : petInfo.name
+            "pet_name" : petInfo.name,
+            "pet_gender" : petInfo.gender
         };
 
         if(encrypted.hash === userInfo.data.pw) {
