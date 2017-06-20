@@ -105,8 +105,12 @@ async function updatePet(req, res) {
             }
             await PetModel.updatePet(pet_id, req.body, main_pet);
         } else {
-            main_pet = 2;
-            await PetModel.updatePet(pet_id, req.body, main_pet);
+            if(main_pet == 1) {
+                res.status(500).send({msg:"noMainPetFalse"});
+                return;
+            } else {
+                await PetModel.updatePet(pet_id, req.body, main_pet);
+            }
         }
 
         if (req.files[0] && req.files[0] != undefined){
@@ -133,7 +137,7 @@ async function deletePet(req, res) {
         const chk_pet = await PetModel.getPetByID(pet_id);
 
         if(chk_pet.main_pet == 2) {
-            res.status(500).send({msg:"mainPet"});
+            res.send({msg:"noMainPetFalse"});
             return;
         }
 
