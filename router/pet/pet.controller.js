@@ -105,12 +105,8 @@ async function updatePet(req, res) {
             }
             await PetModel.updatePet(pet_id, req.body, main_pet);
         } else {
-            if(main_pet == 1) {
-                res.status(500).send({msg:"noMainPetFalse"});
-                return;
-            } else {
-                await PetModel.updatePet(pet_id, req.body, main_pet);
-            }
+            main_pet = 2;
+            await PetModel.updatePet(pet_id, req.body, main_pet);
         }
 
         if (req.files[0] && req.files[0] != undefined){
