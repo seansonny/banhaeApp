@@ -22,7 +22,19 @@ router.delete('/:pet_id', deletePet); //펫 정보 삭제하기
 async function getMainPet(req, res) {
     try {
         let mainPet = await PetModel.getSimplePetByUser(req.user.email);
-        let result = { data:mainPet, msg:"success" };
+        let pet_age = await age.countAge(mainPet.birthday);
+
+        let info = {
+            age: pet_age
+            , name: mainPet.name
+            , image_url: mainPet.image_url
+            , gender: mainPet.gender
+            , weight: mainPet.weight
+            , type: mainPet.type
+            , pet_id: mainPet.pet_id
+        };
+
+        let result = {data: info, msg: "success"};
         res.send(result);
     } catch (err) {
         res.status(500).send();
