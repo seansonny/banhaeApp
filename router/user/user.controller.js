@@ -29,16 +29,19 @@ router.route('/login')
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
 
 
-function basicInfo(req, res){
-    let payloadInfo = {
-        "email" : req.user.email,
-        "nickname" : req.user.nickname,
-        "gender" : req.user.gender,
-        "image" : req.user.image,
-        "pet_name" : req.user.pet_name,
-        "pet_gender" : req.user.pet_gender
+async function basicInfo(req, res){
+    let userInfo = await UserModel.loginUser(req.user.email); //테이블에 있는 비번
+    let petInfo = await PetModel.getSimplePetByUser(req.user.email);
+
+    let basicInfo = {
+        "email" : userInfo.data.user_id,
+        "nickname" : userInfo.data.nickname,
+        "gender" : userInfo.data.gender,
+        "image" : petInfo.image_url,
+        "pet_name" : petInfo.name,
+        "pet_gender" : petInfo.gender
     };
-    res.send(payloadInfo);
+    res.send(basicInfo);
 }
 
 function cookieExtractor(req, res) {
