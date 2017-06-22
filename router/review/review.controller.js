@@ -69,8 +69,8 @@ async function showMyReviews(req, res){
 
 async function likeReview(req, res) {
     try{
-        let like = await reviewModel.isLiked(req);
-        let likeFlag = like.like_users.length;
+        let likeUsers = await reviewModel.getLikeUsers(req);
+        let likeFlag = await reviewModel.isLikeUsers(likeUsers.like_users, req.user.email);
         let likeReview = await reviewModel.addLikedUsers(req, likeFlag);
         res.send(likeReview);
     }catch(err){

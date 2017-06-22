@@ -103,25 +103,28 @@ Model.showMyReviews = function(req){
     })
 };
 
-Model.getLikeUsers = function(review_obj, user_info){
-    return new Promise((resolve, reject) =>{
-        ReviewSchema.find({'_id' : review_obj}, {$elemMatch: like_users})
-            .sort({'time_stamp': -1}).exec(function(err, docs){
-                if(err) {
-                    reject(err);
-                    return;
-                }
-                resolve(docs);
-            });
+Model.getLikeUsers = function(req){
+    return new Promise((resolve, reject) => {
+        try {
+            const reviewId = req.body.review_objId;
+            let likeUserLists = ReviewSchema.findOne({'_id': reviewId}, {like_users: 1, _id:0})
+            resolve(likeUserLists);
+        } catch (err) {
+            reject(err);
+        }
+
     })
 };
 
-Model.isLiked = function(req) {
+Model.isLikeUsers = function(likeUsers, email) {
     return new Promise((resolve, reject) => {
         try {
-            const reviewId = req.body.review_objId; //type obj id 로 되어야 하는지 체크>> 아니여도 됨
-            let review = ReviewSchema.findOne({'_id': reviewId}, {like_users: 1})
-            resolve(review);
+            let flag = false;
+            for(let i = 0; i < likeUsers.length; i++){
+                if(likeUsers[i]==email)
+                    flag = true;
+            }
+            resolve(flag);
         } catch (err) {
             reject(err);
         }
