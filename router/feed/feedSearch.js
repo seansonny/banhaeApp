@@ -16,7 +16,7 @@ myFeed.getMyPetInfo = function(user_id){
             var sql = 'SELECT allergy, weight, ' +
                 'birthday FROM pets '+
                 'WHERE user_id = ?' +
-                    'AND main_pet = "1" ';
+                    'AND main_pet = "2" ';
 
             conn.query(sql, user_id, function(err, results){
                 if ( err ) {

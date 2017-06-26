@@ -29,22 +29,10 @@ Model.reviewLikeInfo = function(user_email, review){
 Model.showMostLikeReviews = function() {
     return new Promise((resolve,reject)=> {
         ReviewSchema.aggregate([{"$project":{
-            "_id":1,
-            "pet_id":1,
-            "like_users":1,
-            "rating":1,
-            "user_id":1,
-            "feed_id":1,
-            "good":1,
-            "bad":1,
-            "time_stamp":1,
-            "pet_type":1,
-            "resized_img":1,
-            "pet_age" : 1,
-            "pet_weight" : 1,
-            "pet_gender" : 1,
-            "pet_image" : 1,
-            "pet_name" : 1,
+            "_id":1, "pet_id":1, "like_users":1, "rating":1,
+            "user_id":1, "feed_id":1, "good":1, "bad":1, "time_stamp":1,
+            "pet_type":1, "resized_img":1, "pet_age" : 1, "pet_weight" : 1,
+            "pet_gender" : 1, "pet_image" : 1, "pet_name" : 1,
             "length":{"$size": "$like_users"}}}
             , {"$sort":{"length":-1}}], (err, feed)=>{
             if(err) {
