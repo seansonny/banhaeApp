@@ -20,8 +20,7 @@ router.get('/basic', auth.isAuthenticated(), basicInfo);
 router.route('/:email')
     .get(checkUniqueEmail);
 
-router.route('/login')
-    .post(handleLogin);
+router.post('/login', auth.isAuthenticated(), handleLogin);
 
 //router.rout('/users/lists')
 //  .get(showUserLists);
@@ -63,23 +62,23 @@ function cookieExtractor(req, res) {
 async function handleLogin(req, res){
     let token;
     try{
-
         let userInfo = await UserModel.loginUser(req.body.email); //테이블에 있는 비번
         let petInfo = await PetModel.getSimplePetByUser(req.body.email);
         let encrypted = await UserValidation.generatePassword(req.body.pw, userInfo.data.salt);
-        // 디폴트 강아지 이름
-        //  사진
+
         let payloadInfo = {
             "email" : userInfo.data.user_id,
             "nickname" : userInfo.data.nickname,
-            "gender" : userInfo.data.gender,
-            "image" : petInfo.image_url,
-            "pet_name" : petInfo.name,
-            "pet_gender" : petInfo.gender
+            "gender" : userInfo.data.gender
         };
 
-        if(encrypted.hash === userInfo.data.pw) {
+        if(petInfo != null && petInfo != undefined){
+            payloadInfo.image = petInfo.image_url;
+            payloadInfo.pet_name = petInfo.name;
+            payloadInfo.pet_gender = petInfo.gender;
+        }
 
+        if(encrypted.hash === userInfo.data.pw) {
             token = await UserValidation.userToken(payloadInfo);
             res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
             res.send({msg: 'success', token: token});
@@ -119,8 +118,8 @@ async function addUser(req, res) {
         }
         let pw_info = await UserValidation.generatePassword(user_info.data.pw, "초기유저");
         let send_info = await UserValidation.sendInfo(user_info.data, pw_info);
-        let result = await UserModel.addUser(send_info);
-        let mongoDbUser = await UserModel.addMongoUser(send_info); // mysql 성공시 mongdoDb에도 추가
+        await UserModel.addUser(send_info);
+        await UserModel.addMongoUser(send_info); // mysql 성공시 mongdoDb에도 추가
         res.send("회원 가입 성공");
     }catch (err){
         res.status(500).send({msg:"회원가입 에러"});
