@@ -15,12 +15,13 @@ router.route('/')
 router.route('/check/:nickname')
     .get(checkNickname);
 
+router.post('/login', handleLogin);
+router.get('/logout', auth.isAuthenticated(), handleLogout);
 router.get('/basic', auth.isAuthenticated(), basicInfo);
 
 router.route('/:email')
     .get(checkUniqueEmail);
 
-router.post('/login', auth.isAuthenticated(), handleLogin);
 
 //router.rout('/users/lists')
 //  .get(showUserLists);
@@ -89,6 +90,11 @@ async function handleLogin(req, res){
     }catch (err){
         res.status(500).send({msg:"로그인 실패"});
     }
+}
+
+function handleLogout(req, res){
+    res.clearCookie('token');
+    res.send('success');
 }
 
 async function checkUniqueEmail(req, res){
