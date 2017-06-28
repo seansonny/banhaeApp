@@ -30,14 +30,13 @@ Validation.jwtVerification = function (req) {
 Validation.userInputValidation = function(req) {
 
     return new Promise((resolve, reject) =>{
-
         const email = req.body.email;
         const pw = req.body.pw;
-        const gender = req.body.gender;
+        const gender = parseInt(req.body.gender);
         const birthday = req.body.birthday;
         const nickname = req.body.nickname;
         let message = {};
-
+console.log("회원가입 들어왔나??");
         if (email && pw && gender && birthday){
             message.msg = "success";
             message.data = {

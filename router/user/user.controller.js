@@ -22,12 +22,10 @@ router.get('/basic', auth.isAuthenticated(), basicInfo);
 router.route('/:email')
     .get(checkUniqueEmail);
 
-
 //router.rout('/users/lists')
 //  .get(showUserLists);
 
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
-
 
 async function basicInfo(req, res){
     let userInfo = await UserModel.loginUser(req.user.email); //테이블에 있는 비번
@@ -130,8 +128,6 @@ async function addUser(req, res) {
     }catch (err){
         res.status(500).send({msg:"회원가입 에러"});
     }
-
-        //로그인 로직
 }
 
 async function showUser(req, res) {
@@ -146,7 +142,7 @@ async function showUser(req, res) {
 
 async function deleteUser(req, res){
     try{
-        let user_token = await UserValidation.userToken(req); //로그인 시 발부되는 토큰 정보에서 email꺼내기
+        let user_token = await UserValidation.userToken(req);
         let result = await UserModel.deleteUser(user_token);
         res.send(result);
     }catch(error){
@@ -177,7 +173,7 @@ async function editUser(req, res){
         if(isPassword){
             pw_info = await UserValidation.generatePassword(req.body.pw);
         }
-        let token = await UserValidation.userToken(); //로그인 시 발부되는 토큰 정보에서 email꺼내기
+        let token = await UserValidation.userToken();
         let editUser = await UserModel.editUser(pw_info, req, token);
         res.send(editUser);
     }catch ( error ){
