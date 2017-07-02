@@ -17,6 +17,7 @@ router.route('/check/:nickname')
 
 router.post('/login', handleLogin);
 router.post('/fb_success', fbUserInfo);
+router.post('/naver_success', naverUserInfo);
 router.get('/logout', auth.isAuthenticated(), handleLogout);
 router.get('/basic', auth.isAuthenticated(), basicInfo);
 
@@ -27,6 +28,48 @@ router.route('/:email')
 //  .get(showUserLists);
 
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
+
+async function naverUserInfo(req, res) {
+    let email = req.body.email;
+    let nickname = req.body.name;
+    let birthday = req.body.birthday;
+    let gender;
+    if (req.body.gender === "male")
+        gender = 1;
+    else
+        gender = 2;
+
+    let payloadInfo = {
+        "email": email,
+        "nickname": nickname,
+        "birthday": birthday,
+        "gender": gender
+    };
+
+    if ((await UserModel.isUniqueEmail(email)) === 1) {
+        let petInfo = await PetModel.getSimplePetByUser(email);
+
+        if (petInfo != null && petInfo != undefined) {
+            payloadInfo.image = petInfo.image_url;
+            payloadInfo.pet_name = petInfo.name;
+            payloadInfo.pet_gender = petInfo.gender;
+        } else {
+            payloadInfo.image = null;
+            payloadInfo.pet_name = "추가해주세요";
+            payloadInfo.pet_gender = "추가해주세요";
+        }
+        let token = await UserValidation.userToken(payloadInfo);
+        res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
+        res.send({msg: 'success', token: token});
+    } else {
+        payloadInfo.pw = 0;
+        payloadInfo.salt = 0;
+        payloadInfo.birthday = birthday;
+        await UserModel.addUser(payloadInfo);
+        await UserModel.addMongoUser(payloadInfo);
+        res.send("else");
+    }
+}
 
 async function fbUserInfo(req, res){
     let email = req.body.email;

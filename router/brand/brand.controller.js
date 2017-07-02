@@ -57,7 +57,7 @@ async function getBrandByName(req, res) {
             res.status(400).send({"msg":"No Brand Name!!"});
             return;
         }
-        //Model접근
+        //Model 접근
         const brand = await BrandModel.getBrandByName(brand_name);
         //brand name 길이순으로 정렬 후 클라이언트 응답
         if(brand.length >= 2) {
