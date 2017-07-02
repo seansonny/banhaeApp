@@ -17,6 +17,7 @@ router.route('/check/:nickname')
 
 router.post('/login', handleLogin);
 router.post('/fb_success', fbUserInfo);
+router.post('/naver_check', naverUserCheck);
 router.post('/naver_success', naverUserInfo);
 router.get('/logout', auth.isAuthenticated(), handleLogout);
 router.get('/basic', auth.isAuthenticated(), basicInfo);
@@ -28,6 +29,16 @@ router.route('/:email')
 //  .get(showUserLists);
 
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
+
+async function naverUserCheck(req, res) {
+    let email = req.body.email;
+
+    if ((await UserModel.isUniqueEmail(email)) === 1) {
+        res.send({msg: 'exist'});
+    } else {
+        res.send({msg: 'none'});
+    }
+}
 
 async function naverUserInfo(req, res) {
     let email = req.body.email;
