@@ -31,7 +31,7 @@ router.route('/:email')
 
 async function naverUserInfo(req, res) {
     let email = req.body.email;
-    let nickname = req.body.name;
+    let nickname = req.body.nickname;
     let birthday = req.body.birthday;
     let gender;
     if (req.body.gender === "male")
