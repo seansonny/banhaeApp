@@ -29,18 +29,34 @@ router.route('/:email')
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
 
 async function fbUserInfo(req, res){
-    // let user = req.body.user;
-    // let token = req.body.AccessToken
-    // console.log("user", user);
-    // console.log("body", req.body);
-    console.log("연령대: ", req.body.min);
-    console.log("email: ", req.body.email);
-    console.log("이름", req.body.name);
-    console.log("성별", req.body.gender);
-    /*
-    req.body.user; (user.id; user.name; user.email; user.gender; user.min) 개인정보
-    req.body.AccessToken; 성공실패 여부
-     */
+    let email = req.body.email;
+    let name = req.body.name;
+    let gender = req.body.gender;
+    let age_range = req.body.min;
+    console.log("연령대: ", age_range);
+    console.log("email: ", email);
+    console.log("이름", name);
+    console.log("성별", gender);
+
+    if(UserModel.isUniqueEmail(email) === 0){
+        let petInfo = await PetModel.getSimplePetByUser(email);
+
+        let payloadInfo = {
+            "email" : email,
+            "nickname" : name,
+            "gender" : gender
+        };
+
+        if(petInfo != null && petInfo != undefined){
+            payloadInfo.image = petInfo.image_url;
+            payloadInfo.pet_name = petInfo.name;
+            payloadInfo.pet_gender = petInfo.gender;
+        }
+        let token = await UserValidation.userToken(payloadInfo);
+        res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
+        res.send({msg: 'success', token: token});
+    }
+
     res.send("success");
 }
 
