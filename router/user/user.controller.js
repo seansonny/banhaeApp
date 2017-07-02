@@ -16,16 +16,27 @@ router.route('/check/:nickname')
     .get(checkNickname);
 
 router.post('/login', handleLogin);
+router.post('/fb_success', fbUserInfo);
 router.get('/logout', auth.isAuthenticated(), handleLogout);
 router.get('/basic', auth.isAuthenticated(), basicInfo);
 
 router.route('/:email')
     .get(checkUniqueEmail);
 
-//router.rout('/users/lists')
+//router.route('/users/lists')
 //  .get(showUserLists);
 
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
+
+async function fbUserInfo(req, res){
+    console.log("user", req.body.user);
+    console.log("AccessToken", req.body.AccessToken);
+    /*
+    req.body.user; (user.id; user.name; user.email; user.gender; user.min) 개인정보
+    req.body.AccessToken; 성공실패 여부
+     */
+    res.send("success");
+}
 
 async function basicInfo(req, res){
     let userInfo = await UserModel.loginUser(req.user.email); //테이블에 있는 비번

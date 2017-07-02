@@ -36,7 +36,6 @@ Validation.userInputValidation = function(req) {
         const birthday = req.body.birthday;
         const nickname = req.body.nickname;
         let message = {};
-console.log("회원가입 들어왔나??");
         if (email && pw && gender && birthday){
             message.msg = "success";
             message.data = {
