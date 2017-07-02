@@ -37,7 +37,7 @@ app.use('/questions', questionRouter);
 
 app.use(function(err, req, res) {
     console.log(err);
-    res.Status(404).send();
+    res.status(404).send();
 });
 
 app.use(function (err, req, res) {
