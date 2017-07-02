@@ -31,21 +31,21 @@ router.route('/:email')
 async function fbUserInfo(req, res){
     let email = req.body.email;
     let name = req.body.name;
-    let gender = req.body.gender;
     let age_range = req.body.min;
-    console.log("연령대: ", age_range);//바꾸기
-    console.log("email: ", email);
-    console.log("이름", name);
-    console.log("성별", gender);//숫자로 바꾸기
+    let gender;
+    if(req.body.gender === "male")
+        gender = 1;
+    else
+        gender = 2;
+
+    let payloadInfo = {
+        "email" : email,
+        "nickname" : name,
+        "gender" : gender
+    };
 
     if((await UserModel.isUniqueEmail(email)) === 1){
         let petInfo = await PetModel.getSimplePetByUser(email);
-
-        let payloadInfo = {
-            "email" : email,
-            "nickname" : name,
-            "gender" : gender
-        };
 
         if(petInfo != null && petInfo != undefined){
             payloadInfo.image = petInfo.image_url;
@@ -60,6 +60,11 @@ async function fbUserInfo(req, res){
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
         res.send({msg: 'success', token: token});
     }else{
+        payloadInfo.pw = 0;
+        payloadInfo.salt = 0;
+        payloadInfo.birthday = age_range;
+        await UserModel.addUser(payloadInfo);
+        await UserModel.addMongoUser(payloadInfo);
         res.send("else");
     }
 }

@@ -21,17 +21,14 @@ Model.addUser = function(user_info){
 
     return new Promise((resolve, reject) =>{
         console.log("addUser", user_info);
-        const gender = user_info.gender;
-        const birthday = user_info.birthday;
-        const salt = user_info.salt;
         try{
             Users.create({
                 user_id: user_info.email,
                 nickname: user_info.nickname,
                 pw: user_info.pw,
-                gender: gender,
-                birthday: birthday,
-                salt: salt
+                gender: user_info.gender,
+                birthday: user_info.birthday,
+                salt: user_info.salt
             });
 
             resolve("success");
