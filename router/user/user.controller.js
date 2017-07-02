@@ -33,12 +33,12 @@ async function fbUserInfo(req, res){
     let name = req.body.name;
     let gender = req.body.gender;
     let age_range = req.body.min;
-    console.log("연령대: ", age_range);
+    console.log("연령대: ", age_range);//바꾸기
     console.log("email: ", email);
     console.log("이름", name);
-    console.log("성별", gender);
+    console.log("성별", gender);//숫자로 바꾸기
 
-    if(UserModel.isUniqueEmail(email) === 1){
+    if((await UserModel.isUniqueEmail(email)) === 1){
         let petInfo = await PetModel.getSimplePetByUser(email);
 
         let payloadInfo = {
@@ -59,9 +59,9 @@ async function fbUserInfo(req, res){
         let token = await UserValidation.userToken(payloadInfo);
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
         res.send({msg: 'success', token: token});
+    }else{
+        res.send("else");
     }
-
-    res.send("success");
 }
 
 async function basicInfo(req, res){
