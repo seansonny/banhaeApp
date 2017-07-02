@@ -16,7 +16,7 @@ let BrandModel = sequelize.define('brand', {
         timestamps: false
 });
 
-//검색할 때 사용할 예정
+//브랜드 검색
 BrandModel.getBrandByName = function(brand_name) {
     return new Promise((resolve,reject)=> {
         BrandModel.findAll({
