@@ -32,7 +32,11 @@ async function fbUserInfo(req, res){
     // let user = req.body.user;
     // let token = req.body.AccessToken
     // console.log("user", user);
-    console.log("body", req.body);
+    // console.log("body", req.body);
+    console.log("연령대: ", req.body.min);
+    console.log("email: ", req.body.email);
+    console.log("이름", req.body.name);
+    console.log("성별", req.body.gender);
     /*
     req.body.user; (user.id; user.name; user.email; user.gender; user.min) 개인정보
     req.body.AccessToken; 성공실패 여부
