@@ -29,13 +29,15 @@ router.route('/:email')
 /*router.post('/test', auth.isAuthenticated(), cookieExtractor);*/
 
 async function fbUserInfo(req, res){
-    console.log("user", req.body.user);
-    console.log("AccessToken", req.body.AccessToken);
+    // let user = req.body.user;
+    // let token = req.body.AccessToken
+    // console.log("user", user);
+    console.log("body", req.body);
     /*
     req.body.user; (user.id; user.name; user.email; user.gender; user.min) 개인정보
     req.body.AccessToken; 성공실패 여부
      */
-    res.send("success");
+    res.send("success", req.body);
 }
 
 async function basicInfo(req, res){
