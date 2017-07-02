@@ -59,7 +59,7 @@ async function naverUserCheck(req, res) {
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
         res.send({msg: 'exist', token: token});
     } else {
-        res.send({msg: 'none'});
+        res.send({msg: 'No'});
     }
 }
 

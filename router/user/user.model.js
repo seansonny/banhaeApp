@@ -59,7 +59,7 @@ Model.addMongoUser = function(user_info){
 Model.isUniqueEmail = function(email){
     return new Promise((resolve, reject)=>{
         try{
-            Users.count({where: {user_id: email}}).then(count=>{
+            Users.count({where: {user_id: email}}).then((count) => {
                 resolve(count);
             })
         }catch ( error ){
