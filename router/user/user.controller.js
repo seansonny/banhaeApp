@@ -37,7 +37,7 @@ async function fbUserInfo(req, res){
     req.body.user; (user.id; user.name; user.email; user.gender; user.min) 개인정보
     req.body.AccessToken; 성공실패 여부
      */
-    res.send("success", req.body);
+    res.send("success");
 }
 
 async function basicInfo(req, res){
