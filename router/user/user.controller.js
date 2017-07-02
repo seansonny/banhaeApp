@@ -38,7 +38,7 @@ async function fbUserInfo(req, res){
     console.log("이름", name);
     console.log("성별", gender);
 
-    if(UserModel.isUniqueEmail(email) === 0){
+    if(UserModel.isUniqueEmail(email) === 1){
         let petInfo = await PetModel.getSimplePetByUser(email);
 
         let payloadInfo = {
