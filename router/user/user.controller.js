@@ -51,6 +51,10 @@ async function fbUserInfo(req, res){
             payloadInfo.image = petInfo.image_url;
             payloadInfo.pet_name = petInfo.name;
             payloadInfo.pet_gender = petInfo.gender;
+        }else{
+            payloadInfo.image = null;
+            payloadInfo.pet_name = "추가해주세요";
+            payloadInfo.pet_gender = "추가해주세요";
         }
         let token = await UserValidation.userToken(payloadInfo);
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
