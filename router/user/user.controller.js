@@ -32,23 +32,9 @@ router.route('/:email')
 
 async function naverUserCheck(req, res) {
     let email = req.body.email;
-
-    if ((await UserModel.isUniqueEmail(email)) === 1) {
-        res.send({msg: 'exist'});
-    } else {
-        res.send({msg: 'none'});
-    }
-}
-
-async function naverUserInfo(req, res) {
-    let email = req.body.email;
     let nickname = req.body.nickname;
     let birthday = req.body.birthday;
-    let gender;
-    if (req.body.gender === "male")
-        gender = 1;
-    else
-        gender = 2;
+    let gender = req.body.gender;
 
     let payloadInfo = {
         "email": email,
@@ -71,15 +57,31 @@ async function naverUserInfo(req, res) {
         }
         let token = await UserValidation.userToken(payloadInfo);
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
-        res.send({msg: 'success', token: token});
+        res.send({msg: 'exist', token: token});
     } else {
-        payloadInfo.pw = 0;
-        payloadInfo.salt = 0;
-        payloadInfo.birthday = birthday;
-        await UserModel.addUser(payloadInfo);
-        await UserModel.addMongoUser(payloadInfo);
-        res.send("else");
+        res.send({msg: 'none'});
     }
+}
+
+async function naverUserInfo(req, res) {
+    let email = req.body.email;
+    let nickname = req.body.nickname;
+    let birthday = req.body.birthday;
+    let gender = req.body.gender;
+
+    let payloadInfo = {
+        "email": email,
+        "nickname": nickname,
+        "birthday": birthday,
+        "gender": gender
+    };
+
+    payloadInfo.pw = 0;
+    payloadInfo.salt = 0;
+    payloadInfo.birthday = birthday;
+    await UserModel.addUser(payloadInfo);
+    await UserModel.addMongoUser(payloadInfo);
+    res.send("naver로 회원가입");
 }
 
 async function fbUserInfo(req, res){
