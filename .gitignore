@@ -70,3 +70,5 @@ tmp/
 .idea/workspace.xml
 
 jwtTest.js
+
+dbConnections/
