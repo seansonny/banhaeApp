@@ -135,7 +135,7 @@ async function basicInfo(req, res){
         "gender" : userInfo.data.gender,
         "image" : null,
         "pet_name" : null,
-        "pet_gender" : null
+        "pet_gender" : 0
     };
 
     if(isPetInfo > 0){
