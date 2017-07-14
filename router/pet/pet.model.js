@@ -60,6 +60,18 @@ PetModel.getSimplePetByUser = function(user_id) {
     });
 }
 
+PetModel.isPetInfo = function(email){
+    return new Promise((resolve, reject)=>{
+        try{
+            PetModel.count({where: {user_id: email}}).then((count) => {
+                resolve(count);
+            })
+        }catch ( error ){
+            reject(error);
+        }
+    })
+};
+
 //펫 상세 정보보기
 PetModel.getPetByID = function(pet_id) {
     return new Promise((resolve,reject)=> {

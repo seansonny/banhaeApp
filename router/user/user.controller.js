@@ -127,16 +127,24 @@ async function fbUserInfo(req, res){
 
 async function basicInfo(req, res){
     let userInfo = await UserModel.loginUser(req.user.email); //테이블에 있는 비번
-    let petInfo = await PetModel.getSimplePetByUser(req.user.email);
+    let isPetInfo = await PetModel.isPetInfo(req.user.email);
 
     let basicInfo = {
         "email" : userInfo.data.user_id,
         "nickname" : userInfo.data.nickname,
         "gender" : userInfo.data.gender,
-        "image" : petInfo.image_url,
-        "pet_name" : petInfo.name,
-        "pet_gender" : petInfo.gender
+        "image" : null,
+        "pet_name" : null,
+        "pet_gender" : null
     };
+
+    if(isPetInfo > 0){
+        let petInfo = await PetModel.getSimplePetByUser(req.user.email);
+        basicInfo.image = petInfo.image_url;
+        basicInfo.pet_name = petInfo.name;
+        basicInfo.pet_gender = petInfo.gender;
+    }
+
     res.send(basicInfo);
 }
 
