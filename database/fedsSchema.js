@@ -12,10 +12,11 @@ let FeedSchema = new mongoose.Schema({
     FULLNAME: {type: String},
     TARGET_SIZE: {type: String},  //추후변경
     TARGET_AGE: {type: String},     //추후변경
+    FEED_ID: {type: String}, //필요 없음
     NAME: {type: String},
     HUMIDITY: {type: String},
     TYPE: {type: String},       //추후변경
-    IS_SNACK: {type: Boolean},
+    IS_SNACK: {type: String},
     INGREDIENTS_INDEX: {type: Array},
     INGREDIENTS: {type: Array},
     GRAIN_SIZE: {type: Number},

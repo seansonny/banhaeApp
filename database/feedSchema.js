@@ -12,10 +12,11 @@ let FeedSchema = new mongoose.Schema({
     FULLNAME: {type: String},
     TARGET_SIZE: {type: String},  //추후변경
     TARGET_AGE: {type: String},     //추후변경
+    FEED_ID: {type: String}, //필요 없음
     NAME: {type: String},
     HUMIDITY: {type: String},
     TYPE: {type: String},       //추후변경
-    IS_SNACK: {type: Boolean},
+    IS_SNACK: {type: String},
     INGREDIENTS_INDEX: {type: Array},
     INGREDIENTS: {type: Array},
     GRAIN_SIZE: {type: Number},
@@ -28,11 +29,9 @@ let FeedSchema = new mongoose.Schema({
     PACKAGE: {type: Array},
     RATING: {type: Number},
     REVIEW_NUM: {type: Number},
-    ALLERGY_LISTS: {type: Array},
     INDEX: {type: Number},
     IMAGE_URL : {type: String},
-    INGREDIENTS_LISTS : {type: Array},
-    NUTRITIONS_LISTS : {type: Array}
+    ALLERGY_LISTS : {type: Array}
 });
 
 module.exports = mongoose.model('FEEDS',FeedSchema,'FEEDS');

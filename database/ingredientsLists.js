@@ -18,6 +18,7 @@ showFeeds = function(){
                     reject(err);
                     return;
                 }
+                // console.log(docs);
                 resolve(docs);
             })
     })
@@ -50,7 +51,7 @@ async function preprocessing() {
     try{
         let feeds = await showFeeds();
         let ingredients = await getIngredient(1);
-
+        console.log("feeds", feeds);
         let feedsIngredients = [];
         for (let i = 0; i < feeds.length; i++){ //101번 사료 뉴트리나 건강백서 프로페셔널 퍼피 재료중 allergy_num 값 이상있음
             let indi = i+1;
@@ -63,7 +64,8 @@ async function preprocessing() {
                 try{ //엑셀 리스트 구분자 값(;)이 마지막에 들어가서 빈값이 있어서 try catch문 써줘야함 사료
                     let listIndex = index[j] -1;
                     let anIngred = ingredients[listIndex];
-
+                    // console.log("listIndex", listIndex);
+                    // console.log("anIngred", anIngred);
                     let algFlag = false;
                     let warningFlag = false;
                     if(anIngred.allergy_num!==0)

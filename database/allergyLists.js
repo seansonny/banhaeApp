@@ -13,6 +13,7 @@ showAllergies = function (){
             .exec(function(err, docs){
                 if(err) {
                     reject(err);
+                    console.log(err);
                     return;
                 }
                 resolve(docs);
@@ -44,7 +45,7 @@ async function intersection() {
     try{
         let feeds = await showFeeds();
         let allergies = await showAllergies();
-        // console.log(allergies);
+
         let allergyCollection = [];
 
         for (let i = 0; i < feeds.length; i++) {
@@ -59,8 +60,8 @@ async function intersection() {
                 let concatedleng = concated.length;
                 let concatedSet = new Set(concated);
                 if (concatedleng !== concatedSet.size) {
-                    // console.log("Feed #", "Allgergy #", j, "* concatedleng: ", concatedleng);
-                    // console.log(j, "* concatedSet.size: ", concatedSet.size);
+                    console.log("Feed #", "Allgergy #", j, "* concatedleng: ", concatedleng);
+                    console.log(j, "* concatedSet.size: ", concatedSet.size);
                     aFeedAllergy.push("# "+ (j+1));
                     let indi = i+1;
                     let indj = j+1;

@@ -173,6 +173,7 @@ async function additionalInfo(user_email, reviews, page){
         info.like_num = likeInfo.like_num;
         info.my_tastes = likeInfo.myTastes;
         info.user_nickname = userSimpleInfo.data.nickname;
+        info.email = user_email;
 
         tempReviews.push(info);
         console.log(info);
