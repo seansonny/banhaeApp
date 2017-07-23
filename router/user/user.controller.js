@@ -81,7 +81,8 @@ async function naverUserInfo(req, res) {
     payloadInfo.birthday = birthday;
     await UserModel.addUser(payloadInfo);
     await UserModel.addMongoUser(payloadInfo);
-    res.send("success"); //수정
+    res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
+    res.send({msg: 'success', token: token});
 }
 
 async function fbUserInfo(req, res){
