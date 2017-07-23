@@ -95,13 +95,21 @@ Validation.userToken = function(payloadInfo){
         //로그인이 구현 되고 보내온 토큰 정보로  디코딩 ==>이메일
        try{
             const payload = {
-               email: payloadInfo.email,
-               nickname: payloadInfo.nickname,
+                email: payloadInfo.email,
+                nickname: payloadInfo.nickname,
                 gender: payloadInfo.gender,
                 image: payloadInfo.image,
                 pet_name:payloadInfo.pet_name,
                 pet_gender: payloadInfo.pet_gender
             };
+
+            if(payloadInfo.image)
+                payload.image = payloadInfo.image;
+            if(payloadInfo.pet_name)
+               payload.pet_name = payloadInfo.pet_name;
+            if(payloadInfo.image)
+               payload.pet_gender = payloadInfo.pet_gender;
+
             const option = {
                expiresIn: '1 year'
             };
