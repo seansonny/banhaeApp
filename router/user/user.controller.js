@@ -134,10 +134,8 @@ async function basicInfo(req, res){
     let basicInfo = {
         "email" : userInfo.data.user_id,
         "nickname" : userInfo.data.nickname,
-        "gender" : userInfo.data.gender,
+        "gender" : 0,
         "image" : null,
-        "pet_name" : null,
-        "pet_gender" : 0
     };
 
     if(isPetInfo > 0){
