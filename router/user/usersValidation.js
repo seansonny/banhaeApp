@@ -33,6 +33,8 @@ Validation.userInputValidation = function(req) {
         const email = req.body.email;
         const pw = req.body.pw;
         const gender = parseInt(req.body.gender);
+        const birthday = req.body.birthday;
+        const nickname = req.body.nickname;
 
         let message = {};
         if (email && pw){

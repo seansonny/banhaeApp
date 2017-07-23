@@ -227,10 +227,25 @@ async function addUser(req, res) {
             res.status(400).send({msg:"필수 정보 누락(아이디, 비밀번호는 필수 입력 정보입니다"});
             return
         }
+
         let pw_info = await UserValidation.generatePassword(user_info.data.pw, "초기유저");
         let send_info = await UserValidation.sendInfo(user_info.data, pw_info);
         await UserModel.addUser(send_info);
         await UserModel.addMongoUser(send_info); // mysql 성공시 mongdoDb에도 추가
+
+        let payloadInfo = {
+            "email" : user_info.data.user_id,
+            "nickname" : user_info.data.nickname,
+            "gender" : 0
+        };
+
+        if(user_info.data.gender)
+            payloadInfo.gender = user_info.data.gender;
+
+        let token = await UserValidation.userToken(payloadInfo);
+        res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
+        res.send({msg: 'success', token: token});
+
         res.send("success");
     }catch (err){
         res.status(500).send({msg:"회원가입 에러"});
