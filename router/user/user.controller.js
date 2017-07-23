@@ -81,7 +81,7 @@ async function naverUserInfo(req, res) {
     payloadInfo.birthday = birthday;
     await UserModel.addUser(payloadInfo);
     await UserModel.addMongoUser(payloadInfo);
-    res.send("success");
+    res.send("success"); //수정
 }
 
 async function fbUserInfo(req, res){
