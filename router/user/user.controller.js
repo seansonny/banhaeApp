@@ -230,7 +230,7 @@ async function addUser(req, res) {
         let send_info = await UserValidation.sendInfo(user_info.data, pw_info);
         await UserModel.addUser(send_info);
         await UserModel.addMongoUser(send_info); // mysql 성공시 mongdoDb에도 추가
-        res.send("회원 가입 성공");
+        res.send("success");
     }catch (err){
         res.status(500).send({msg:"회원가입 에러"});
     }
