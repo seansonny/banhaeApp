@@ -32,8 +32,9 @@ Validation.userInputValidation = function(req) {
     return new Promise((resolve, reject) =>{
         const email = req.body.email;
         const pw = req.body.pw;
-        const gender = parseInt(req.body.gender);
-        const birthday = req.body.birthday;
+        let gender = 0;
+        if(req.body.gender)
+            gender = parseInt(req.body.gender);
         const nickname = req.body.nickname;
 
         let message = {};
@@ -41,17 +42,21 @@ Validation.userInputValidation = function(req) {
             message.msg = "success";
             message.data = {
                 email : email,
-                pw : pw
+                pw : pw,
+                gender : gender,
+                nickname : nickname
             };
-            if(gender) message.data.gender = gender;
-            if(birthday) message.data.birthday = birthday;
-            if(nickname) message.data.nickname = nickname;
 
+            if(req.body.birthday)
+                message.data.birthday = birthday;
+
+            resolve(message);
         }else{
             message.msg = "필수 정보 누락 (이메일, 비번)";
             message.data = false;
+            reject();
         }
-        resolve(message);
+
     })
 };
 
@@ -98,17 +103,13 @@ Validation.userToken = function(payloadInfo){
                 email: payloadInfo.email,
                 nickname: payloadInfo.nickname,
                 gender: payloadInfo.gender,
-                image: payloadInfo.image,
+                image: null,
                 pet_name:payloadInfo.pet_name,
                 pet_gender: payloadInfo.pet_gender
             };
 
             if(payloadInfo.image)
                 payload.image = payloadInfo.image;
-            if(payloadInfo.pet_name)
-               payload.pet_name = payloadInfo.pet_name;
-            if(payloadInfo.image)
-               payload.pet_gender = payloadInfo.pet_gender;
 
             const option = {
                expiresIn: '1 year'
