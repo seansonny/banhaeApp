@@ -120,10 +120,15 @@ Validation.sendInfo = function(user_info, pw_info){
                 email : user_info.email,
                 nickname : user_info.nickname,
                 pw : pw_info.hash,
-                birthday : user_info.birthday,
-                gender : user_info.gender,
+                birthday : "0000",
+                gender : 0,
                 salt : pw_info.salt,
             };
+            if(user_info.birthday)
+                sendInfo.birthday = user_info.birthday;
+            if(user_info.gender)
+                sendInfo.gender = user_info.gender;
+
             resolve(sendInfo);
         }catch( error ) {
             reject("sendInfo Error");

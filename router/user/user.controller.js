@@ -79,6 +79,7 @@ async function naverUserInfo(req, res) {
     payloadInfo.pw = 0;
     payloadInfo.salt = 0;
     payloadInfo.birthday = birthday;
+
     await UserModel.addUser(payloadInfo);
     await UserModel.addMongoUser(payloadInfo);
     res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
@@ -236,11 +237,8 @@ async function addUser(req, res) {
         let payloadInfo = {
             "email" : user_info.data.user_id,
             "nickname" : user_info.data.nickname,
-            "gender" : 0
+            "gender" : user_info.data.gender,
         };
-
-        if(user_info.data.gender)
-            payloadInfo.gender = user_info.data.gender;
 
         let token = await UserValidation.userToken(payloadInfo);
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
