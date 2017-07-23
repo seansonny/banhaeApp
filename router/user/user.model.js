@@ -81,7 +81,6 @@ Model.isUniqueNickname = function(nickName){
 };
 
 Model.loginUser = function(user_email){
-
     return new Promise((resolve, reject) => {
         try{
             Users.findOne({where: {user_id: user_email}}).then(user => {
