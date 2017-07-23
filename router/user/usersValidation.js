@@ -28,7 +28,6 @@ Validation.jwtVerification = function (req) {
 };
 
 Validation.userInputValidation = function(req) {
-
     return new Promise((resolve, reject) =>{
         const email = req.body.email;
         const pw = req.body.pw;
