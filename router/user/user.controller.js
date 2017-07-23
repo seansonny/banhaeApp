@@ -244,7 +244,6 @@ async function addUser(req, res) {
         res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
         res.send({msg: 'success', token: token});
 
-        res.send("success");
     }catch (err){
         res.status(500).send({msg:"회원가입 에러"});
     }
