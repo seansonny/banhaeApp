@@ -233,7 +233,7 @@ async function addUser(req, res) {
         await UserModel.addMongoUser(send_info); // mysql 성공시 mongdoDb에도 추가
 
         let payloadInfo = {
-            "email" : user_info.data.user_id,
+            "email" : user_info.data.email,
             "nickname" : user_info.data.nickname,
             "gender" : user_info.data.gender,
         };
