@@ -95,7 +95,6 @@ Model.loginUser = function(user_email){
                 };
                 resolve({msg:"success", data:userData});
             });
-
         }catch ( error ){
             console.log(error);
             reject("이메일, 비밀번호 다시 확인");
