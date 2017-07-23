@@ -33,22 +33,20 @@ Validation.userInputValidation = function(req) {
         const email = req.body.email;
         const pw = req.body.pw;
         const gender = parseInt(req.body.gender);
-        const birthday = req.body.birthday;
-        const nickname = req.body.nickname;
+
         let message = {};
-        if (email && pw && gender && birthday){
+        if (email && pw){
             message.msg = "success";
             message.data = {
                 email : email,
-                birthday : birthday,
-                gender : gender,
                 pw : pw
             };
-
+            if(gender) message.data.gender = gender;
+            if(birthday) message.data.birthday = birthday;
             if(nickname) message.data.nickname = nickname;
 
         }else{
-            message.msg = "필수 정보 누락 (이메일, 비번, 생년월일, 성별)";
+            message.msg = "필수 정보 누락 (이메일, 비번)";
             message.data = false;
         }
         resolve(message);

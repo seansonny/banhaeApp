@@ -223,7 +223,7 @@ async function addUser(req, res) {
     try{
         let user_info = await UserValidation.userInputValidation(req);
         if(user_info.msg !== "success"){
-            res.status(400).send({msg:"필수 정보 누락(아이디, 비밀번호, 성별, 생년월일은 필수 입력 정보입니다"});
+            res.status(400).send({msg:"필수 정보 누락(아이디, 비밀번호는 필수 입력 정보입니다"});
             return
         }
         let pw_info = await UserValidation.generatePassword(user_info.data.pw, "초기유저");
@@ -247,7 +247,7 @@ async function showUser(req, res) {
 }
 
 async function deleteUser(req, res){
-    try{
+    try{//강아지, 문의하기, 수정하기
         let user_token = await UserValidation.userToken(req);
         let result = await UserModel.deleteUser(user_token);
         res.send(result);

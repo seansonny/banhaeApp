@@ -1,6 +1,6 @@
 convertExcel = require('excel-as-json').processFile;
 
-convertExcel('./allergy.xlsx', './allergy.json', null, function(err,data){
+convertExcel('./feeds.xlsx', './feeds.json', null, function(err,data){
     console.log(data);
 });
 
