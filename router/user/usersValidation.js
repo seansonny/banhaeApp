@@ -31,8 +31,6 @@ Validation.userInputValidation = function(req) {
     return new Promise((resolve, reject) =>{
         const email = req.body.email;
         const pw = req.body.pw;
-        if(req.body.gender)
-            gender = parseInt(req.body.gender);
         const nickname = req.body.nickname;
 
         let message = {};
