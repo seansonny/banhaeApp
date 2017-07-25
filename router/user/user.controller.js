@@ -221,7 +221,7 @@ async function checkUniqueEmail(req, res){
         res.send({msg: message});
 
     }catch( error ){
-        res.status(error.code).send({msg:error.msg});
+        res.status(500).send({msg:error.msg});
     }
 }
 
