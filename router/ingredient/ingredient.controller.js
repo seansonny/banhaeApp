@@ -7,7 +7,7 @@ var router = express.Router();
 
 router.route('/:ingredient_id')
     .get(showIngredientDetail)
-    .delete(deleteIngredient)
+    .delete(deleteIngredient);
 
 router.route('/')
     .post(addIngredient)
