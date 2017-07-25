@@ -103,12 +103,16 @@ Validation.userToken = function(payloadInfo){
                 nickname: payloadInfo.nickname,
                 gender: payloadInfo.gender,
                 image: null,
-                pet_name:payloadInfo.pet_name,
-                pet_gender: payloadInfo.pet_gender
+                pet_name: null,
+                pet_gender: 0
             };
 
-            if(payloadInfo.image)
-                payload.image = payloadInfo.image;
+           if(payloadInfo.pet_name)
+               payload.pet_name = payloadInfo.pet_name;
+           if(payloadInfo.pet_gender)
+               payload.image = payloadInfo.pet_gender;
+           if(payloadInfo.image)
+               payload.image = payloadInfo.image;
 
             const option = {
                expiresIn: '1 year'
