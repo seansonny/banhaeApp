@@ -208,11 +208,8 @@ function handleLogout(req, res){
 }
 
 async function checkUniqueEmail(req, res){
-    const email = req.params.email;
-    console.log(email);
-    let message;
     try{
-        let count = await UserModel.isUniqueEmail(email);
+        let count = await UserModel.isUniqueEmail(req.params.email);
         if (count) {
             message = "이미 가입되있는 이메일";
         }else {
