@@ -16,7 +16,7 @@ router.route('/')
 
 function showIngredientDetail(req, res, next) {
     const ingredientId = req.params.ingredient_id;
-    console.log('ingredient_id: ' , ingredientId);
+    console.log('ingredient_id:' ,ingredientId);
 
     Ingredient.getIngredientDetail(ingredientId, function(err, result){
         if( err ){

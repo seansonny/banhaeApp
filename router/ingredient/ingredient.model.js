@@ -14,11 +14,11 @@ Ingredient.getIngredientDetail = function(ingredientId, sendCb) {
         //     'warning, is_warning FROM ingredient ' +
         //     'WHERE ingredient_id = '
         // + ingredientId; //sql injection 취약
-        var sql = 'SELECT L1, L2, role, role_num, ' +
+        var sql = 'SELECT l1, l2, role, role_num, ' +
             'description, allergy, allergy_num, ' +
             'warning, is_warning FROM ingredient ' +
             'WHERE ingredient_id = ?';
-
+        console.log(sql);
         conn.query(sql, ingredientId, function(err, results){
             if ( err ) {
                 conn.release();
