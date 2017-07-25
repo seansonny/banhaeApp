@@ -140,8 +140,8 @@ async function basicInfo(req, res){
         "pet_gender": 0
     };
 
-    if(userInfo.gender)
-        basicInfo.gender = userInfo.gender;
+    if(userInfo.data.gender)
+        basicInfo.gender = userInfo.data.gender;
 
     if(isPetInfo > 0){
         let petInfo = await PetModel.getSimplePetByUser(req.user.email);
