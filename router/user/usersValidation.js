@@ -31,7 +31,6 @@ Validation.userInputValidation = function(req) {
     return new Promise((resolve, reject) =>{
         const email = req.body.email;
         const pw = req.body.pw;
-        let gender = 0;
         if(req.body.gender)
             gender = parseInt(req.body.gender);
         const nickname = req.body.nickname;
@@ -42,12 +41,14 @@ Validation.userInputValidation = function(req) {
             message.data = {
                 email : email,
                 pw : pw,
-                gender : gender,
-                nickname : nickname
+                nickname : nickname,
+                gender : 0,
+                birthday : null
             };
-
-            if(req.body.birthday)
-                message.data.birthday = birthday;
+        if(req.body.gender)
+            message.data.gender = req.body.gender;
+        if(req.body.birthday)
+            message.data.birthday = req.body.birthday;
 
             resolve(message);
         }else{

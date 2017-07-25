@@ -150,6 +150,7 @@ async function basicInfo(req, res){
     res.send(basicInfo);
 }
 
+
 function cookieExtractor(req, res) {
     //console.log(req.cookies);
     //console.log(req);
