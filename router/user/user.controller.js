@@ -140,6 +140,9 @@ async function basicInfo(req, res){
         "pet_gender": 0
     };
 
+    if(userInfo.gender)
+        basicInfo.gender = userInfo.gender;
+
     if(isPetInfo > 0){
         let petInfo = await PetModel.getSimplePetByUser(req.user.email);
         basicInfo.image = petInfo.image_url;
@@ -288,13 +291,13 @@ async function checkNickname(req, res){
 
 async function editUser(req, res){
     try{
-        let isPassword = await UserValidation.isValue(req.body.pw);
-        let pw_info;
-        if(isPassword){
-            pw_info = await UserValidation.generatePassword(req.body.pw);
-        }
-        let token = await UserValidation.userToken();
-        let editUser = await UserModel.editUser(pw_info, req, token);
+        // let isPassword = await UserValidation.isValue(req.body.pw);
+        // let pw_info;
+        // if(isPassword){
+        //     pw_info = await UserValidation.generatePassword(req.body.pw);
+        // }
+        // let token = await UserValidation.userToken();
+        let editUser = await UserModel.editUser(req);
         res.send(editUser);
     }catch ( error ){
         res.status(error.code).send({msg:error.msg});
