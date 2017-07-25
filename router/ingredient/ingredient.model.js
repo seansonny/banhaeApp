@@ -14,7 +14,7 @@ Ingredient.getIngredientDetail = function(ingredientId, sendCb) {
         //     'warning, is_warning FROM ingredient ' +
         //     'WHERE ingredient_id = '
         // + ingredientId; //sql injection 취약
-        var sql = 'SELECT l1, l2, role, role_num, ' +
+        var sql = 'SELECT L1, L2, role, role_num, ' +
             'desc, allergy, allergy_num, ' +
             'warning, is_warning FROM ingredient ' +
             'WHERE id = ?'
