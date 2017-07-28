@@ -17,7 +17,7 @@ Ingredient.getIngredientDetail = function(ingredientId, sendCb) {
         var sql = 'SELECT l1, l2, role, role_num, ' +
             'description, allergy, allergy_num, ' +
             'warning, is_warning FROM ingredient ' +
-            'WHERE role_num = ?'
+            'WHERE id = ?'
         conn.query(sql, ingredientId, function(err, results){
             if ( err ) {
                 conn.release();
