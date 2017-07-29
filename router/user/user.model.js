@@ -136,22 +136,23 @@ Model.deleteUser = function(user_token){
     });
 };
 
-Model.editUser = function (req) {
+Model.editUser = function (userID, nick, birthday) {
 
     return new Promise((resolve, reject) =>{
-        let nickname = req.body.nickname;
-        let birthday = req.body.birthday;
-        // let pw = pw_info.hash;
-        // let salt = pw_info.salt;
+        let nickname = nick;
+        let birthday = birthday;
 
         try{
-            Users.update({nickname: nickname, birthday: birthday},
-            {where: {user_id: req.user.email}});
-            // Users.update({nickname: nickname, pw: pw, salt: salt},
-            // {where: {token: token}});
+            Users.update({
+                nickname: nickname,
+                birthday: birthday
+            }, {
+                where: {user_id: userID}
+            });
+
             resolve({msg:"success"});
-        }catch ( error ){
-            reject("editUser rejected");
+        } catch (error) {
+            reject({msg: error});
         }
     });
 };
