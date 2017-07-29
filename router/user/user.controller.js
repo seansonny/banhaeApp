@@ -9,8 +9,9 @@ var router = express.Router();
 router.route('/')
     .post(addUser)
     .get(showUser)
-    .delete(deleteUser)
-    .put(editUser);
+    .delete(deleteUser);
+
+router.put('/', auth.isAuthenticated(), editUser);
 
 router.route('/check/:nickname')
     .get(checkNickname);
