@@ -288,22 +288,23 @@ async function checkNickname(req, res){
 
 async function editUser(req, res){
     try{
-        //유효성 검사(이메일, 닉네임, 비밀번호, 생일)
+        /*//유효성 검사(이메일, 닉네임, 비밀번호, 생일)
         let userID = req.user.email;
         let nick = req.body.nickname;
         let birthday = req.body.birthday;
-
+         */
+        console.log("good");
         /*console.log("user Email : " + req.user.email + " NickName : " + req.body.nickname + " Birthday : " + req.body.birthday);*/
 
-        if (!req.user.email) {
+        /*  if (!userID) {
             res.status(400).send({msg: "유저 이메일 없음"});
             return;
-        }
+         }*/
 
-        let editUser = await UserModel.editUser(userID, nick, birthday);
+        let editUser = await UserModel.editUser(req);
         res.send(editUser);
     } catch (error) {
-        res.status(500).send({msg: error});
+        res.status(500).send(error);
     }
 }
 
