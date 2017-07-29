@@ -303,7 +303,7 @@ async function editUser(req, res){
         let editUser = await UserModel.editUser(userID, nick, birthday);
         res.send(editUser);
     } catch (error) {
-        res.status(error.code).send({msg:error.msg});
+        res.status(500).send({msg: error});
     }
 }
 
