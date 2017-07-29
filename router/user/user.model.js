@@ -136,23 +136,23 @@ Model.deleteUser = function(user_token){
     });
 };
 
-Model.editUser = function (req) {
+Model.editUser = function (userID, nickname, birthday) {
 
     return new Promise((resolve, reject) =>{
-        let nickname = req.body.nickname;
-        let birthday = req.body.birthday;
+        let nickname = nickname;
+        let birthday = birthday;
 
         try{
             Users.update({
                 nickname: nickname,
                 birthday: birthday
             }, {
-                where: {user_id: req.user.email}
+                where: {user_id: userID}
             });
 
             resolve({msg:"success"});
         } catch (error) {
-            reject({msg: error});
+            reject(error);
         }
     });
 };
