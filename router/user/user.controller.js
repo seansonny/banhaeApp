@@ -288,15 +288,21 @@ async function checkNickname(req, res){
 
 async function editUser(req, res){
     try{
-        // let isPassword = await UserValidation.isValue(req.body.pw);
-        // let pw_info;
-        // if(isPassword){
-        //     pw_info = await UserValidation.generatePassword(req.body.pw);
-        // }
-        // let token = await UserValidation.userToken();
-        let editUser = await UserModel.editUser(req);
+        //유효성 검사(이메일, 닉네임, 비밀번호, 생일)
+        let userID = req.user.email;
+        let nick = req.body.nickname;
+        let birthday = req.body.birthday;
+
+        /*console.log("user Email : " + req.user.email + " NickName : " + req.body.nickname + " Birthday : " + req.body.birthday);*/
+
+        if (!req.user.email) {
+            res.status(400).send({msg: "유저 이메일 없음"});
+            return;
+        }
+
+        let editUser = await UserModel.editUser(userID, nick, birthday);
         res.send(editUser);
-    }catch ( error ){
+    } catch (error) {
         res.status(error.code).send({msg:error.msg});
     }
 }
