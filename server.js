@@ -13,7 +13,6 @@ const brandRouter = require('./router/brand/brand.controller');
 const feedRouter = require('./router/feed/feed.controller');
 const petRouter = require('./router/pet/pet.controller');
 const questionRouter = require('./router/question/question.controller');
-const checkVersion = require('./etc/checkVersion');
 
 app.use( (req, res, next) => {
     console.log('cookie :', req.headers['cookie']);
@@ -27,7 +26,6 @@ app.use(morgan('dev'));
 app.use(passport.initialize());
 /*app.use( (req, res, next) => { console.log(req.headers['content-type']); next(); } );*/
 
-app.use('/version', checkVersion);
 app.use('/ingredients',ingredientRouter);
 app.use('/users', usersRouter);
 app.use('/reviews', reviewRouter);
@@ -36,6 +34,10 @@ app.use('/brands', brandRouter);
 app.use('/feeds', feedRouter);
 app.use('/pets', petRouter);
 app.use('/questions', questionRouter);
+
+app.get('/version', function(req, res) {
+    res.send('beta')
+});
 
 app.use(function(err, req, res) {
     console.log(err);
