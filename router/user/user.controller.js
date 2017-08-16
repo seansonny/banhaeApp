@@ -9,8 +9,9 @@ var router = express.Router();
 router.route('/')
     .post(addUser)
     .get(showUser)
-    .delete(deleteUser)
-    .put(editUser);
+    .delete(deleteUser);
+
+router.put('/', auth.isAuthenticated(), editUser);
 
 router.route('/check/:nickname')
     .get(checkNickname);
@@ -288,16 +289,10 @@ async function checkNickname(req, res){
 
 async function editUser(req, res){
     try{
-        // let isPassword = await UserValidation.isValue(req.body.pw);
-        // let pw_info;
-        // if(isPassword){
-        //     pw_info = await UserValidation.generatePassword(req.body.pw);
-        // }
-        // let token = await UserValidation.userToken();
         let editUser = await UserModel.editUser(req);
         res.send(editUser);
-    }catch ( error ){
-        res.status(error.code).send({msg:error.msg});
+    } catch (error) {
+        res.status(500).send(error);
     }
 }
 
