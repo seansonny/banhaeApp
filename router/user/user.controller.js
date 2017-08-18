@@ -83,6 +83,8 @@ async function naverUserInfo(req, res) {
 
     await UserModel.addUser(payloadInfo);
     await UserModel.addMongoUser(payloadInfo);
+
+    let token = await UserValidation.userToken(payloadInfo);
     res.cookie('token', token, {maxAge: 8640000000, expires: new Date(Date.now() + 8640000000)});
     res.send({msg: 'success', token: token});
 }
