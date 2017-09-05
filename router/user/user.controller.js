@@ -256,6 +256,7 @@ async function addUser(req, res) {
 async function showUser(req, res) {
     try{
         let token = await UserValidation.decodingToken(req.headers.authorization);
+        console.log('token : ' + token);
         let result = await UserModel.showUser(token.user_email);
         res.send(result);
     }catch ( error ){
