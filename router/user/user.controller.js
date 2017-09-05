@@ -259,7 +259,7 @@ async function showUser(req, res) {
         let result = await UserModel.showUser(token.user_email);
         res.send(result);
     }catch ( error ){
-        res.status(error.code).send({msg:error.msg});
+        res.status(error).send({msg: error});
     }
 }
 
@@ -269,7 +269,7 @@ async function deleteUser(req, res){
         let result = await UserModel.deleteUser(user_token);
         res.send(result);
     }catch(error){
-        res.status(error.code).send({msg:error.msg});
+        res.status(error).send({msg: error});
     }
 }
 
@@ -285,7 +285,7 @@ async function checkNickname(req, res){
         }
         res.send({msg:message});
     }catch(error){
-        res.status(error.code).send({msg:error.msg});
+        res.status(error).send({msg: error});
     }
 }
 
