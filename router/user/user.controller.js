@@ -8,8 +8,9 @@ var router = express.Router();
 
 router.route('/')
     .post(addUser)
-    .get(showUser)
     .delete(deleteUser);
+
+router.get('/', auth.isAuthenticated(), showUser);
 
 router.put('/', auth.isAuthenticated(), editUser);
 
@@ -255,9 +256,7 @@ async function addUser(req, res) {
 
 async function showUser(req, res) {
     try{
-        let token = await UserValidation.decodingToken(req.headers.authorization);
-        console.log('token : ' + token);
-        let result = await UserModel.showUser(token.user_email);
+        let result = await UserModel.showUser(req.user.email);
         res.send(result);
     }catch ( error ){
         res.status(error).send({msg: error});
